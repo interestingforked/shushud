@@ -1,6 +1,8 @@
-# Billable Events API
+# 収集
 
 ## Purpose
+
+Collect Billable Events.
 
 Providers like Sendgrid need a more robust way to charge customers. The Vault will provide a mechanism for add-on providers that allows them to notify us of billable events. We will append these events to our durable log and then convert them into line items which will eventually wind up on an invoice.
 
