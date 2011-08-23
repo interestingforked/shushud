@@ -31,6 +31,7 @@ Each event submitted by a provider will require a rate_code. This code represent
 
 The Provider wants to create a new event. This API is idempotent; however, a unique error code (409) is returned in the case you attempt to modify an existing attribute.
 
+
 **Provider PUT Request**
 
 ```
