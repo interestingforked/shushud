@@ -34,7 +34,7 @@ module Shushu
               else
                 [500, "Error"]
               end
-            elsif args[:reality_to] == existing_event[:reality_from]
+            elsif args[:reality_to].to_s == existing_event[:reality_from].to_s
               # Thanks for closing this event a second time. We got it!
               [200, existing_event.values]
             else
