@@ -49,4 +49,25 @@ class ApiTest < Shushu::Test
     assert_equal 200, last_response.status
   end
 
+  def test_close_event
+    open = {
+      :qty          => 1,
+      :rate_code    => 'SG001',
+      :reality_from => '2011-01-01 00:00:00 -0800',
+      :reality_to   => nil
+    }
+
+    provider = Shushu::Provider.create(:token => "abc123")
+    authorize provider.id, provider.token
+
+    put "/resources/app123@heroku.com/billable_events/1", open
+    assert_equal 201, last_response.status
+
+    close = {
+      :reality_to => '2011-02-01 00:00:00 -0800'
+    }
+    put "/resources/app123@heroku.com/billable_events/1", close
+    assert_equal 200, last_response.status
+  end
+
 end

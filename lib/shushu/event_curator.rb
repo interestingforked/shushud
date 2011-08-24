@@ -23,7 +23,7 @@ module Shushu
           [tmp_args, tmp_existing].map {|h| h.delete(:reality_to) }
           if args[:reality_to] and (tmp_existing == tmp_args)
             # You say it is ended and you only intend to change ended_at.
-            if existing_event[:reality_from].nil?
+            if existing_event[:reality_to].nil?
               # Great! Thanks for closing this event.
               if existing_event.update(:reality_from => args[:reality_to])
                 [200, existing_event.values]
@@ -35,6 +35,12 @@ module Shushu
               [200, existing_event.values]
             else
               [409,"You are trying to change the ended_at."]
+            end
+          elsif args[:reality_to] and (tmp_args[:provider_id] == tmp_existing[:provider_id] and tmp_args[:resource_id] == tmp_existing[:resource_id] and tmp_args[:event_id] == tmp_existing[:event_id])
+            if existing_event.update(:reality_from => args[:reality_to])
+              [200, existing_event.values]
+            else
+              [500, "Error"]
             end
           else
             # you are not trying to change ended_at and the attrs you do want to
