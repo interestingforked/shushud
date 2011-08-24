@@ -10,8 +10,21 @@ Bundler.require(:default, :test)
 require 'minitest/autorun'
 require 'shushu'
 
-class ShushuTest < MiniTest::Unit::TestCase
+class Shushu::Test < MiniTest::Unit::TestCase
   include Rack::Test::Methods
+
+  def clean_tables
+    Shushu::DB.run("DELETE FROM billable_events CASCADE")
+    Shushu::DB.run("DELETE FROM providers CASCADE")
+  end
+
+  def setup
+    clean_tables
+  end
+
+  def teardown
+    clean_tables
+  end
 
   def app
     Shushu::Web::Api

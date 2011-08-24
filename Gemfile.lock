@@ -9,6 +9,7 @@ GEM
     json (1.5.3)
     linecache19 (0.5.12)
       ruby_core_source (>= 0.1.4)
+    minitest (1.6.0)
     pg (0.11.0)
     rack (1.3.2)
     rack-test (0.6.1)
@@ -40,6 +41,7 @@ PLATFORMS
 
 DEPENDENCIES
   json
+  minitest
   pg
   rack-test
   ruby-debug19

@@ -1,13 +1,28 @@
 Sequel.migration do
   change do
+
+    create_table(:providers) do
+      primary_key :id
+      String :name
+      String :token, :text => true
+    end
+
+
     create_table(:billable_events) do
       primary_key :id
+      foreign_key :provider_id, :providers
+
       Integer :qty
+      String :event_id
       String :rate_code
       String :resource_id
-      String :event_id
-      DateTime :created_at
-      DateTime :ended_at
+
+      DateTime :system_from
+      DateTime :system_to
+
+      DateTime :reality_from
+      DateTime :reality_to
     end
+
   end
 end
