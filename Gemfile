@@ -7,8 +7,6 @@ gem 'sequel'
 gem 'json'
 
 group :test do
-
-	gem 'minitest'
   gem 'ruby-debug19', :require => 'ruby-debug'
   gem 'rack-test', :require  => 'rack/test'
   gem 'turn'
