@@ -17,6 +17,12 @@ Content-Length: 11
 Connection: keep-alive
 Server: thin 1.2.11 codename Bat-Shit Crazy
 ```
+## PUTing an event
+
+```bash
+$ curl -X PUT http://1:shushu@shushu.herokuapp.com/resources/app123/events/1 -d "reality_from=2011-01-01 00:00:00&qty=1&rate_code=SG001"
+
+```
 
 ## Running Tests
 
