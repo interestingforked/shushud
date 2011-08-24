@@ -13,19 +13,19 @@ module Shushu
       existing_event = BillableEvent.first(:provider_id => args[:provider_id], :event_id => args[:event_id])
 
       if existing_event
-        log("provider=#{provider_id} found existing event")
+        log("provider=#{provider.id} found existing event")
         if existing_event.similar?(args)
-          log("provider=#{provider_id} event=#{existing_event.id} no change")
+          log("provider=#{provider.id} event=#{existing_event.id} no change")
           [200, "Event has already been created."]
         else
-          log("provider=#{provider_id} submitted event does not match existing. #{args}")
+          log("provider=#{provider.id} submitted event does not match existing. #{args}")
           # You are submitting this event for a second time and it is
           # different from your first submission....
           tmp_existing = existing_event.values.dup
           tmp_args = args.dup
           [tmp_args, tmp_existing].map {|h| h.delete(:reality_to) }
           if args[:reality_to] and (tmp_existing == tmp_args)
-            log("provider=#{provider_id} submitted event does not match existing. #{args}")
+            log("provider=#{provider.id} submitted event does not match existing. #{args}")
             # You say it is ended and you only intend to change ended_at.
             if existing_event[:reality_to].nil?
               # Great! Thanks for closing this event.
