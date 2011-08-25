@@ -12,15 +12,15 @@ module Shushu
       end
 
       put "/resources/:resource_id/billable_events/:event_id" do
+        LogJam.setup_logger(Kernel, :puts)
+        LogJam.priorities(:provider, :event)
+
         authenticate_provider
 
-        event_params = {}
-        BillableEvent::ATTRS.each do |key|
-          event_params[key] = params[key]
-        end
-        event_params[:provider_id] = request.env["PROVIDER_ID"]
+        event = BillableEvent.find_or_instantiate_by_provider_and_event(params[:provider_id], params[:event_id])
+        event.set_all(params)
+        http_status, http_resp = EventHttpHelper.process!(event)
 
-        http_status, http_resp = EventCurator.process(event_params)
         content_type :json
         status(http_status)
         body(http_resp)

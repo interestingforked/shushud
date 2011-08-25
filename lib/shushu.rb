@@ -28,7 +28,9 @@ module Shushu
 end
 
 require './lib/web/authentication'
+require './lib/web/event_http_helper'
 require './lib/web/api'
+
 require './lib/shushu/event_curator'
 require './lib/shushu/billable_event'
 require './lib/shushu/provider'

@@ -23,6 +23,7 @@ module Shushu
         if provider = Provider.find(:id => provider_id)
           if provider.token == provider_token
             request.env["PROVIDER_ID"] = provider_id.to_i
+            params[:provider_id] = provider_id.to_i
             true
           else
             false
