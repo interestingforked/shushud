@@ -49,6 +49,22 @@ class ApiTest < Shushu::Test
     assert_equal 200, last_response.status
   end
 
+  def test_event_on_second_call_and_change_qty
+    put_body = {
+      :qty          => 1,
+      :rate_code    => 'SG001',
+      :reality_from => '2011-01-01 00:00:00 -0800',
+      :reality_to   => nil
+    }
+
+    provider = Shushu::Provider.create(:token => "abc123")
+    authorize provider.id, provider.token
+
+    put "/resources/app123@heroku.com/billable_events/1", put_body
+    put "/resources/app123@heroku.com/billable_events/1", put_body.merge(:qty => 2)
+    assert_equal 409, last_response.status
+  end
+
   def test_close_event
     open = {
       :qty          => 1,
