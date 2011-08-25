@@ -27,7 +27,9 @@ module Shushu
           log("process existing event")
           if event.valid?
             log("existing event is valid")
-            if event.save
+            if event.only_modifying_reality_to? and event.save
+              [200, "Event ended."]
+            elsif event.save
               [200, "Event has already been created."]
             else
               [500, "Event was not created!"]
