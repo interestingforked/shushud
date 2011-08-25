@@ -20,7 +20,7 @@ the details remain constant.
 
 **Time sensitive data**
 
-In order to maintain real-time invoices, The Vault requires provider data ASAP. To do this we will ask the the provider to POST billable events to our API within a specified time frame. Events will fail validation if the POST occurs at a time that is 6 hours greater than the event's created_at field.
+In order to maintain real-time invoices, The Vault requires provider data ASAP. To do this we will ask the provider to POST billable events to our API within a specified time frame. Events will fail validation if the POST occurs at a time that is 6 hours greater than the event's created_at field.
 
 The Vault will also invalidate events that are submitted 6 hours after the end of a period. The end of a period is most often the final second in a month.
 
