@@ -8,6 +8,13 @@ Providers like Sendgrid need a more robust way to charge customers. The Vault wi
 
 This API will also serve as the canonical source for all billable events in the cloud. Depending upon the success of our rollout to add-on providers, we hope the adoption of the API will reach teams like runtime and add-ons.
 
+## General Idea
+
+If you tell me about an event that I do not already know about --fine. If you
+tell me that an event I know about has changed, it can only be that the event
+has ended. You can tell me about an event as much as you would like so long as
+the details remain constant.
+
 
 ## Concerns
 
