@@ -18,9 +18,8 @@ module Shushu
       end
 
       get "/resources/:resource_id/billable_events" do
-        JSON.dump(
-          BillableEvent.filter(:resource_id => params[:resource_id], :provider_id => params[:provider_id]).all.map(&:public_values)
-        )
+        cond = {:resource_id => params[:resource_id], :provider_id => params[:provider_id]}
+        JSON.dump(BillableEvent.filter(cond).all.map(&:public_values))
       end
 
       put "/resources/:resource_id/billable_events/:event_id" do
