@@ -6,9 +6,10 @@ Bundler.require
 require 'json'
 require 'logger'
 
+VERBOSE = ENV["VERBOSE"] == 'true'
 module Kernel
   def log(msg)
-    puts msg
+    puts msg if VERBOSE
   end
 end
 

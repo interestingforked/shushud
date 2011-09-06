@@ -4,8 +4,12 @@ require 'irb'
 
 $: << File.expand_path('lib')
 
+puts "\n"
+print "\t --> loading shushu namespace..."
 require 'shushu'
 include Shushu
+print " done!\n"
+puts "\t 収集welcome"
+puts "\n"
 
-puts ">> 収集welcome <<"
 IRB.start
