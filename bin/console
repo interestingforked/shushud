@@ -1,10 +1,12 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-require 'irb'
-
-$: << File.expand_path('lib')
 
 puts "\n"
+
+print "\t --> adding lib to path..."
+$: << File.expand_path('lib')
+print " done!\n"
+
 print "\t --> loading shushu namespace..."
 require 'shushu'
 include Shushu
@@ -12,4 +14,5 @@ print " done!\n"
 puts "\t 収集welcome"
 puts "\n"
 
+require 'irb'
 IRB.start
