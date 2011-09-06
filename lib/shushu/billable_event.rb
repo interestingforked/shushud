@@ -7,6 +7,10 @@ class Shushu::BillableEvent < Sequel::Model
     filter(params).first or new(params)
   end
 
+  def public_values
+    values.select {|k,v| ATTRS.include?(k) }
+  end
+
   def validate
     super
 

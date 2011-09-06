@@ -6,22 +6,28 @@ module Shushu
         include Web::Authentication
       end
 
-      get "/heartbeat" do
+      before do
         authenticate_provider
-        {:ok => true}.to_json
+        LogJam.setup_logger(Kernel, :puts)
+        LogJam.priorities(:provider, :event)
+        content_type :json
+      end
+
+      get "/heartbeat" do
+        JSON.dump({:ok => true})
+      end
+
+      get "/resources/:resource_id/billable_events" do
+        JSON.dump(
+          BillableEvent.filter(:resource_id => params[:resource_id], :provider_id => params[:provider_id]).all.map(&:public_values)
+        )
       end
 
       put "/resources/:resource_id/billable_events/:event_id" do
-        LogJam.setup_logger(Kernel, :puts)
-        LogJam.priorities(:provider, :event)
-
-        authenticate_provider
-
         event = BillableEvent.find_or_instantiate_by_provider_and_event(params[:provider_id], params[:event_id])
         event.set_all(params)
         http_status, http_resp = EventHttpHelper.process!(event)
 
-        content_type :json
         status(http_status)
         body(http_resp)
       end

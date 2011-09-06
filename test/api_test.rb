@@ -16,6 +16,27 @@ class ApiTest < Shushu::Test
     assert_equal 200, last_response.status
   end
 
+  def test_get_events
+    provider = Shushu::Provider.create(:token => "abc123")
+    authorize provider.id, provider.token
+
+    put_body = {
+      "qty"          => 1,
+      "rate_code"    => 'SG001',
+      "reality_from" => '2011-01-01 00:00:00 -0800',
+      "reality_to"   => nil
+    }
+    put "/resources/app123@heroku.com/billable_events/1", put_body
+
+    get_body = put_body.merge({
+      "provider_id" => provider.id,
+      "resource_id" => "app123@heroku.com",
+      "event_id"    => "1"
+    })
+    get "/resources/app123@heroku.com/billable_events"
+    assert_equal get_body, JSON.parse(last_response.body).first
+  end
+
   def test_open_event
     put_body = {
       :qty          => 1,
