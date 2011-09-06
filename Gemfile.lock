@@ -6,7 +6,6 @@ GEM
     columnize (0.3.4)
     daemons (1.1.4)
     eventmachine (0.12.10)
-    json (1.5.3)
     linecache19 (0.5.12)
       ruby_core_source (>= 0.1.4)
     log_jam (0.0.2)
@@ -40,7 +39,6 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  json
   log_jam
   pg
   rack-test
