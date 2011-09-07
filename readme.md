@@ -1,5 +1,8 @@
 # 収集
 
+**Hacking on Shushu**
+https://github.com/heroku/shushu/blob/master/setup.md
+
 ## Purpose
 
 Collect Billable Events.
