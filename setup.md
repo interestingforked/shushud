@@ -8,7 +8,10 @@ Shushu is a heroku application. Components include:
 ## Running Locally
 
 ```bash
+$ createdb shushu
+$ export DATABASE_URL='postgres://username:password@localhost/shushu'
 $ bundle
+$ bundle exec sequel -m migrations/ $DATABASE_URL
 $ foreman start
 $ curl -I http://localhost:3000/heartbeat
 HTTP/1.1 200 OK
