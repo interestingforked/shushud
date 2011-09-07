@@ -1,6 +1,7 @@
 # 収集
 
-**Hacking on Shushu**
+## Setup
+
 https://github.com/heroku/shushu/blob/master/setup.md
 
 ## Purpose
