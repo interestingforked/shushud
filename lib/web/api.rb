@@ -2,9 +2,7 @@ module Shushu
   module Web
     class Api < Sinatra::Application
 
-      helpers do
-        include Web::Authentication
-      end
+      helpers { include Web::Authentication }
 
       before do
         authenticate_provider
@@ -25,6 +23,7 @@ module Shushu
       put "/resources/:resource_id/billable_events/:event_id" do
         event = BillableEvent.find_or_instantiate_by_provider_and_event(params[:provider_id], params[:event_id])
         event.set_all(params)
+
         http_status, http_resp = EventHttpHelper.process!(event)
 
         status(http_status)

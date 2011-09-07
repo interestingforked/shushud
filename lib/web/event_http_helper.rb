@@ -18,8 +18,10 @@ module Shushu
           else
             log("new event is NOT valid")
             if event.late_submission?
+              log("new event is late in submission")
               [412, "You are too late in reporting this event. #=> (created_at - Time.now).abs > 7.hours"]
             elsif event.past_cutoff?
+              log("new event is past cutoff")
               [412, "Event submitted past cut-off time."]
             end
           end
@@ -28,10 +30,13 @@ module Shushu
           if event.valid?
             log("existing event is valid")
             if event.only_modifying_reality_to? and event.save
+              log("existing event ended")
               [200, "Event ended."]
             elsif event.save
+              log("existing event saved")
               [200, "Event has already been created."]
             else
+              log("existing event not saved errors=#{event.errors.to_s}")
               [500, "Event was not created!"]
             end
           else
