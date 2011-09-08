@@ -10,10 +10,13 @@ Shushu is a heroku application. Components include:
 ```bash
 $ createdb shushu
 $ export DATABASE_URL='postgres://username:password@localhost/shushu'
+$ export RACK_ENV='production'
 $ bundle
 $ bundle exec sequel -m migrations/ $DATABASE_URL
-$ foreman start
-$ curl -I http://localhost:3000/heartbeat
+$ bundle exec bin/console
+irb: Provider.create(:name => "shushutest", :password => "pass")
+$ foreman start web
+$ curl -I http://1:pass@localhost:3000/heartbeat
 HTTP/1.1 200 OK
 Content-Type: text/html;charset=utf-8
 Content-Length: 11
@@ -23,7 +26,7 @@ Server: thin 1.2.11 codename Bat-Shit Crazy
 ## PUTing an event
 
 ```bash
-$ curl -X PUT http://1:shushu@shushu.herokuapp.com/resources/app123/events/1 -d "reality_from=2011-01-01 00:00:00&qty=1&rate_code=SG001"
+$ curl -X PUT http://1:pass@localhost:$PORT/resources/app123/billable_events/1 -d "reality_from=2011-01-01 00:00:00&qty=1&rate_code=SG001"
 
 ```
 
