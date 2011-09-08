@@ -124,7 +124,11 @@ There may be time when we have to migrate a schema or change implementation of A
 ```
 ## Authentication
 
-HTTPS Basic Authentication.
+HTTPS Basic Authentication. Each provier will be issued an ID and a token. 
+
+```bash
+$ curl https://ID:TOKEN@shushu.heroku.com/whatever...
+```
 
 ## Notes
 
