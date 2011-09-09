@@ -32,7 +32,11 @@ Valid times are calculated with respect to US/Pacific.
 
 **Rate codes**
 
-Each event submitted by a provider will require a rate_code. This code represents the provider's agreement with add-ons. The code will have an associated description and rate. For example, Sendgrid may have the code `SG001` and this code represents email overages and has a rate of $0.05. If a customer sends an additional 100 emails in a period, Sendgrid may POST an event with `{'qty': 100, 'rate_code': 'SG001', ...}`
+Each event submitted by a provider will require a rate_code. This code represents the provider's 
+agreement with add-ons. The code will have an associated description and rate. 
+For example, Sendgrid may have the code `SG001` and this code represents email overages 
+and has a rate of $0.05. If a customer sends an additional 100 emails in a period, 
+Sendgrid may PUT an event with `{'qty': 100, 'rate_code': 'SG001', ...}`
 
 ## API Set
 
@@ -120,7 +124,11 @@ There may be time when we have to migrate a schema or change implementation of A
 ```
 ## Authentication
 
-HTTPS Basic Authentication.
+HTTPS Basic Authentication. Each provier will be issued an ID and a token. 
+
+```bash
+$ curl https://ID:TOKEN@shushu.heroku.com/whatever...
+```
 
 ## Notes
 
