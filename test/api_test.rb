@@ -154,6 +154,7 @@ class ApiTest < Shushu::Test
     put "/resources/app123@heroku.com/billable_events/1", {:to => '2011-02-01 00:00:00 -0800'}
 
     assert_equal 200, last_response.status
+    assert_equal '2011-01-01 00:00:00 -0800', JSON.parse(last_response.body)["from"]
     assert_equal '2011-02-01 00:00:00 -0800', JSON.parse(last_response.body)["to"]
   end
 
