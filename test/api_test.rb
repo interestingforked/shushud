@@ -2,34 +2,39 @@ require File.expand_path('../test_helper', __FILE__)
 
 class ApiTest < Shushu::Test
 
+  def setup
+    super
+    @provider = Shushu::Provider.create(:token => "abc123")
+  end
+
+  def setup_auth
+    authorize @provider.id, @provider.token
+  end
+
   def test_heartbeat_with_bad_token
-    provider = Shushu::Provider.create(:token => "abc123")
-    authorize provider.id, (provider.token + "bad token")
     get "/heartbeat"
     assert_equal 401, last_response.status
   end
 
   def test_heartbeat
-    provider = Shushu::Provider.create(:token => "abc123")
-    authorize provider.id, provider.token
+    setup_auth
     get "/heartbeat"
     assert_equal 200, last_response.status
   end
 
   def test_get_events
-    provider = Shushu::Provider.create(:token => "abc123")
-    authorize provider.id, provider.token
+    setup_auth
 
     put_body = {
-      "qty"          => 1,
-      "rate_code"    => 'SG001',
-      "reality_from" => '2011-01-01 00:00:00 -0800',
-      "reality_to"   => nil
+      "qty"       => 1,
+      "rate_code" => 'SG001',
+      "from"      => '2011-01-01 00:00:00 -0800',
+      "to"        => nil
     }
     put "/resources/app123@heroku.com/billable_events/1", put_body
 
     get_body = put_body.merge({
-      "provider_id" => provider.id,
+      "provider_id" => @provider.id,
       "resource_id" => "app123@heroku.com",
       "event_id"    => "1"
     })
@@ -38,73 +43,117 @@ class ApiTest < Shushu::Test
   end
 
   def test_open_event
+    setup_auth
     put_body = {
-      :qty          => 1,
-      :rate_code    => 'SG001',
-      :reality_from => '2011-01-01 00:00:00 -0800',
-      :reality_to   => nil
+      :qty        => 1,
+      :rate_code  => 'SG001',
+      :from       => '2011-01-01 00:00:00 -0800',
+      :to         => nil
     }
-
-    provider = Shushu::Provider.create(:token => "abc123")
-    authorize provider.id, provider.token
 
     put "/resources/app123@heroku.com/billable_events/1", put_body
     assert_equal 201, last_response.status
   end
 
   def test_open_event_on_second_call
+    setup_auth
     put_body = {
-      :qty          => 1,
-      :rate_code    => 'SG001',
-      :reality_from => '2011-01-01 00:00:00 -0800',
-      :reality_to   => nil
+      :qty        => 1,
+      :rate_code  => 'SG001',
+      :from       => '2011-01-01 00:00:00 -0800',
+      :to         => nil
     }
-
-    provider = Shushu::Provider.create(:token => "abc123")
-    authorize provider.id, provider.token
 
     put "/resources/app123@heroku.com/billable_events/1", put_body
     assert_equal 201, last_response.status
 
     put "/resources/app123@heroku.com/billable_events/1", put_body
     assert_equal 200, last_response.status
+
   end
 
-  def test_event_on_second_call_and_change_qty
+  def test_open_event_on_third_call
+    setup_auth
     put_body = {
-      :qty          => 1,
-      :rate_code    => 'SG001',
-      :reality_from => '2011-01-01 00:00:00 -0800',
-      :reality_to   => nil
+      :qty        => 1,
+      :rate_code  => 'SG001',
+      :from       => '2011-01-01 00:00:00 -0800',
+      :to         => nil
     }
+    put "/resources/app123@heroku.com/billable_events/1", put_body
+    assert_equal 201, last_response.status
+    put "/resources/app123@heroku.com/billable_events/1", put_body
+    put "/resources/app123@heroku.com/billable_events/1", put_body
+    assert_equal 200, last_response.status
+  end
 
-    provider = Shushu::Provider.create(:token => "abc123")
-    authorize provider.id, provider.token
+  def test_open_event_on_second_call_and_change_qty
+    setup_auth
+    put_body = {
+      :qty        => 1,
+      :rate_code  => 'SG001',
+      :from       => '2011-01-01 00:00:00 -0800',
+      :to         => nil
+    }
 
     put "/resources/app123@heroku.com/billable_events/1", put_body
     put "/resources/app123@heroku.com/billable_events/1", put_body.merge(:qty => 2)
     assert_equal 409, last_response.status
   end
 
-  def test_close_event
-    open = {
-      :qty          => 1,
-      :rate_code    => 'SG001',
-      :reality_from => '2011-01-01 00:00:00 -0800',
-      :reality_to   => nil
+  def test_open_event_on_second_call_and_change_from
+    setup_auth
+    put_body = {
+      :qty        => 1,
+      :rate_code  => 'SG001',
+      :from       => '2011-01-01 00:00:00 -0800',
+      :to         => nil
     }
 
-    provider = Shushu::Provider.create(:token => "abc123")
-    authorize provider.id, provider.token
+    put "/resources/app123@heroku.com/billable_events/1", put_body
+    put "/resources/app123@heroku.com/billable_events/1", put_body.merge(:from => '2011-01-10 00:00:00 -0800')
+    assert_equal 409, last_response.status
+  end
 
-    put "/resources/app123@heroku.com/billable_events/1", open
+  def test_open_event_on_second_call_and_change_rate_code
+    setup_auth
+    put_body = {
+      :qty        => 1,
+      :rate_code  => 'SG001',
+      :from       => '2011-01-01 00:00:00 -0800',
+      :to         => nil
+    }
+
+    put "/resources/app123@heroku.com/billable_events/1", put_body
+    put "/resources/app123@heroku.com/billable_events/1", put_body.merge(:rate_code => 'RT01')
+    assert_equal 409, last_response.status
+  end
+
+  def test_open_event_including_to
+    setup_auth
+    put_body = {
+      :qty        => 1,
+      :rate_code  => 'SG001',
+      :from       => '2011-01-01 00:00:00 -0800',
+      :to         => '2011-01-02 00:00:00 -0800'
+    }
+    put "/resources/app123@heroku.com/billable_events/1", put_body
     assert_equal 201, last_response.status
+  end
 
-    close = {
-      :reality_to => '2011-02-01 00:00:00 -0800'
+  def test_close_event
+    setup_auth
+    open = {
+      :qty        => 1,
+      :rate_code  => 'SG001',
+      :from       => '2011-01-01 00:00:00 -0800',
+      :to         => nil
     }
-    put "/resources/app123@heroku.com/billable_events/1", close
+    put "/resources/app123@heroku.com/billable_events/1", open
+    put "/resources/app123@heroku.com/billable_events/1", {:to => '2011-02-01 00:00:00 -0800'}
+
     assert_equal 200, last_response.status
+    assert_equal '2011-02-01 00:00:00 -0800', JSON.parse(last_response.body)["to"]
   end
 
 end

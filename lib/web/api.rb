@@ -17,17 +17,22 @@ module Shushu
 
       get "/resources/:resource_id/billable_events" do
         cond = {:resource_id => params[:resource_id], :provider_id => params[:provider_id]}
-        JSON.dump(BillableEvent.filter(cond).all.map(&:public_values))
+        events = BillableEvent.filter(cond).all.map(&:api_values)
+        JSON.dump(events)
       end
 
       put "/resources/:resource_id/billable_events/:event_id" do
-        event = BillableEvent.find_or_instantiate_by_provider_and_event(params[:provider_id], params[:event_id])
-        event.set_all(params)
-
-        http_status, http_resp = EventHttpHelper.process!(event)
-
+        http_status, event = EventBuilder.handle_incomming(
+          :provider_id    => params[:provider_id],
+          :event_id       => params[:event_id],
+          :resource_id    => params[:resource_id],
+          :rate_code      => params[:rate_code],
+          :qty            => params[:qty],
+          :reality_from   => params[:from],
+          :reality_to     => params[:to]
+        )
         status(http_status)
-        body(http_resp)
+        body(JSON.dump(event.api_values))
       end
 
       delete "/resources/:resource_id/billable_events/:event_id" do

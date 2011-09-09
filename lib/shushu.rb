@@ -34,4 +34,5 @@ require './lib/web/event_http_helper'
 require './lib/web/api'
 
 require './lib/shushu/billable_event'
+require './lib/shushu/event_builder'
 require './lib/shushu/provider'

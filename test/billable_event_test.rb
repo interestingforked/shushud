@@ -6,7 +6,7 @@ class BillableEventTest < Shushu::Test
     event = Shushu::BillableEvent.create(:reality_from => Time.mktime(2011,1), :qty => 1, :rate_code => "SG001")
     event.set(:qty => 2, :reality_to => Time.now)
     assert(!event.valid?)
-    assert_equal({:qty => ["no longer able to modify"]}, event.errors)
+    assert_equal({:qty => [BillableEvent::ILLEGAL_CHANGE]}, event.errors)
   end
 
   def test_detect_incorrect_data_change_when_modify_qty
