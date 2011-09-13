@@ -22,9 +22,13 @@ $ curl -X POST https://provider_id:provider_token@shushu.heroku.com/rate_codes -
 This endpoint provides general information about the rate code.
 
 **slug**: <String> ID that provider & Shushu know about
+
 **status**: <String> State of the rate code. Possible values: active, inactive.
+
 **rate**: <Integer> The number of pennies this event should costs per hour.
+
 **description**: <String> How the event will be described in the Invoice.
+
 **billable_events**: <Integer> How many events are keyed to this rate_code.
 
 
