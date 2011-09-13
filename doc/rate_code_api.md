@@ -15,6 +15,13 @@ Depending on your provider credentials, you may have to wait for rate_code appro
 
 ```bash
 $ curl -X POST https://provider_id:provider_token@shushu.heroku.com/rate_codes -d rate=5 -d description=dyno-hour
+{
+  'slug': 'RT01',
+  'status': 'active',
+  'rate': '5',
+  'description': 'dyno-hour'
+  'billable_events': '0'
+}
 ```
 
 ### View Rate Code (GET)
@@ -34,6 +41,7 @@ This endpoint provides general information about the rate code.
 
 ```bash
 $ curl https://provider_id:provider_token@shushu.heroku.com/rate_codes/:rate_code_slug
+
 {
   'slug': 'RT01',
   'status': 'active',
