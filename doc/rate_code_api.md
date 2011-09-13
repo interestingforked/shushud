@@ -37,7 +37,7 @@ particularly useful for the add-ons team. This features requires a special bit o
 
 ```bash
 $ curl -X POST https://provider_id:provider_token@shushu.heroku.com/providers/:target_provier_id/rate_codes \b
-       	       -d rate=5 \
+               -d rate=5 \
 	       -d description=dyno-hour \
 ```
 
