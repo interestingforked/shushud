@@ -4,7 +4,8 @@
 
 The rate code provides an abstraction between events and costs associated with events.
 Rate codes also reduce the burdon of the Shushu client in that the client does not
-have to repeat rate codes when sending events.
+have to repeat rate codes when sending events. Finally, rate codes prevent providers 
+from submitting events willy-nilly.
 
 ## API
 
