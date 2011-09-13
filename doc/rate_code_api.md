@@ -8,6 +8,14 @@ have to repeat rate codes when sending events.
 
 ## API
 
+### Authentication
+
+**HTTP Basic**
+
+This API uses authentication similar to the rest of Shushu's API: provider_id:provider_token. 
+However, there is authorization on  this API. A special bit is required to write rate codes.
+This mechanism will allow the Add-ons Team to properly filter who is creating rate_codes.
+
 ### Create Rate Code (POST)
 
 Before you can create billable_events, you must create a rate code for the event. 
@@ -22,6 +30,15 @@ $ curl -X POST https://provider_id:provider_token@shushu.heroku.com/rate_codes -
   'description': 'dyno-hour'
   'billable_events': '0'
 }
+```
+
+It is possible for a provider to create a rate code on behalf of another provider. This is 
+particularly useful for the add-ons team. This features requires a special bit on the provider.
+
+```bash
+$ curl -X POST https://provider_id:provider_token@shushu.heroku.com/providers/:target_provier_id/rate_codes \b
+       	       -d rate=5 \
+	       -d description=dyno-hour \
 ```
 
 ### View Rate Code (GET)

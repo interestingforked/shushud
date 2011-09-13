@@ -63,7 +63,7 @@ PUT /resources/app123@heroku.com/billable_events/event_id
 412 - You are too late in reporting this event. #=> (created_at - Time.now).abs > 7.hours
 412 - Event submitted past cut-off time.
 422 - Rate code was not found.
-422 - Rate code is inactive
+422 - Rate code is inactive.
 422 - Created time occurred after resource de-provision.
 ```
 ### Close Event
