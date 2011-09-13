@@ -11,17 +11,17 @@ module Shushu
         content_type :json
       end
 
-      get "/heartbeat" do
-        JSON.dump({:ok => true})
+      get "/:message/heartbeat" do
+        JSON.dump({:ok => true, :message => params[:message]})
       end
 
-      get "/resources/:resource_id/billable_events" do
+      get "/:resource_id/billable_events" do
         cond = {:resource_id => params[:resource_id], :provider_id => params[:provider_id]}
         events = BillableEvent.filter(cond).all.map(&:api_values)
         JSON.dump(events)
       end
 
-      put "/resources/:resource_id/billable_events/:event_id" do
+      put "/:resource_id/billable_events/:event_id" do
         http_status, event = EventBuilder.handle_incomming(
           :provider_id    => params[:provider_id],
           :event_id       => params[:event_id],
@@ -35,7 +35,7 @@ module Shushu
         body(JSON.dump(event.api_values))
       end
 
-      delete "/resources/:resource_id/billable_events/:event_id" do
+      delete "/:resource_id/billable_events/:event_id" do
       end
 
     end

@@ -1,3 +1,7 @@
 require './lib/shushu'
 
-run Shushu::Web::Api
+shushu = Rack::Builder.new do
+  map("/resources") { run Shushu::Web::Api }
+end
+
+Rack::Handler::Thin.run(shushu)
