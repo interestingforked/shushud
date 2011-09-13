@@ -36,9 +36,9 @@ It is possible for a provider to create a rate code on behalf of another provide
 particularly useful for the add-ons team. This features requires a special bit on the provider.
 
 ```bash
-$ curl -X POST https://provider_id:provider_token@shushu.heroku.com/providers/:target_provier_id/rate_codes \b
+$ curl -X POST https://provider_id:provider_token@shushu.heroku.com/providers/:target_provier_id/rate_codes \
                -d rate=5 \
-               -d description=dyno-hour \
+               -d description=dyno-hour
 ```
 
 ### View Rate Code (GET)
