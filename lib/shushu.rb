@@ -31,6 +31,7 @@ end
 
 require './lib/web/authentication'
 require './lib/web/api'
+require './lib/web/provider_api'
 
 require './lib/shushu/billable_event'
 require './lib/shushu/event_builder'
