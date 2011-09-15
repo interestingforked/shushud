@@ -23,6 +23,15 @@ Sequel.migration do
       DateTime :reality_from
       DateTime :reality_to
     end
+    
+    create_table(:rate_codes) do
+      primary_key :id
+      foreign_key :provider_id, :providers
+
+      String :slug
+      String :description
+      Integer :rate
+    end
 
   end
 end
