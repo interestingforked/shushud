@@ -4,7 +4,7 @@ module Shushu
     helpers { include Web::Authentication }
 
     post "/" do
-      puts "create rate code rate=#{params[:rate]} description=#{params[:description]}"
+      log("create rate code rate=#{params[:rate]} description=#{params[:description]}")
       
       rate_code = RateCode.new(
         :provider_id => params[:provider_id],
@@ -13,9 +13,11 @@ module Shushu
       )
       
       if rate_code.save
+        log("rate_code=#{rate_code.id} created")
         status(201)
         body(JSON.dump(rate_code.api_values))
       else
+        log("rate_code failed_creation")
         status(422)
         body(JSON.dump("rate_code was not able to save."))
       end
@@ -27,6 +29,10 @@ module Shushu
 
     put "/:rate_code_slug" do
       puts "updated rate code with slug=#{params[:rate_code_slug]}"
+    end
+
+    def log(msg)
+      puts("api=provider_api provider=#{params[:provider_id]} #{msg}")
     end
     
   end
