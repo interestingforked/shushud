@@ -3,6 +3,11 @@ module Shushu
 
     helpers { include Web::Authentication }
 
+    before do
+      authenticate_provider
+      content_type :json
+    end
+
     post "/" do
       log("create rate code rate=#{params[:rate]} description=#{params[:description]}")
       

@@ -4,7 +4,7 @@ class ApiTest < Shushu::Test
 
   def setup
     super
-    @provider = Shushu::Provider.create(:token => "abc123")
+    @provider = build_provider(:token => "abc123")
   end
 
   def setup_auth
