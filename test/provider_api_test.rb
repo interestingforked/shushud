@@ -13,8 +13,24 @@ class ProviderApiTest < Shushu::Test
 
   def test_create_rate_code
     setup_auth
+    
     post "/rate_codes"
     assert_equal 201, last_response.status
+  end
+  
+  def test_find_rate_code_can_succeed
+    setup_auth
+
+    RateCode.create(:provider_id => @provider.id, :slug => "rt01", :rate => 5)
+    get "/rate_codes/rt01"
+    assert_equal 200, last_response.status
+  end
+
+  def test_find_rate_code_can_404
+    setup_auth
+
+    get"/rate_codes/not_A_rate_code"
+    assert_equal 404, last_response.status
   end
   
 end
