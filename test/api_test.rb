@@ -12,13 +12,13 @@ class ApiTest < Shushu::Test
   end
 
   def test_heartbeat_with_bad_token
-    get "/heartbeat"
+    get "/resources/heartbeat"
     assert_equal 401, last_response.status
   end
 
   def test_heartbeat
     setup_auth
-    get "/heartbeat"
+    get "/resources/heartbeat"
     assert_equal 200, last_response.status
   end
 
@@ -31,7 +31,7 @@ class ApiTest < Shushu::Test
       "from"      => '2011-01-01 00:00:00 -0800',
       "to"        => nil
     }
-    put "/resources/app123@heroku.com/billable_events/1", put_body
+    put "resources/app123@heroku.com/billable_events/1", put_body
 
     get_body = put_body.merge({
       "provider_id" => @provider.id,

@@ -35,7 +35,10 @@ class Shushu::Test < MiniTest::Unit::TestCase
   end
 
   def app
-    Web::Api
+    Rack::Builder.new do
+      map("/resources")  { run Shushu::Web::Api }
+      map("/rate_codes") { run Shushu::Web::ProviderApi }
+    end
   end
-
+  
 end

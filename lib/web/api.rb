@@ -11,7 +11,7 @@ module Shushu
         content_type :json
       end
 
-      get "/:message/heartbeat" do
+      get "/heartbeat" do
         JSON.dump({:ok => true, :message => params[:message]})
       end
 
