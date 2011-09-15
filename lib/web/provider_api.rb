@@ -1,6 +1,8 @@
 module Shushu
   class Web::ProviderApi < Sinatra::Application
 
+    helpers { include Web::Authentication }
+
     post "/" do
       puts "create rate code rate=#{params[:rate]} description=#{params[:description]}"
       
