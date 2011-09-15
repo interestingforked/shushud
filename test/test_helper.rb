@@ -15,6 +15,7 @@ class Shushu::Test < MiniTest::Unit::TestCase
   include Shushu
 
   def clean_tables
+    DB.run("DELETE FROM rate_codes CASCADE")
     DB.run("DELETE FROM billable_events CASCADE")
     DB.run("DELETE FROM providers CASCADE")
   end
