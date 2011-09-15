@@ -12,7 +12,7 @@ module Shushu
       end
 
       get "/heartbeat" do
-        JSON.dump({:ok => true, :message => params[:message]})
+        JSON.dump({:ok => true})
       end
 
       get "/:resource_id/billable_events" do
