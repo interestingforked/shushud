@@ -1,5 +1,5 @@
 module Shushu
-  class Web::ProviderApi < Sinatra::Application
+  class Web::RateCodeApi < Sinatra::Application
 
     helpers { include Web::Authentication }
 

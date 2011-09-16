@@ -1,6 +1,6 @@
 require File.expand_path('../test_helper', __FILE__)
 
-class ProviderApiTest < Shushu::Test
+class RateCodeApiTest < Shushu::Test
 
   def setup
     super
