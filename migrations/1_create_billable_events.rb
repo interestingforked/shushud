@@ -3,6 +3,7 @@ Sequel.migration do
 
     create_table(:providers) do
       primary_key :id
+      Boolean :root, :default => false
       String :name
       String :token, :text => true
     end
