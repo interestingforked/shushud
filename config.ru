@@ -6,4 +6,4 @@ shushu = Rack::Builder.new do
   map("/providers")  { run Shushu::Web::ProviderApi }
 end
 
-Rack::Handler::Thin.run(shushu, :Port => $PORT)
+Rack::Handler::Thin.run(shushu, :Port => ENV["PORT"])
