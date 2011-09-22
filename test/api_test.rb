@@ -5,6 +5,7 @@ class ApiTest < Shushu::Test
   def setup
     super
     @provider = build_provider(:token => "abc123")
+    @rate_code = build_rate_code(:provider_id => @provider.id)
   end
 
   def setup_auth
@@ -27,7 +28,7 @@ class ApiTest < Shushu::Test
 
     put_body = {
       "qty"       => 1,
-      "rate_code" => 'SG001',
+      "rate_code" => @rate_code.slug,
       "from"      => '2011-01-01 00:00:00 -0800',
       "to"        => nil
     }
@@ -46,7 +47,7 @@ class ApiTest < Shushu::Test
     setup_auth
     put_body = {
       :qty        => 1,
-      :rate_code  => 'SG001',
+      :rate_code  => @rate_code.slug,
       :from       => '2011-01-01 00:00:00 -0800',
       :to         => nil
     }
@@ -60,7 +61,7 @@ class ApiTest < Shushu::Test
     setup_auth
     put_body = {
       :qty        => 1,
-      :rate_code  => 'SG001',
+      :rate_code  => @rate_code.slug,
       :from       => '2011-01-01 00:00:00 -0800',
       :to         => nil
     }
@@ -77,7 +78,7 @@ class ApiTest < Shushu::Test
     setup_auth
     put_body = {
       :qty        => 1,
-      :rate_code  => 'SG001',
+      :rate_code  => @rate_code.slug,
       :from       => '2011-01-01 00:00:00 -0800',
       :to         => nil
     }
@@ -92,7 +93,7 @@ class ApiTest < Shushu::Test
     setup_auth
     put_body = {
       :qty        => 1,
-      :rate_code  => 'SG001',
+      :rate_code  => @rate_code.slug,
       :from       => '2011-01-01 00:00:00 -0800',
       :to         => nil
     }
@@ -106,7 +107,7 @@ class ApiTest < Shushu::Test
     setup_auth
     put_body = {
       :qty        => 1,
-      :rate_code  => 'SG001',
+      :rate_code  => @rate_code.slug,
       :from       => '2011-01-01 00:00:00 -0800',
       :to         => nil
     }
@@ -120,13 +121,14 @@ class ApiTest < Shushu::Test
     setup_auth
     put_body = {
       :qty        => 1,
-      :rate_code  => 'SG001',
+      :rate_code  => @rate_code.slug,
       :from       => '2011-01-01 00:00:00 -0800',
       :to         => nil
     }
 
     put "/resources/app123@heroku.com/billable_events/1", put_body
-    put "/resources/app123@heroku.com/billable_events/1", put_body.merge(:rate_code => 'RT01')
+    some_other_rate_code = build_rate_code(:provider_id => @provider.id, :slug=>'RTXXX')
+    put "/resources/app123@heroku.com/billable_events/1", put_body.merge(:rate_code => some_other_rate_code.slug)
     assert_equal 409, last_response.status
   end
 
@@ -134,7 +136,7 @@ class ApiTest < Shushu::Test
     setup_auth
     put_body = {
       :qty        => 1,
-      :rate_code  => 'SG001',
+      :rate_code  => @rate_code.slug,
       :from       => '2011-01-01 00:00:00 -0800',
       :to         => '2011-01-02 00:00:00 -0800'
     }
@@ -146,7 +148,7 @@ class ApiTest < Shushu::Test
     setup_auth
     open = {
       :qty        => 1,
-      :rate_code  => 'SG001',
+      :rate_code  => @rate_code.slug,
       :from       => '2011-01-01 00:00:00 -0800',
       :to         => nil
     }

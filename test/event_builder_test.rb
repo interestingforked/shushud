@@ -5,6 +5,7 @@ class EventBuilderTest < Shushu::Test
   def setup
     super
     @provider = build_provider
+    @rate_code = build_rate_code(:provider_id => @provider.id)
   end
 
   def test_handle_incoming_when_open_new
@@ -12,7 +13,7 @@ class EventBuilderTest < Shushu::Test
       :provider_id    => @provider.id,
       :resource_id    => "app123",
       :qty            => 1,
-      :rate_code      => "RT01",
+      :rate_code      => @rate_code.slug,
       :reality_from   => Time.mktime(2011,1)
     }
 
@@ -30,7 +31,7 @@ class EventBuilderTest < Shushu::Test
       :event_id       => '123',
       :resource_id    => "app123",
       :qty            => 1,
-      :rate_code      => "RT01",
+      :rate_code      => @rate_code.slug,
       :reality_from   => Time.mktime(2011,1)
     }
     BillableEvent.create(args)
@@ -46,7 +47,7 @@ class EventBuilderTest < Shushu::Test
       :event_id       => '123',
       :resource_id    => "app123",
       :qty            => 1,
-      :rate_code      => "RT01",
+      :rate_code      => @rate_code.slug,
       :reality_from   => Time.mktime(2011,1)
     }
     BillableEvent.create(args)
@@ -61,7 +62,7 @@ class EventBuilderTest < Shushu::Test
       :event_id       => '123',
       :resource_id    => "app123",
       :qty            => 1,
-      :rate_code      => "RT01",
+      :rate_code      => @rate_code.slug,
       :reality_from   => Time.mktime(2011,1)
     }
     existing_event = BillableEvent.create(args)

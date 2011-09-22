@@ -27,6 +27,8 @@ module Shushu
       raise ArgumentError, "RACK_ENV must be production or test. RACK_ENV=#{ENV["RACK_ENV"]}"
     end
   )
+  NotifyChangeQueue = QC::Queue.new("notify_change_jobs")
+  
 end
 
 require './lib/web/authentication'

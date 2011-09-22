@@ -3,7 +3,32 @@ module Shushu
     extend self
 
     def handle_incomming(args)
-      open_or_close(args)
+      status_code, event = open_or_close(args)
+
+      log("finding rate_code=#{event.rate_code}")
+      rate_code = RateCode.filter(:slug => event[:rate_code]).first
+
+      if rate_code.nil?
+        log("could not find rate_code slug=#{event.rate_code}")
+        raise "error"
+      end
+
+      log("enqueue billable_unit_change")
+      NotifyChangeQueue.enqueue("BillableUnit.receive_change",
+        {
+          :event_id    => event[:id],
+          :from        => event[:from],
+          :to          => event[:to],
+          :resource_id => event[:resource_id],
+          :qty         => event[:qty],
+          :rate        => rate_code[:rate],
+          :resource    => rate_code[:resource],
+          :subresource => rate_code[:subresource]
+        }
+      )
+
+      log("incoming handled")
+      [status_code, event]
     end
 
     private
