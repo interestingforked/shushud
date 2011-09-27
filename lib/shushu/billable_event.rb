@@ -16,13 +16,13 @@ class BillableEvent < Sequel::Model
       :resource_id => self[:resource_id],
       :rate_code   => rate_code[:slug],
       :qty         => self[:qty],
-      :from        => self[:reality_from],
-      :to          => self[:reality_to]
+      :from        => self[:reality_from].to_s,
+      :to          => self[:reality_to].to_s
     }
   end
 
   def rate_code
-    Shushu::RateCode[self[:rate_code_id]]
+    RateCode[self[:rate_code_id]]
   end
 
   def public_values

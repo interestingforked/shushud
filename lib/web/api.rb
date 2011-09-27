@@ -14,14 +14,14 @@ class Api < Sinatra::Application
   end
 
   get "/:resource_id/billable_events" do
-    builder = EventBuilder.new(CoreRH)
+    builder = EventBuilder.new(ShushuBE)
     cond = {:resource_id => params[:resource_id], :provider_id => params[:provider_id]}
     events = builder.find(cond)
     JSON.dump(events.map(&:api_values))
   end
 
   put "/:resource_id/billable_events/:event_id" do
-    builder = EventBuilder.new(CoreRH)
+    builder = EventBuilder.new(ShushuBE)
 
     http_status, event = builder.handle_incomming(
       :provider_id    => params[:provider_id],

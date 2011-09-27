@@ -7,7 +7,6 @@ module CoreRH
       :conditions => ["app_id = ? and user_id = ?", conditions[:resource_id], conditions[:provider_id]]
     )
   end
-
   
   def find_open(provider_id, event_id)
     res = ResourceHistory.find(:all,

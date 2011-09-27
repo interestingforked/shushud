@@ -2,6 +2,10 @@ module ShushuBE
 
   extend self
   
+  def find(conditions)
+    BillableEvent.filter(:provider_id => conditions[:provider_id], :resource_id => conditions[:resource_id]).all
+  end
+  
   def find_open(provider_id, event_id)
     BillableEvent.filter(:provider_id => provider_id, :event_id => event_id).first
   end

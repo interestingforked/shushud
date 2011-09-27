@@ -51,7 +51,7 @@ class ResourceHistory < ActiveRecord::Base
     {
       :provider_id => user_id,
       :event_id    => upid,
-      :resource_id => app_id,
+      :resource_id => app_id.to_s,
       :rate_code   => rate_code_slug,
       :qty         => qty,
       :from        => reality_from.to_s,
