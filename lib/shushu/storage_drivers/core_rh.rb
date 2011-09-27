@@ -36,7 +36,7 @@ module CoreRH
   
   def open_on_rh_model(args)
     rh = ResourceHistory.legacy_open_new(
-      args[:resource_id],
+      args[:resource_id], #resource_id
       args[:provider_id], #user_id
       nil,                #res_id
       nil,                #resource
@@ -46,7 +46,7 @@ module CoreRH
       'month',            #rate_period
       nil,                #beta_status
       nil,                #notes
-      args[:event_id]
+      args[:event_id]     #upid
     )
     rh[:created_at] = args[:reality_from]
     rh.save!
@@ -62,4 +62,3 @@ module CoreRH
   end
 
 end
-
