@@ -1,6 +1,6 @@
 require File.expand_path('../test_helper', __FILE__)
 
-class AuthenticationTest < Shushu::Test
+class AuthenticationTest < ShushuTest
 
   class TestAuth
     attr_reader :params, :env
@@ -20,9 +20,9 @@ class AuthenticationTest < Shushu::Test
   def setup
     super
     @auth = TestAuth.new
-    @auth.send(:extend, Shushu::Web::Authentication)
+    @auth.send(:extend, Authentication)
 
-    @provider = Shushu::Provider.create(:token => "abc123")
+    @provider = Provider.create(:token => "abc123")
   end
 
   def test_authenticate_sets_params

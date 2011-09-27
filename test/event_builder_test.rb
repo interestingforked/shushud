@@ -1,13 +1,26 @@
 require File.expand_path('../test_helper', __FILE__)
 
-class EventBuilderTest < Shushu::Test
+class EventBuilderTest < ShushuTest
 
   def setup
     super
     @provider = build_provider
     @rate_code = build_rate_code(:provider_id => @provider.id)
+    @event_builder = EventBuilder.new(ShushuBE)
   end
 
+  def test_handle_incomming_when_missing_rate_code
+    args = {
+      :provider_id    => @provider.id,
+      :resource_id    => "app123",
+      :qty            => 1,
+      :rate_code      => "invalid-slug",
+      :reality_from   => Time.mktime(2011,1)
+    }
+
+    assert_raises(RuntimeError) {@event_builder.handle_incomming(args)} 
+  end
+  
   def test_handle_incoming_when_open_new
     args = {
       :provider_id    => @provider.id,
@@ -19,7 +32,7 @@ class EventBuilderTest < Shushu::Test
 
     assert_equal 0, BillableEvent.count
 
-    _, event = EventBuilder.handle_incomming(args)
+    _, event = @event_builder.handle_incomming(args)
 
     assert_equal 1, BillableEvent.count
     assert event.errors.length.zero?
@@ -31,11 +44,11 @@ class EventBuilderTest < Shushu::Test
       :event_id       => '123',
       :resource_id    => "app123",
       :qty            => 1,
-      :rate_code      => @rate_code.slug,
+      :rate_code_id   => @rate_code[:id],
       :reality_from   => Time.mktime(2011,1)
     }
     BillableEvent.create(args)
-    _, event = EventBuilder.handle_incomming(:provider_id => @provider.id, :event_id => '123', :reality_to => Time.mktime(2011,1,15))
+    _, event = @event_builder.handle_incomming(:provider_id => @provider.id, :rate_code => @rate_code.slug, :event_id => '123', :reality_to => Time.mktime(2011,1,15))
     assert event.errors.length.zero?
     assert_equal Time.mktime(2011,1,15), event.reality_to
     assert_nil event.system_to
@@ -47,12 +60,12 @@ class EventBuilderTest < Shushu::Test
       :event_id       => '123',
       :resource_id    => "app123",
       :qty            => 1,
-      :rate_code      => @rate_code.slug,
+      :rate_code_id   => @rate_code[:id],
       :reality_from   => Time.mktime(2011,1)
     }
     BillableEvent.create(args)
     assert_equal 1, BillableEvent.count
-    _, event = EventBuilder.handle_incomming(:provider_id => @provider.id, :event_id => '123', :reality_to => Time.mktime(2011,1,15))
+    _, event = @event_builder.handle_incomming(:provider_id => @provider.id,:rate_code => @rate_code.slug, :event_id => '123', :reality_to => Time.mktime(2011,1,15))
     assert_equal 2, BillableEvent.count
   end
 
@@ -62,11 +75,18 @@ class EventBuilderTest < Shushu::Test
       :event_id       => '123',
       :resource_id    => "app123",
       :qty            => 1,
-      :rate_code      => @rate_code.slug,
+      :rate_code_id   => @rate_code[:id],
       :reality_from   => Time.mktime(2011,1)
     }
     existing_event = BillableEvent.create(args)
-    _, event = EventBuilder.handle_incomming(:provider_id => @provider.id, :event_id => '123', :reality_to => Time.mktime(2011,1,15))
+    
+    _, event = @event_builder.handle_incomming(
+      :provider_id => @provider.id,
+      :rate_code => @rate_code.slug,
+      :event_id => '123',
+      :reality_to => Time.mktime(2011,1,15)
+    )
+    
     assert ! existing_event.reload.system_to.nil?
   end
 

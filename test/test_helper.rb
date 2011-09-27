@@ -10,14 +10,14 @@ Bundler.require(:default, :test)
 require 'minitest/autorun'
 require 'shushu'
 
-class Shushu::Test < MiniTest::Unit::TestCase
+class ShushuTest < MiniTest::Unit::TestCase
   include Rack::Test::Methods
-  include Shushu
 
   def clean_tables
-    DB.run("DELETE FROM rate_codes CASCADE")
-    DB.run("DELETE FROM billable_events CASCADE")
-    DB.run("DELETE FROM providers CASCADE")
+    Shushu::DB.run("DELETE FROM billable_events CASCADE")    
+    Shushu::DB.run("DELETE FROM rate_codes CASCADE")
+    Shushu::DB.run("DELETE FROM providers CASCADE")
+    ResourceHistory.delete_all
   end
 
   def setup
@@ -45,9 +45,9 @@ class Shushu::Test < MiniTest::Unit::TestCase
 
   def app
     Rack::Builder.new do
-      map("/resources")  { run Shushu::Web::Api }
-      map("/rate_codes") { run Shushu::Web::RateCodeApi }
-      map("/providers")  { run Shushu::Web::ProviderApi }
+      map("/resources")  { run Api }
+      map("/rate_codes") { run RateCodeApi }
+      map("/providers")  { run ProviderApi }
     end
   end
   

@@ -16,6 +16,8 @@ end
 module Shushu
   VERSION = 0
 
+  class ShushuError < ::RuntimeError; end
+
   DB = (
     case ENV["RACK_ENV"].to_s
     when "production"
@@ -29,6 +31,15 @@ module Shushu
   )
   NotifyChangeQueue = QC::Queue.new("notify_change_jobs")
   
+  ActiveRecord::Base.establish_connection(
+  :adapter  => "postgresql",
+  :host     => "localhost",
+  :username => "ryandotsmith",
+  :password => "",
+  :database => "core"
+)
+
+  
 end
 
 require './lib/web/authentication'
@@ -37,6 +48,11 @@ require './lib/web/rate_code_api'
 require './lib/web/provider_api'
 
 require './lib/shushu/billable_event'
+require './lib/shushu/resource_history'
 require './lib/shushu/event_builder'
+require './lib/shushu/event_validator'
 require './lib/shushu/provider'
 require './lib/shushu/rate_code'
+
+require './lib/shushu/storage_drivers/core_rh'
+require './lib/shushu/storage_drivers/shushu_be'

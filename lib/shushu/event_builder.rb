@@ -1,99 +1,44 @@
-module Shushu
-  module EventBuilder
-    extend self
+class EventBuilder
+  # Responsibility:
+  # => open / close events, notify open / close, return http status code
 
-    def handle_incomming(args)
-      status_code, event = open_or_close(args)
+  # Abstract:
+  # The EventBuilder provides the handle_incomming(args) interface to
+  # some sort of public api, be it http or otherwise. It should add an
+  # abstraction between the API and to storage layer.
+  #
+  # HTTP -> API -> EventBuilder -> (billable_events_table | legacy_rh_table | message_bus | etc...)
+  #
 
-      log("finding rate_code=#{event.rate_code}")
-      rate_code = RateCode.filter(:slug => event[:rate_code]).first
-
-      if rate_code.nil?
-        log("could not find rate_code slug=#{event.rate_code}")
-        raise "error"
-      end
-
-      log("enqueue billable_unit_change")
-      NotifyChangeQueue.enqueue("BillableUnit.receive_change",
-        {
-          :event_id    => event[:id],
-          :from        => event[:from],
-          :to          => event[:to],
-          :resource_id => event[:resource_id],
-          :qty         => event[:qty],
-          :rate        => rate_code[:rate],
-          :resource    => rate_code[:resource],
-          :subresource => rate_code[:subresource]
-        }
-      )
-
-      log("incoming handled")
-      [status_code, event]
-    end
-
-    private
-
-    # Returns a new event or the existing event.
-    def open_or_close(args)
-      log("handle incomming args=#{args}")
-      if existing = find_open(args[:provider_id], args[:event_id])
-        eid = existing[:id]
-        log("found existing billable_event=#{eid}")
-        if [:qty, :reality_from, :rate_code].any? {|field| args[field] && (existing[field].to_s != args[field].to_s) }
-          log("attempting to change field")
-          [409, existing]
-        elsif close_dt = args[:reality_to] #wants to close event
-          log("closing event=#{eid}")
-          event = close(eid, close_dt)
-          [200, event]
-        else
-          log("existing is identical to new")
-          [200, existing]
-        end
-      else
-        log("open billable_event args=#{args}")
-        event = open(args)
-        [201, event]
-      end
-    end
-
-    def close(existing_event_id, close_date_time)
-      now = Time.now
-
-      existing_event = BillableEvent[existing_event_id]
-      existing_event.update_only({:system_to => now}, [:system_to])
-      log("expired event=#{existing_event_id} system_to=#{now}")
-
-      new_event = BillableEvent.new(existing_event.public_values)
-      new_event.set(:system_from => now)
-      log("set new_event system_from=#{now}")
-
-      new_event.set(:reality_to => close_date_time)
-      log("set new_event reality_to=#{close_date_time}")
-
-      new_event.save(:raise_on_failure => true)
-      log("save new_event event=#{new_event.id}")
-
-      new_event
-    end
-
-    def find_open(provider_id, event_id)
-      BillableEvent.filter(:provider_id => provider_id, :event_id => event_id).first
-    end
-
-    def open(args)
-      BillableEvent.create(
-        :event_id       => args[:event_id],
-        :provider_id    => args[:provider_id],
-        :resource_id    => args[:resource_id],
-        :rate_code      => args[:rate_code],
-        :qty            => args[:qty],
-        :reality_from   => args[:reality_from],
-        :reality_to     => args[:reality_to],
-        :system_from    => Time.now,
-        :system_to      => nil
-      )
-    end
-
+  def initialize(handler)
+    @handler = handler
   end
+  
+  def find(conditions)
+    @handler.find(conditions)
+  end
+  
+  def handle_incomming(args)
+    log("handle incomming args=#{args}")
+    if existing = @handler.find_open(args[:provider_id], args[:event_id])
+      eid = existing[:id]
+      log("found existing billable_event=#{eid}")
+      if EventValidator.invalid?(existing, args)
+        log("attempting to change field")
+        [409, existing]
+      elsif close_dt = args[:reality_to] #wants to close event
+        log("closing event=#{eid}")
+        event = @handler.close(eid, close_dt)
+        [200, event]
+      else
+        log("existing is identical to new")
+        [200, existing]
+      end
+    else
+      log("open billable_event args=#{args}")
+      event = @handler.open(args)
+      [201, event]
+    end
+  end
+
 end

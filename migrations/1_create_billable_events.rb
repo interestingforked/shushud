@@ -8,10 +8,19 @@ Sequel.migration do
       String :token, :text => true
     end
 
+    create_table(:rate_codes) do
+      primary_key :id
+      foreign_key :provider_id, :providers
+
+      String :slug
+      String :description
+      Integer :rate
+    end
 
     create_table(:billable_events) do
       primary_key :id
       foreign_key :provider_id, :providers
+      foreign_key :rate_code_id, :rate_codes
 
       Integer :qty
       String :event_id
@@ -23,15 +32,6 @@ Sequel.migration do
 
       DateTime :reality_from
       DateTime :reality_to
-    end
-    
-    create_table(:rate_codes) do
-      primary_key :id
-      foreign_key :provider_id, :providers
-
-      String :slug
-      String :description
-      Integer :rate
     end
 
   end

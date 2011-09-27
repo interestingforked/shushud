@@ -1,4 +1,4 @@
-class Shushu::Provider < Sequel::Model
+class Provider < Sequel::Model
   
   def root?
     self[:root]

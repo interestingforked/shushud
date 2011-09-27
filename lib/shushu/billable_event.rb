@@ -1,8 +1,8 @@
-class Shushu::BillableEvent < Sequel::Model
+class BillableEvent < Sequel::Model
 
   ILLEGAL_CHANGE = "illegal change"
 
-  ATTRS = [:provider_id, :resource_id, :event_id, :reality_from, :reality_to, :qty, :rate_code]
+  ATTRS = [:provider_id, :resource_id, :event_id, :reality_from, :reality_to, :qty, :rate_code_id]
 
   def self.find_or_instantiate_by_provider_and_event(provider_id, event_id)
     params = {:provider_id => provider_id, :event_id => event_id}
@@ -14,11 +14,15 @@ class Shushu::BillableEvent < Sequel::Model
       :provider_id => self[:provider_id],
       :event_id    => self[:event_id],
       :resource_id => self[:resource_id],
-      :rate_code   => self[:rate_code],
+      :rate_code   => rate_code[:slug],
       :qty         => self[:qty],
       :from        => self[:reality_from],
       :to          => self[:reality_to]
     }
+  end
+
+  def rate_code
+    Shushu::RateCode[self[:rate_code_id]]
   end
 
   def public_values

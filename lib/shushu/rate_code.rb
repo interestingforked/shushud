@@ -1,4 +1,4 @@
-class Shushu::RateCode < Sequel::Model
+class RateCode < Sequel::Model
 
   PUBLIC_ATTRS = [:slug, :rate, :description]
   
