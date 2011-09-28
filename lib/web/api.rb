@@ -4,8 +4,6 @@ class Api < Sinatra::Application
 
   before do
     authenticate_provider
-    LogJam.setup_logger(Kernel, :puts)
-    LogJam.priorities(:provider, :event)
     content_type :json
   end
 
