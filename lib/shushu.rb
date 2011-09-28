@@ -31,13 +31,16 @@ module Shushu
   )
   NotifyChangeQueue = QC::Queue.new("notify_change_jobs")
   
-  ActiveRecord::Base.establish_connection(
-  :adapter  => "postgresql",
-  :host     => "localhost",
-  :username => "ryandotsmith",
-  :password => "",
-  :database => "core"
-)
+  db_uri = URI.parse(ENV["HEROKU_POSTGRESQL_CORE_URL"])
+  ActiveRecord::Base.establish_connection({
+    :adapter  => 'postgresql',
+    :host     => db_uri.host,
+    :database => db_uri.path.gsub('/',''),
+    :username => db_uri.user,
+    :password => db_uri.password
+  })
+
+end
 
   
 end
