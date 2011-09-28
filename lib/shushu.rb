@@ -33,14 +33,19 @@ module Shushu
   
   NotifyChangeQueue = QC::Queue.new("notify_change_jobs")
   
-  db_uri = URI.parse(ENV["HEROKU_POSTGRESQL_CORE_URL"])
-  ActiveRecord::Base.establish_connection({
-    :adapter  => 'postgresql',
-    :host     => db_uri.host,
-    :database => db_uri.path.gsub('/',''),
-    :username => db_uri.user,
-    :password => db_uri.password
-  })
+  if CORE_DB_URL = ENV["HEROKU_POSTGRESQL_CORE_URL"]
+    db_uri = URI.parse(ENV["HEROKU_POSTGRESQL_CORE_URL"])
+    ActiveRecord::Base.establish_connection({
+      :adapter  => 'postgresql',
+      :host     => db_uri.host,
+      :database => db_uri.path.gsub('/',''),
+      :username => db_uri.user,
+      :password => db_uri.password
+    })    
+  else
+    raise "HEROKU_POSTGRESQL_CORE_URL is not set."
+  end
+
 end
 
 require './lib/web/authentication'
