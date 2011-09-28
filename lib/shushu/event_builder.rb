@@ -13,15 +13,15 @@ class EventBuilder
   def initialize(handler)
     @handler = handler
   end
-  
+
   def find(conditions)
     @handler.find(conditions)
   end
-  
+
   def handle_incomming(args)
     log("handle incomming args=#{args}")
     if existing = @handler.find_open(args[:provider_id], args[:event_id])
-      eid = existing[:id]
+      eid = existing.id
       log("found existing billable_event=#{eid}")
       if EventValidator.invalid?(existing, args)
         log("attempting to change field")
