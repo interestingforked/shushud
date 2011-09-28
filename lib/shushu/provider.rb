@@ -4,4 +4,8 @@ class Provider < Sequel::Model
     self[:root]
   end
   
+  def write_to_billable_events?
+    self[:billable_events] == true
+  end
+  
 end
