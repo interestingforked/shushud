@@ -14,6 +14,7 @@ module Kernel
 end
 
 module Shushu
+  
   VERSION = 0
 
   class ShushuError < ::RuntimeError; end
@@ -29,6 +30,7 @@ module Shushu
       raise ArgumentError, "RACK_ENV must be production or test. RACK_ENV=#{ENV["RACK_ENV"]}"
     end
   )
+  
   NotifyChangeQueue = QC::Queue.new("notify_change_jobs")
   
   db_uri = URI.parse(ENV["HEROKU_POSTGRESQL_CORE_URL"])
@@ -39,10 +41,6 @@ module Shushu
     :username => db_uri.user,
     :password => db_uri.password
   })
-
-end
-
-  
 end
 
 require './lib/web/authentication'
