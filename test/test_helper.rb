@@ -9,9 +9,11 @@ Bundler.require(:default, :test)
 
 require 'minitest/autorun'
 require 'shushu'
+require 'shushu_helpers'
 
 class ShushuTest < MiniTest::Unit::TestCase
   include Rack::Test::Methods
+  include ShushuHelpers
 
   def clean_tables
     Shushu::DB.run("DELETE FROM billable_events CASCADE")    
@@ -26,21 +28,6 @@ class ShushuTest < MiniTest::Unit::TestCase
 
   def teardown
     clean_tables
-  end
-
-  def build_provider(opts={})
-    Provider.create({
-      :name  => "sendgrid",
-      :token => "password"
-    }.merge(opts))
-  end
-
-  def build_rate_code(opts={})
-    RateCode.create({
-      :slug => "RT01",
-      :rate => 5,
-      :description => "dyno hour"
-    }.merge(opts))
   end
 
   def app

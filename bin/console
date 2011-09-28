@@ -1,15 +1,31 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
 
-
-
 $: << File.expand_path('lib')
+$: << File.expand_path('test')
 
 require 'shushu'
-include Shushu
+require 'shushu_helpers'
+include ShushuHelpers
+
+def help
+  lines = []
+  lines << "Build provider will create a new provider in the providers table."
+  lines << "---> build_provider(:name => string, :token => string)"
+  lines << "\n"
+  lines << "Build rate_code will create a new rate_code in the rate_codes table"
+  lines << "---> build_rate_code(:provider_id => int, :slug => string, :rate => int) "
+  puts "\n"
+  puts lines.join("\n")
+  puts "\n"
+  nil
+end
+
 
 puts "\n"
 puts "\t 収集welcome"
+puts "\n"
+puts "\t available_commands: help, build_provider, build_rate_code"
 puts "\n"
 
 require 'irb'
