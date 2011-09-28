@@ -95,5 +95,4 @@ class ResourceHistory < ActiveRecord::Base
     RateCode.filter(:id => rate_code_id).first.slug
   end
 
-
 end
