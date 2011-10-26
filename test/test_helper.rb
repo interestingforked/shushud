@@ -16,10 +16,9 @@ class ShushuTest < MiniTest::Unit::TestCase
   include ShushuHelpers
 
   def clean_tables
-    Shushu::DB.run("DELETE FROM billable_events CASCADE")    
+    Shushu::DB.run("DELETE FROM billable_events CASCADE")
     Shushu::DB.run("DELETE FROM rate_codes CASCADE")
     Shushu::DB.run("DELETE FROM providers CASCADE")
-    ResourceHistory.delete_all
   end
 
   def setup
@@ -37,5 +36,5 @@ class ShushuTest < MiniTest::Unit::TestCase
       map("/providers")  { run ProviderApi }
     end
   end
-  
+
 end

@@ -13,12 +13,7 @@ class Api < Sinatra::Application
 
   get "/:resource_id/billable_events" do
     provider = Provider[params[:provider_id]]
-
-    if provider.write_to_billable_events?
-      builder = EventBuilder.new(ShushuBE)
-    else
-      builder = EventBuilder.new(CoreRH)
-    end
+    builder = EventBuilder.new(EventHandler)
 
     cond = {:resource_id => params[:resource_id], :provider_id => params[:provider_id]}
     events = builder.find(cond)
@@ -27,12 +22,7 @@ class Api < Sinatra::Application
 
   put "/:resource_id/billable_events/:event_id" do
     provider = Provider[params[:provider_id]]
-
-    if provider.write_to_billable_events?
-      builder = EventBuilder.new(ShushuBE)
-    else
-      builder = EventBuilder.new(CoreRH)
-    end
+    builder = EventBuilder.new(EventHandler)
 
     http_status, event = builder.handle_incomming(
       :provider_id    => params[:provider_id],

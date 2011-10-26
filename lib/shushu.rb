@@ -1,8 +1,5 @@
 require 'rubygems'
-require 'bundler'
-
-Bundler.require
-
+require 'bundler/setup'
 require 'json'
 require 'logger'
 
@@ -14,7 +11,7 @@ module Kernel
 end
 
 module Shushu
-  
+
   VERSION = 0
 
   class ShushuError < ::RuntimeError; end
@@ -30,21 +27,6 @@ module Shushu
       raise ArgumentError, "RACK_ENV must be production or test. RACK_ENV=#{ENV["RACK_ENV"]}"
     end
   )
-  
-  NotifyChangeQueue = QC::Queue.new("notify_change_jobs")
-  
-  if CORE_DB_URL = ENV["HEROKU_POSTGRESQL_CORE_URL"]
-    db_uri = URI.parse(ENV["HEROKU_POSTGRESQL_CORE_URL"])
-    ActiveRecord::Base.establish_connection({
-      :adapter  => 'postgresql',
-      :host     => db_uri.host,
-      :database => db_uri.path.gsub('/',''),
-      :username => db_uri.user,
-      :password => db_uri.password
-    })    
-  else
-    raise "HEROKU_POSTGRESQL_CORE_URL is not set."
-  end
 
 end
 
@@ -53,12 +35,11 @@ require './lib/web/api'
 require './lib/web/rate_code_api'
 require './lib/web/provider_api'
 
-require './lib/shushu/billable_event'
-require './lib/shushu/resource_history'
-require './lib/shushu/event_builder'
-require './lib/shushu/event_validator'
-require './lib/shushu/provider'
-require './lib/shushu/rate_code'
+require './lib/models/billable_event'
+require './lib/models/provider'
+require './lib/models/rate_code'
 
-require './lib/shushu/storage_drivers/core_rh'
-require './lib/shushu/storage_drivers/shushu_be'
+require './lib/services/event_builder'
+require './lib/services/event_handler'
+require './lib/services/event_validator'
+

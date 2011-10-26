@@ -6,7 +6,7 @@ class EventBuilderTest < ShushuTest
     super
     @provider = build_provider
     @rate_code = build_rate_code(:provider_id => @provider.id)
-    @event_builder = EventBuilder.new(ShushuBE)
+    @event_builder = EventBuilder.new(EventHandler)
   end
 
   def test_handle_incomming_when_missing_rate_code
@@ -18,9 +18,9 @@ class EventBuilderTest < ShushuTest
       :reality_from   => Time.mktime(2011,1)
     }
 
-    assert_raises(RuntimeError) {@event_builder.handle_incomming(args)} 
+    assert_raises(RuntimeError) {@event_builder.handle_incomming(args)}
   end
-  
+
   def test_handle_incoming_when_open_new
     args = {
       :provider_id    => @provider.id,
@@ -79,14 +79,14 @@ class EventBuilderTest < ShushuTest
       :reality_from   => Time.mktime(2011,1)
     }
     existing_event = BillableEvent.create(args)
-    
+
     _, event = @event_builder.handle_incomming(
       :provider_id => @provider.id,
       :rate_code => @rate_code.slug,
       :event_id => '123',
       :reality_to => Time.mktime(2011,1,15)
     )
-    
+
     assert ! existing_event.reload.system_to.nil?
   end
 
