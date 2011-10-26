@@ -31,14 +31,12 @@ class EventBuilder
   private
 
   def try_close(existing, args)
-    eid = existing.id
     if EventValidator.invalid?(existing, args)
       log("attempting to change field")
       [409, existing]
     elsif close_dt = args[:reality_to] #wants to close event
-      log("closing event=#{eid}")
-      event = @handler.close(eid, close_dt)
-      [200, event]
+      log("closing event=#{existing.id}")
+      [200, @handler.close(existing.id, close_dt)]
     else
       log("existing is identical to new")
       [200, existing]
