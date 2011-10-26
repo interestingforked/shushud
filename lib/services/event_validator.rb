@@ -1,9 +1,5 @@
 class EventValidator
   # Responsibility: Determine the validity of an event.
-  #
-  # For now we are using 2 backends: AR & Sequel. This class holds the
-  # validation logic for both. Also, when we have only Sequel, we will
-  # have out validation logic isolated from the persistence layer.
 
   # This class relies on an event having the following methods defined:
   # -> Event#from
@@ -70,7 +66,7 @@ class EventValidator
   end
 
   def find_rate_code(slug, provider_id)
-    RateCode.filter(:slug => slug, :provider_id => provider_id).first      
+    RateCode.filter(:slug => slug, :provider_id => provider_id).first
   end
 
 end
