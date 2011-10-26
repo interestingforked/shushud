@@ -3,6 +3,8 @@ require 'bundler/setup'
 require 'json'
 require 'logger'
 
+Bundler.require
+
 VERBOSE = ENV["VERBOSE"] == 'true'
 module Kernel
   def log(msg)
