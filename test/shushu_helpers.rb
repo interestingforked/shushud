@@ -1,4 +1,5 @@
 module ShushuHelpers
+
   def build_provider(opts={})
     Provider.create({
       :name  => "sendgrid",
@@ -13,5 +14,5 @@ module ShushuHelpers
       :description => "dyno hour"
     }.merge(opts))
   end
-  
+
 end
