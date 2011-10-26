@@ -4,10 +4,9 @@ class EventBuilder
 
   # Abstract:
   # The EventBuilder provides the handle_incomming(args) interface to
-  # some sort of public api, be it http or otherwise. It should add an
-  # abstraction between the API and to storage layer.
+  # some sort of public api, be it http or otherwise.
   #
-  # HTTP -> API -> EventBuilder -> (billable_events_table | legacy_rh_table | message_bus | etc...)
+  # HTTP -> EventBuilder -> EventHandler (billable_events_table | message_bus | etc...)
   #
 
   def initialize(handler)
