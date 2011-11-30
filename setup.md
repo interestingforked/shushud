@@ -14,7 +14,7 @@ $ export RACK_ENV='production'
 $ bundle
 $ bundle exec sequel -m migrations/ $DATABASE_URL
 $ bundle exec bin/console
-irb: Provider.create(:name => "shushutest", :password => "pass")
+irb: Provider.create(:name => "shushutest", :token => "pass")
 $ foreman start web
 $ curl -I http://1:pass@localhost:3000/heartbeat
 HTTP/1.1 200 OK
