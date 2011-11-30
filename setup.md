@@ -16,7 +16,7 @@ $ bundle exec sequel -m migrations/ $DATABASE_URL
 $ bundle exec bin/console
 irb: Provider.create(:name => "shushutest", :token => "pass")
 $ foreman start web
-$ curl -I http://1:pass@localhost:3000/heartbeat
+$ curl -I http://1:pass@localhost:3000/resources/heartbeat
 HTTP/1.1 200 OK
 Content-Type: text/html;charset=utf-8
 Content-Length: 11
