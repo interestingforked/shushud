@@ -24,7 +24,7 @@ module Shushu
       log("connecting production database url=#{ENV["DATABASE_URL"]}")
       Sequel.connect(ENV["DATABASE_URL"])
     when "test"
-      Sequel.connect(ENV["TEST_DATABASE_URL"], :logger => Logger.new("./log/test.log"))
+      Sequel.connect(ENV["TEST_DATABASE_URL"], :logger => Logger.new(File.new("./log/test.log","w")))
     else
       raise ArgumentError, "RACK_ENV must be production or test. RACK_ENV=#{ENV["RACK_ENV"]}"
     end
