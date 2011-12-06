@@ -36,6 +36,7 @@ $ curl -X PUT http://1:pass@localhost:$PORT/resources/app123/billable_events/1 \
 ## Running Tests
 
 ```bash
-$ gem install turn
-$ turn test/
+$ bundle
+$ bundle exec bin/reset test
+$ bundle exec turn test/
 ```
