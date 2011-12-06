@@ -8,6 +8,7 @@ class Api < Sinatra::Application
   end
 
   get "/heartbeat" do
+    puts "alive"
     JSON.dump({:ok => true})
   end
 
