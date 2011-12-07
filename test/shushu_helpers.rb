@@ -15,4 +15,16 @@ module ShushuHelpers
     }.merge(opts))
   end
 
+  def build_account(opts={})
+    Account.create(opts)
+  end
+
+  def build_resource_ownership_record(opts={})
+    ResourceOwnershipRecord.create({
+      :hid => "12345",
+      :time => Time.now,
+      :state => ResourceOwnershipRecord::Active
+    }.merge(opts))
+  end
+
 end
