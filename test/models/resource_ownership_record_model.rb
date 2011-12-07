@@ -15,7 +15,8 @@ class ResourceOwnershipRecordTest < ShushuTest
     build_resource_ownership_record(:account_id => account.id, :hid => "123", :time => feb, :state => ResourceOwnershipRecord::Inactive)
     records = ResourceOwnershipRecord.find(account.id, jan, feb)
     assert_equal(1, records.count)
-    assert_equal(feb, records.first[:to])
+    record = records.first
+    assert_equal(feb, record[:to])
   end
 
   def test_find_returns_to_as_current_time_when_active
