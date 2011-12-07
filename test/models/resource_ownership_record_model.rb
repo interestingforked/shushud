@@ -26,12 +26,4 @@ class ResourceOwnershipRecordTest < ShushuTest
     assert_in_delta(Time.now, record[:to], 2)
   end
 
-  def jan
-    Time.mktime(2011,1)
-  end
-
-  def feb
-    Time.mktime(2011,2)
-  end
-
 end

@@ -35,4 +35,12 @@ class ShushuTest < MiniTest::Unit::TestCase
     Shushu.web_api
   end
 
+  def jan
+    Time.mktime(2011,1)
+  end
+
+  def feb
+    Time.mktime(2011,2)
+  end
+
 end
