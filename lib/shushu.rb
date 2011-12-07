@@ -28,7 +28,7 @@ module Shushu
     else
       raise ArgumentError, "RACK_ENV must be production or test. RACK_ENV=#{ENV["RACK_ENV"]}"
     end
-    )
+  )
 
   def self.web_api
     @@web_api ||= Rack::Builder.new do
@@ -37,7 +37,6 @@ module Shushu
       map("/providers")  { run ProviderApi }
     end
   end
-
 
 end
 
@@ -49,8 +48,9 @@ require './lib/web/provider_api'
 require './lib/models/billable_event'
 require './lib/models/provider'
 require './lib/models/rate_code'
+require './lib/models/account'
+require './lib/models/resource_ownership_record'
 
 require './lib/services/event_builder'
 require './lib/services/event_handler'
 require './lib/services/event_validator'
-
