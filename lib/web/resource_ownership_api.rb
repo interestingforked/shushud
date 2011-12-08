@@ -40,6 +40,10 @@ class ResourceOwnershipApi < Sinatra::Application
     end
   end
 
+  def body(hash)
+    super(JSON.dump(hash))
+  end
+
   def log(msg)
     shulog("api=resource_ownership_records_api account=#{account_id} hid=#{hid} #{msg}")
   end
