@@ -16,8 +16,8 @@ module ResourceOwnershipService
 
   def transfer(previos_account_id, new_account_id, hid)
     assert_valid_account_id!(previos_account_id, new_account_id)
-    deactivate(account_id, hid)
-    create_record(account_id, hid, ResourceOwnershipRecord::Active)
+    deactivate(previos_account_id, hid)
+    create_record(new_account_id, hid, ResourceOwnershipRecord::Active)
   end
 
   def assert_valid_account_id!(*ids)
