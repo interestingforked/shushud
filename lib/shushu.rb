@@ -30,8 +30,8 @@ module Shushu
     end
   )
 
-  def self.web_api
-    @@web_api ||= Rack::Builder.new do
+  def self.http_api
+    @@http_api ||= Rack::Builder.new do
       map("/resources")          {run Api}
       map("/rate_codes")         {run RateCodeApi}
       map("/providers")          {run ProviderApi}
