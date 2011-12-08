@@ -1,6 +1,6 @@
 require File.expand_path('../../test_helper', __FILE__)
 
-class ResourceOwnershipRecordApiTest < ShushuTest
+class ResourceOwnershipApiTest < ShushuTest
 
   def test_create_record
     post "/resource_ownership", {:account_id => account.id, :hid => "123"}
