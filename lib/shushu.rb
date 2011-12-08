@@ -35,7 +35,7 @@ module Shushu
       map("/resources")          {run Api}
       map("/rate_codes")         {run RateCodeApi}
       map("/providers")          {run ProviderApi}
-      map("/resource_ownership") {run ResourceOwnershipRecordApi}
+      map("/resource_ownership") {run ResourceOwnershipApi}
     end
   end
 
@@ -45,7 +45,7 @@ require './lib/web/authentication'
 require './lib/web/api'
 require './lib/web/rate_code_api'
 require './lib/web/provider_api'
-require './lib/web/resource_ownership_records_api'
+require './lib/web/resource_ownership_api'
 
 require './lib/models/billable_event'
 require './lib/models/provider'

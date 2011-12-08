@@ -1,4 +1,4 @@
-class ResourceOwnershipRecordApi < Sinatra::Application
+class ResourceOwnershipApi < Sinatra::Application
 
   # when someone queries for both account_id and hid.
   class QueryMutexErr < RuntimeError; end
