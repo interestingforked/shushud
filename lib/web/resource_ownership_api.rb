@@ -5,21 +5,10 @@ class ResourceOwnershipApi < Sinatra::Application
 
   before  {content_type(:json)}
 
-  get "/" do
-    perform(:query, query)
-  end
-
-  post "/" do
-    perform(:activate, account_id, hid)
-  end
-
-  put "/" do
-    perform(:transfer, prev_account_id, account_id, hid)
-  end
-
-  delete "/" do
-    perform(:deactivate, account_id, hid)
-  end
+  get("/")    {perform(:query, query)}
+  post("/")   {perform(:activate, account_id, hid)}
+  put("/")    {perform(:transfer, prev_account_id, account_id, hid)}
+  delete("/") {perform(:deactivate, account_id, hid)}
 
   def perform(method, *args)
     begin
