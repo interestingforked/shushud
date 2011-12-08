@@ -69,4 +69,7 @@ class EventValidator
     RateCode.filter(:slug => slug, :provider_id => provider_id).first
   end
 
+  def log(msg)
+    shulog(msg)
+  end
 end

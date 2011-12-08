@@ -7,7 +7,7 @@ Bundler.require
 
 VERBOSE = ENV["VERBOSE"] == 'true'
 module Kernel
-  def log(msg)
+  def shulog(msg)
     puts msg if VERBOSE
   end
 end
@@ -21,7 +21,7 @@ module Shushu
   DB = (
     case ENV["RACK_ENV"].to_s
     when "production"
-      log("connecting production database url=#{ENV["DATABASE_URL"]}")
+      shulog("connecting production database url=#{ENV["DATABASE_URL"]}")
       Sequel.connect(ENV["DATABASE_URL"])
     when "test"
       Sequel.connect(ENV["TEST_DATABASE_URL"], :logger => Logger.new(File.new("./log/test.log","w")))

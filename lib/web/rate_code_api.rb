@@ -71,7 +71,7 @@ class RateCodeApi < Sinatra::Application
   end
 
   def log(msg)
-    puts("api=provider_api provider=#{params[:provider_id]} #{msg}")
+    shulog("api=provider_api provider=#{params[:provider_id]} #{msg}")
   end
 
 end

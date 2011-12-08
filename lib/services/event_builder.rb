@@ -47,4 +47,8 @@ class EventBuilder
     [201, @handler.open(args)]
   end
 
+  def log(msg)
+    shulog(msg)
+  end
+
 end

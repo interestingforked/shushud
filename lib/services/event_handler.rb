@@ -57,4 +57,8 @@ module EventHandler
     end
   end
 
+  def log(msg)
+    shulog(msg)
+  end
+
 end
