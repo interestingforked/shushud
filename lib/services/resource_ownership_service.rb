@@ -4,6 +4,11 @@ module ResourceOwnershipService
 
   extend self
 
+  def query(query)
+    query[:state] = ResourceOwnershipRecord::Active
+    ResourceOwnershipRecord[query] || raise(NoAccount)
+  end
+
   def activate(account_id, hid)
     assert_valid_account_id!(account_id)
     create_record(account_id, hid, ResourceOwnershipRecord::Active)

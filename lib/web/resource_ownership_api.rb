@@ -14,8 +14,8 @@ class ResourceOwnershipApi < Sinatra::Application
     begin
       log("action=#{method}")
       rec = ResourceOwnershipService.send(method, *args)
-      status(201)
-      body({:hid => rec.id, :account_id => rec.account_id})
+      status(200)
+      body({:hid => rec.hid, :account_id => rec.account_id})
     rescue ResourceOwnershipService::NoAccount
       status(404)
       body({:errors => ["could not find account"]})
@@ -38,11 +38,11 @@ class ResourceOwnershipApi < Sinatra::Application
   end
 
   def query
-    if account_id.present? ^ hid.present?
+    if !(account_id.nil? ^ hid.nil?)
       raise(QueryMutexErr, "Please choose account_id XOR hid")
-    elsif account_id.present?
+    elsif account_id
       {:account_id => account_id}
-    elsif hid.present?
+    elsif hid
       {:hid => hid}
     end
   end
