@@ -1,4 +1,4 @@
-class Api < Sinatra::Application
+class EventsApi < Sinatra::Application
 
   helpers { include Authentication }
 

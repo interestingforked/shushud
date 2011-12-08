@@ -32,7 +32,7 @@ module Shushu
 
   def self.http_api
     @@http_api ||= Rack::Builder.new do
-      map("/resources")          {run Api}
+      map("/resources")          {run EventsApi}
       map("/rate_codes")         {run RateCodeApi}
       map("/providers")          {run ProviderApi}
       map("/resource_ownership") {run ResourceOwnershipApi}
@@ -42,7 +42,7 @@ module Shushu
 end
 
 require './lib/http_api/authentication'
-require './lib/http_api/api'
+require './lib/http_api/events_api'
 require './lib/http_api/rate_code_api'
 require './lib/http_api/provider_api'
 require './lib/http_api/resource_ownership_api'
