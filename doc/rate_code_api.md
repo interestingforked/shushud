@@ -4,7 +4,7 @@
 
 The rate code provides an abstraction between events and costs associated with events.
 Rate codes also reduce the burdon of the Shushu client in that the client does not
-have to repeat rate codes when sending events. Finally, rate codes prevent providers 
+have to repeat rate codes when sending events. Finally, rate codes prevent providers
 from submitting events willy-nilly.
 
 ## API
@@ -13,13 +13,13 @@ from submitting events willy-nilly.
 
 **HTTP Basic**
 
-This API uses authentication similar to the rest of Shushu's API: provider_id:provider_token. 
+This API uses authentication similar to the rest of Shushu's API: provider_id:provider_token.
 However, there is authorization on  this API. A special bit is required to write rate codes.
 This mechanism will allow the Add-ons Team to properly filter who is creating rate_codes.
 
 ### Create Rate Code (POST)
 
-Before you can create billable_events, you must create a rate code for the event. 
+Before you can create billable_events, you must create a rate code for the event.
 Depending on your provider credentials, you may have to wait for rate_code approval.
 
 ```bash
@@ -33,7 +33,7 @@ $ curl -X POST https://provider_id:provider_token@shushu.heroku.com/rate_codes -
 }
 ```
 
-It is possible for a provider to create a rate code on behalf of another provider. This is 
+It is possible for a provider to create a rate code on behalf of another provider. This is
 particularly useful for the add-ons team. This features requires a special bit on the provider.
 
 ```bash
@@ -72,7 +72,7 @@ $ curl https://provider_id:provider_token@shushu.heroku.com/rate_codes/:rate_cod
 ### Update the Rate Code (PUT)
 
 Lets say that you created a rate code and then started created billable_events for the rate code.
-Moments later you realize that you have entered an incorrect rate for the rate code. 
+Moments later you realize that you have entered an incorrect rate for the rate code.
 Instead of modifying the billable_events, you can simply update the rate on the rate_code.
 
 ```bash
