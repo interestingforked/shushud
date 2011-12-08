@@ -41,11 +41,11 @@ module Shushu
 
 end
 
-require './lib/web/authentication'
-require './lib/web/api'
-require './lib/web/rate_code_api'
-require './lib/web/provider_api'
-require './lib/web/resource_ownership_api'
+require './lib/http_api/authentication'
+require './lib/http_api/api'
+require './lib/http_api/rate_code_api'
+require './lib/http_api/provider_api'
+require './lib/http_api/resource_ownership_api'
 
 require './lib/models/billable_event'
 require './lib/models/provider'
