@@ -32,9 +32,10 @@ module Shushu
 
   def self.web_api
     @@web_api ||= Rack::Builder.new do
-      map("/resources")  { run Api }
-      map("/rate_codes") { run RateCodeApi }
-      map("/providers")  { run ProviderApi }
+      map("/resources")                  {run Api}
+      map("/rate_codes")                 {run RateCodeApi}
+      map("/providers")                  {run ProviderApi}
+      map("/resource_ownership_records") {run ResourceOwnershipRecordApi}
     end
   end
 
@@ -44,6 +45,7 @@ require './lib/web/authentication'
 require './lib/web/api'
 require './lib/web/rate_code_api'
 require './lib/web/provider_api'
+require './lib/web/resource_ownership_records_api'
 
 require './lib/models/billable_event'
 require './lib/models/provider'
@@ -54,3 +56,4 @@ require './lib/models/resource_ownership_record'
 require './lib/services/event_builder'
 require './lib/services/event_handler'
 require './lib/services/event_validator'
+require './lib/services/resource_ownership_service'
