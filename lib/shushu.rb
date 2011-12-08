@@ -32,10 +32,10 @@ module Shushu
 
   def self.web_api
     @@web_api ||= Rack::Builder.new do
-      map("/resources")                  {run Api}
-      map("/rate_codes")                 {run RateCodeApi}
-      map("/providers")                  {run ProviderApi}
-      map("/resource_ownership_records") {run ResourceOwnershipRecordApi}
+      map("/resources")          {run Api}
+      map("/rate_codes")         {run RateCodeApi}
+      map("/providers")          {run ProviderApi}
+      map("/resource_ownership") {run ResourceOwnershipRecordApi}
     end
   end
 
