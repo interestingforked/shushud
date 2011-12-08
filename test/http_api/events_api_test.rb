@@ -9,18 +9,7 @@ class ApiTest < ShushuTest
   end
 
   def setup_auth
-    authorize @provider.id, @provider.token
-  end
-
-  def test_heartbeat_with_bad_token
-    get "/resources/heartbeat"
-    assert_equal 401, last_response.status
-  end
-
-  def test_heartbeat
-    setup_auth
-    get "/resources/heartbeat"
-    assert_equal 200, last_response.status
+    authorize(@provider.id, @provider.token)
   end
 
   def test_get_events

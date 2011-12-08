@@ -7,11 +7,6 @@ class EventsApi < Sinatra::Application
     content_type :json
   end
 
-  get "/heartbeat" do
-    puts "alive"
-    JSON.dump({:ok => true})
-  end
-
   get "/:resource_id/billable_events" do
     provider = Provider[params[:provider_id]]
     builder = EventBuilder.new(EventHandler)
