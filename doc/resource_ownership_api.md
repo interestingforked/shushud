@@ -20,7 +20,7 @@ token.
 ### Activate
 
 ```bash
-$ curl -i -X POST http://shushu.heroku.com/resource_ownership \
+$ curl -i -X POST http://shushu.heroku.com/resource_ownerships \
   -d "hid=987" \
   -d "account_id=123"
 
@@ -29,7 +29,7 @@ $ curl -i -X POST http://shushu.heroku.com/resource_ownership \
 ### Transfer
 
 ```bash
-$ curl -i -X PUT http://shushu.heroku.com/resource_ownership \
+$ curl -i -X PUT http://shushu.heroku.com/resource_ownerships \
   -d "hid=987" \
   -d "prev_account_id=123" \
   -d "account_id=456"
@@ -38,7 +38,7 @@ $ curl -i -X PUT http://shushu.heroku.com/resource_ownership \
 ### Deactivate
 
 ```bash
-$ curl -i -X DELETE http://shushu.heroku.com/resource_ownership \
+$ curl -i -X DELETE http://shushu.heroku.com/resource_ownerships \
   -d "hid=987" \
   -d "account_id=456"
 ```

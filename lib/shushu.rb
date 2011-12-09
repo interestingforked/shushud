@@ -38,7 +38,7 @@ module Shushu
       map("/resources")          {run EventsApi}
       map("/rate_codes")         {run RateCodeApi}
       map("/providers")          {run ProviderApi}
-      map("/resource_ownership") {run ResourceOwnershipApi}
+      map("/resource_ownerships"){run ResourceOwnershipApi}
     end
   end
 
