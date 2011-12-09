@@ -31,7 +31,7 @@ $ curl -i -X POST http://shushu.heroku.com/resource_ownership \
 ```bash
 $ curl -i -X PUT http://shushu.heroku.com/resource_ownership \
   -d "hid=987" \
-  -d "prev_account_id=123"
+  -d "prev_account_id=123" \
   -d "account_id=456"
 ```
 
