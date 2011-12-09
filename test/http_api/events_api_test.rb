@@ -40,7 +40,7 @@ class EventsApiTest < ShushuTest
     }
     put("/resources/123/billable_events/1", body)
     assert_equal(201, last_response.status)
-    assert_equal('2011-01-01 00:00:00 +0000', JSON.parse(last_response.body)["time"])
+    assert_equal('2011-01-01 00:00:00 UTC', JSON.parse(last_response.body)["time"])
     assert_equal('open', JSON.parse(last_response.body)["state"])
   end
 
