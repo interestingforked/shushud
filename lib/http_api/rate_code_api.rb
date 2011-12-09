@@ -48,7 +48,7 @@ class RateCodeApi < Sinatra::Application
   put "/:rate_code_slug" do
     begin
       if rate_code = RateCode.find(:slug => params[:rate_code_slug])
-        log("action=update_rate_code found rate_code=#{rate_code.id}")
+        log("action=update_rate_code rate_code=#{rate_code.id}")
 
         rate_code.set(params[:rate_code])
         if rate_code.save(:raise_on_failure => false)
