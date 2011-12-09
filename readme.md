@@ -8,9 +8,14 @@ https://github.com/heroku/shushu/blob/master/setup.md
 
 Collect Billable Events.
 
-Providers like Sendgrid need a more robust way to charge customers. The Vault will provide a mechanism for add-on providers that allows them to notify us of billable events. We will append these events to our durable log and then convert them into line items which will eventually wind up on an invoice.
+Providers like Sendgrid need a more robust way to charge customers.
+The Vault will provide a mechanism for add-on providers that allows them
+to notify us of billable events. We will append these events to our durable log
+and then convert them into billable units which will eventually wind up on an invoice.
 
-This API will also serve as the canonical source for all billable events in the cloud. Depending upon the success of our rollout to add-on providers, we hope the adoption of the API will reach teams like runtime and add-ons.
+This API will also serve as the canonical source for all billable events in the cloud.
+Depending upon the success of our rollout to add-on providers, we hope the adoption
+of the API will reach teams like runtime and add-ons.
 
 ## General Idea
 
@@ -32,10 +37,10 @@ Valid times are calculated with respect to US/Pacific.
 
 **Rate codes**
 
-Each event submitted by a provider will require a rate_code. This code represents the provider's 
-agreement with add-ons. The code will have an associated description and rate. 
-For example, Sendgrid may have the code `SG001` and this code represents email overages 
-and has a rate of $0.05. If a customer sends an additional 100 emails in a period, 
+Each event submitted by a provider will require a rate_code. This code represents the provider's
+agreement with add-ons. The code will have an associated description and rate.
+For example, Sendgrid may have the code `SG001` and this code represents email overages
+and has a rate of $0.05. If a customer sends an additional 100 emails in a period,
 Sendgrid may PUT an event with `{'qty': 100, 'rate_code': 'SG001', ...}`
 
 ## API Set
@@ -125,7 +130,7 @@ There may be time when we have to migrate a schema or change implementation of A
 ```
 ## Authentication
 
-HTTPS Basic Authentication. Each provier will be issued an ID and a token. 
+HTTPS Basic Authentication. Each provier will be issued an ID and a token.
 
 ```bash
 $ curl https://ID:TOKEN@shushu.heroku.com/whatever...
