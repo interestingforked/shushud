@@ -17,7 +17,7 @@ the owners for the period of time that they owned the resource.
 Each consumer will have a secret token. Basic HTTP will be used to validate the
 token.
 
-### POST Activate
+### Activate
 
 ```bash
 $ curl -i -X POST http://shushu.heroku.com/resource_ownership \
@@ -26,7 +26,7 @@ $ curl -i -X POST http://shushu.heroku.com/resource_ownership \
 
 ```
 
-### PUT Transfer
+### Transfer
 
 ```bash
 $ curl -i -X PUT http://shushu.heroku.com/resource_ownership \
@@ -35,7 +35,7 @@ $ curl -i -X PUT http://shushu.heroku.com/resource_ownership \
   -d "account_id=456"
 ```
 
-### DELETE Deactivate
+### Deactivate
 
 ```bash
 $ curl -i -X DELETE http://shushu.heroku.com/resource_ownership \
