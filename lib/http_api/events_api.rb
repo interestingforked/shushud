@@ -3,7 +3,7 @@ class EventsApi < Sinatra::Application
   helpers { include Authentication }
 
   before do
-    authenticate_provider
+    authenticate_provider #sets params[:provider_id]
     content_type :json
   end
 
