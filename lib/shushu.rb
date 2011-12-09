@@ -5,6 +5,7 @@ require 'logger'
 
 Bundler.require
 
+$stdout.sync = true
 VERBOSE = ENV["VERBOSE"] == 'true'
 module Kernel
   def shulog(msg)
