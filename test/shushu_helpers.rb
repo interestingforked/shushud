@@ -11,7 +11,6 @@ module ShushuHelpers
     RateCode.create({
       :slug => "RT01",
       :rate => 5,
-      :description => "dyno hour"
     }.merge(opts))
   end
 

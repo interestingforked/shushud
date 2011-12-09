@@ -11,9 +11,11 @@ class RateCodeApi < Sinatra::Application
     log("create rate code rate=#{params[:rate]} description=#{params[:description]}")
 
     rate_code = RateCode.new(
-      :provider_id => params[:provider_id],
-      :rate        => params[:rate],
-      :description => params[:description]
+      :provider_id   => params[:provider_id],
+      :rate          => params[:rate],
+      :slug          => params[:slug],
+      :product_group => params[:product_group],
+      :product_name  => params[:product_name]
     )
 
     if rate_code.save

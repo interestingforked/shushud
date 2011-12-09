@@ -30,6 +30,10 @@ module Shushu
     end
   )
 
+  Sequel.database_timezone = :utc
+  Sequel.application_timezone = :utc
+  Sequel.default_timezone     = :utc
+
   def self.http_api
     @@http_api ||= Rack::Builder.new do
       map("/heartbeat")          {run HeartbeatApi}
@@ -55,7 +59,5 @@ require './lib/models/rate_code'
 require './lib/models/account'
 require './lib/models/resource_ownership_record'
 
-require './lib/services/event_builder'
 require './lib/services/event_handler'
-require './lib/services/event_validator'
 require './lib/services/resource_ownership_service'

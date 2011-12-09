@@ -9,25 +9,22 @@ class EventsApi < Sinatra::Application
 
   get "/:hid/billable_events" do
     provider = Provider[params[:provider_id]]
-    builder = EventBuilder.new(EventHandler)
-
-    cond = {:hid => params[:hid], :provider_id => params[:provider_id]}
-    events = builder.find(cond)
+    events = EventHandler.find({:hid => params[:hid], :provider_id => provider.id})
     JSON.dump(events.map(&:api_values))
   end
 
   put "/:hid/billable_events/:event_id" do
-    provider = Provider[params[:provider_id]]
-    builder = EventBuilder.new(EventHandler)
+    provider  = Provider[params[:provider_id]]
+    rate_code = RateCode[:slug => params[:rate_code]]
 
-    http_status, event = builder.handle_incomming(
-      :provider_id    => params[:provider_id],
-      :event_id       => params[:event_id],
+    http_status, event = EventHandler.handle(
+      :provider_id    => provider.id,
+      :rate_code_id   => rate_code.id,
       :hid            => params[:hid],
-      :rate_code      => params[:rate_code],
+      :event_id       => params[:event_id],
       :qty            => params[:qty],
-      :reality_from   => params[:from],
-      :reality_to     => params[:to]
+      :time           => params[:time],
+      :state          => params[:state]
     )
     status(http_status)
     body(JSON.dump(event.api_values))
@@ -37,4 +34,3 @@ class EventsApi < Sinatra::Application
   end
 
 end
-

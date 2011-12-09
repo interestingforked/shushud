@@ -16,7 +16,14 @@ class ProviderApiTest < ShushuTest
     setup_auth
     target_provier = build_provider
 
-    post "/providers/#{target_provier.id}/rate_codes", {:rate_code => {:rate => 5}}
+    post("/providers/#{target_provier.id}/rate_codes",
+      {:rate_code => {
+        :rate          => 5,
+        :slug          => "RT01",
+        :product_group => "dyno",
+        :product_web   => "web"
+      }}
+    )
     assert_equal 201, last_response.status
   end
 

@@ -1,6 +1,6 @@
 require File.expand_path('../../test_helper', __FILE__)
 
-class ApiTest < ShushuTest
+class EventsApiTest < ShushuTest
 
   def setup
     super
@@ -12,54 +12,52 @@ class ApiTest < ShushuTest
     authorize(@provider.id, @provider.token)
   end
 
-  def test_get_events
-    setup_auth
-
-    put_body = {
+  def open_event(event_id, opts={})
+    body = {
       "qty"       => 1,
       "rate_code" => @rate_code.slug,
-      "from"      => '2011-01-01 00:00:00 -0800',
-      "to"        => ''
-    }
-    put "resources/123/billable_events/1", put_body
-
-    get_body = put_body.merge({
-      "provider_id" => @provider.id,
-      "hid" => "123",
-      "event_id"    => "1"
-    })
-    get "/resources/123/billable_events"
-    assert_equal get_body, JSON.parse(last_response.body).first
+      "time"      => '2011-01-01 00:00:00',
+      "state"     => 'open'
+    }.merge(opts)
+    put "resources/123/billable_events/#{event_id || 1}", body
   end
+
+  def test_get_events
+    setup_auth
+    open_event("456")
+    get("/resources/123/billable_events")
+    assert_equal("456", JSON.parse(last_response.body).first["event_id"])
+  end
+
 
   def test_open_event
     setup_auth
-    put_body = {
+    body = {
       :qty        => 1,
       :rate_code  => @rate_code.slug,
-      :from       => '2011-01-01 00:00:00 -0800',
-      :to         => nil
+      :time       => '2011-01-01 00:00:00',
+      :state      => 'open'
     }
-    put "/resources/app123@heroku.com/billable_events/1", put_body
-    assert_equal 201, last_response.status
-    assert_equal '2011-01-01 00:00:00 -0800', JSON.parse(last_response.body)["from"]
-    assert_equal '', JSON.parse(last_response.body)["to"]
+    put("/resources/123/billable_events/1", body)
+    assert_equal(201, last_response.status)
+    assert_equal('2011-01-01 00:00:00 +0000', JSON.parse(last_response.body)["time"])
+    assert_equal('open', JSON.parse(last_response.body)["state"])
   end
 
-  def test_open_event_on_second_call
+  def test_open_event_on_second_call_returns_same_billable_event_id
     setup_auth
     put_body = {
       :qty        => 1,
       :rate_code  => @rate_code.slug,
-      :from       => '2011-01-01 00:00:00 -0800',
-      :to         => nil
+      :time       => '2011-01-01 00:00:00 +0000',
+      :state      => 'open'
     }
 
     put "/resources/app123@heroku.com/billable_events/1", put_body
-    assert_equal 201, last_response.status
-
+    billable_event_id = JSON.parse(last_response.body)["id"]
+    assert(!billable_event_id.nil?, "Did not receive id")
     put "/resources/app123@heroku.com/billable_events/1", put_body
-    assert_equal 200, last_response.status
+    assert_equal billable_event_id, JSON.parse(last_response.body)["id"]
   end
 
   def test_open_event_on_third_call
@@ -67,85 +65,44 @@ class ApiTest < ShushuTest
     put_body = {
       :qty        => 1,
       :rate_code  => @rate_code.slug,
-      :from       => '2011-01-01 00:00:00 -0800',
-      :to         => nil
+      :time       => '2011-01-01 00:00:00 +0000',
+      :state      => 'open'
     }
-    put "/resources/app123@heroku.com/billable_events/1", put_body
+    put "/resources/app123/billable_events/1", put_body
     assert_equal 201, last_response.status
-    put "/resources/app123@heroku.com/billable_events/1", put_body
-    put "/resources/app123@heroku.com/billable_events/1", put_body
+    put "/resources/app123/billable_events/1", put_body
+    put "/resources/app123/billable_events/1", put_body
     assert_equal 200, last_response.status
   end
 
-  def test_open_event_on_second_call_and_change_qty
+  def test_open_event_on_second_call_and_ignores_change
     setup_auth
     put_body = {
       :qty        => 1,
       :rate_code  => @rate_code.slug,
-      :from       => '2011-01-01 00:00:00 -0800',
-      :to         => nil
+      :time       => '2011-01-01 00:00:00 +0000',
+      :state      => 'open'
     }
 
     put "/resources/app123@heroku.com/billable_events/1", put_body
-    put "/resources/app123@heroku.com/billable_events/1", put_body.merge(:qty => 2)
-    assert_equal 409, last_response.status
-  end
-
-  def test_open_event_on_second_call_and_change_from
-    setup_auth
-    put_body = {
-      :qty        => 1,
-      :rate_code  => @rate_code.slug,
-      :from       => '2011-01-01 00:00:00 -0800',
-      :to         => nil
-    }
-
-    put "/resources/app123@heroku.com/billable_events/1", put_body
-    put "/resources/app123@heroku.com/billable_events/1", put_body.merge(:from => '2011-01-10 00:00:00 -0800')
-    assert_equal 409, last_response.status
-  end
-
-  def test_open_event_on_second_call_and_change_rate_code
-    setup_auth
-    put_body = {
-      :qty        => 1,
-      :rate_code  => @rate_code.slug,
-      :from       => '2011-01-01 00:00:00 -0800',
-      :to         => nil
-    }
-
-    put "/resources/app123@heroku.com/billable_events/1", put_body
-    some_other_rate_code = build_rate_code(:provider_id => @provider.id, :slug=>'RTXXXX')
-    put "/resources/app123@heroku.com/billable_events/1", put_body.merge(:rate_code => some_other_rate_code.slug)
-    assert_equal 409, last_response.status
-  end
-
-  def test_open_event_including_to
-    setup_auth
-    put_body = {
-      :qty        => 1,
-      :rate_code  => @rate_code.slug,
-      :from       => '2011-01-01 00:00:00 -0800',
-      :to         => '2011-01-02 00:00:00 -0800'
-    }
-    put "/resources/app123@heroku.com/billable_events/1", put_body
-    assert_equal 201, last_response.status
+    qty = JSON.parse(last_response.body)["qty"]
+    time = JSON.parse(last_response.body)["time"]
+    put "/resources/app123@heroku.com/billable_events/1", put_body.merge(:qty => 2, :time => '2011-01-01 00:00:00 +0000')
+    assert_equal qty, JSON.parse(last_response.body)["qty"]
+    assert_equal time, JSON.parse(last_response.body)["time"]
   end
 
   def test_close_event
     setup_auth
-    open = {
+    body = {
       :qty        => 1,
       :rate_code  => @rate_code.slug,
-      :from       => '2011-01-01 00:00:00 -0800',
-      :to         => nil
+      :time       => '2011-01-01 00:00:00 +0000',
+      :state      => 'open'
     }
-    put "/resources/app123@heroku.com/billable_events/1", open
-    put "/resources/app123@heroku.com/billable_events/1", {:to => '2011-02-01 00:00:00 -0800'}
-
+    put "/resources/123/billable_events/1", body
+    put "/resources/123/billable_events/1", body.merge({:state => "close", :time => '2011-01-01 00:00:01 +0000'})
     assert_equal 200, last_response.status
-    assert_equal '2011-01-01 00:00:00 -0800', JSON.parse(last_response.body)["from"]
-    assert_equal '2011-02-01 00:00:00 -0800', JSON.parse(last_response.body)["to"]
   end
 
 end

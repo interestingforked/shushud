@@ -1,61 +1,39 @@
 class BillableEvent < Sequel::Model
 
-  ILLEGAL_CHANGE = "illegal change"
+  Open = "open"
+  Close = "close"
 
-  ATTRS = [:provider_id, :hid, :event_id, :reality_from, :reality_to, :qty, :rate_code_id]
-
-  def self.find_or_instantiate_by_provider_and_event(provider_id, event_id)
-    params = {:provider_id => provider_id, :event_id => event_id}
-    filter(params).first or new(params)
+  # I expect that provider_id & rate_code have been validated by this point.
+  def self.append_new_event(args, state)
+    shulog("#event_creation #{args}")
+    create(
+      :provider_id      => args[:provider_id],
+      :rate_code_id     => args[:rate_code_id],
+      :event_id         => args[:event_id],
+      :hid              => args[:hid],
+      :qty              => args[:qty],
+      :time             => args[:time],
+      :state            => state,
+      :transitioned_at  => Time.now
+    )
   end
 
   def api_values
     {
+      :id          => self[:id],
       :provider_id => self[:provider_id],
       :event_id    => self[:event_id],
       :hid         => self[:hid],
       :rate_code   => rate_code[:slug],
       :qty         => self[:qty],
-      :from        => self[:reality_from].to_s,
-      :to          => self[:reality_to].to_s
+      :time        => self[:time],
+      :state       => self[:state]
     }
   end
 
   def rate_code
+    shulog("find rate_code=#{rate_code_id}")
     RateCode[self[:rate_code_id]]
-  end
-
-  def public_values
-    values.select {|k,v| ATTRS.include?(k) }
-  end
-
-  def validate
-    super
-
-    if !new?
-      detect_incorrect_data_change
-    end
-  end
-
-  def detect_incorrect_data_change
-    if !only_modifying_reality_to?
-      changed_from_non_nil_columns.each {|col| errors.add(col, ILLEGAL_CHANGE) }
-    end
-  end
-
-  def only_modifying_reality_to?
-    if modified?
-      changed_columns == [:reality_to]
-    else
-      true
-    end
-  end
-
-  # Say that reality_to is nil in the database and qty is not nil. Also say that
-  # we have set both qty and reality_to to some non-nil value.
-  # This method will tell us that qty is the only changed column.
-  def changed_from_non_nil_columns
-    changed_columns.reject {|col| self.class[self.id][col].nil? }
   end
 
 end
