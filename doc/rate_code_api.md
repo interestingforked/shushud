@@ -14,7 +14,7 @@ from submitting events willy-nilly.
 **HTTP Basic**
 
 This API uses authentication similar to the rest of Shushu's API: provider_id:provider_token.
-However, there is authorization on  this API. A special bit is required to write rate codes.
+However, there is authorization on this API. A special bit is required to write rate codes.
 This mechanism will allow the Add-ons Team to properly filter who is creating rate_codes.
 
 ### Create Rate Code (POST)
@@ -23,7 +23,9 @@ Before you can create billable_events, you must create a rate code for the event
 Depending on your provider credentials, you may have to wait for rate_code approval.
 
 ```bash
-$ curl -X POST https://provider_id:provider_token@shushu.heroku.com/rate_codes -d rate=5 -d description=dyno-hour
+$ curl -X POST https://provider_id:provider_token@shushu.heroku.com/rate_codes \
+  -d "rate=5" \
+  -d "description=dyno-hour"
 {
   'slug': 'RT01',
   'status': 'active',
@@ -38,8 +40,8 @@ particularly useful for the add-ons team. This features requires a special bit o
 
 ```bash
 $ curl -X POST https://provider_id:provider_token@shushu.heroku.com/providers/:target_provier_id/rate_codes \
-               -d rate=5 \
-               -d description=dyno-hour
+  -d "rate=5" \
+  -d "description=dyno-hour"
 ```
 
 ### View Rate Code (GET)
@@ -76,7 +78,8 @@ Moments later you realize that you have entered an incorrect rate for the rate c
 Instead of modifying the billable_events, you can simply update the rate on the rate_code.
 
 ```bash
-$ curl -X PUT https://provider_id:provider_token@shushu.heroku.com/rate_codes/:rate_code_slug -d rate=10
+$ curl -X PUT https://provider_id:provider_token@shushu.heroku.com/rate_codes/:rate_code_slug \
+  -d "rate=10"
 
 {
   'slug': 'RT01',
