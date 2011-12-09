@@ -21,7 +21,7 @@ token.
 
 ```bash
 $ curl -i -X POST http://shushu.heroku.com/resource_ownership \
-  -d "hid=123" \
+  -d "hid=987" \
   -d "account_id=123"
 
 ```
@@ -30,16 +30,16 @@ $ curl -i -X POST http://shushu.heroku.com/resource_ownership \
 
 ```bash
 $ curl -i -X PUT http://shushu.heroku.com/resource_ownership \
-  -d "hid=123" \
-  -d "account_id=456"
+  -d "hid=987" \
   -d "prev_account_id=123"
+  -d "account_id=456"
 ```
 
 ### DELETE Deactivate
 
 ```bash
 $ curl -i -X DELETE http://shushu.heroku.com/resource_ownership \
-  -d "hid=123" \
+  -d "hid=987" \
   -d "account_id=456"
 ```
 
