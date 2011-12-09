@@ -32,7 +32,6 @@ class BillableEvent < Sequel::Model
   end
 
   def rate_code
-    shulog("find rate_code=#{rate_code_id}")
     RateCode[self[:rate_code_id]]
   end
 
