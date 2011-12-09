@@ -11,7 +11,7 @@ Shushu is a heroku application. Components include:
 $ export DATABASE_URL='postgres://username:password@localhost/shushu'
 $ export RACK_ENV='production'
 $ bundle install
-$ bundle exec bin/reset
+$ bundle exec bin/db
 $ bundle exec bin/console
 irb: Provider.create(:name => "shushutest", :token => "pass")
 $ foreman start web
