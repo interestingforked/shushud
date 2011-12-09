@@ -27,7 +27,7 @@ Sequel.migration do
     add_column :billable_events, :qty,                "int"
     add_column :billable_events, :event_id,           "varchar(255)"
     add_column :billable_events, :hid,                "varchar(255)"
-    add_column :billable_events, :time,               "timestamp"
+    add_column :billable_events, :time,               "timestamptz"
     add_column :billable_events, :state,              "varchar(255)"
     add_column :billable_events, :transitioned_at,    "varchar(255)"
   end

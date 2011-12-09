@@ -30,7 +30,7 @@ module Shushu
     end
   )
 
-  Sequel.default_timezone     = :utc
+  Sequel.default_timezone = :utc
 
   def self.http_api
     @@http_api ||= Rack::Builder.new do
