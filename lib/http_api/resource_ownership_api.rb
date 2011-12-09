@@ -1,9 +1,15 @@
 class ResourceOwnershipApi < Sinatra::Application
 
+  helpers { include Authentication }
+
+  before  do
+    content_type(:json)
+    authenticate_trusted_consumer
+  end
+
   # when someone queries for both account_id and hid.
   class QueryMutexErr < RuntimeError; end
 
-  before  {content_type(:json)}
 
   get("/")    {perform(:query, query)}
   post("/")   {perform(:activate, account_id, hid)}

@@ -31,11 +31,21 @@ module Authentication
     end
   end
 
+  def core?(user, password)
+    user == 'core' && password == ENV["VAULT_PASSWORD"]
+  end
+
   def authenticate_provider
     return if authenticated?
     unauthenticated!  unless auth.provided?
     bad_request!      unless auth.basic?
     unauthenticated!  unless authenticate(*auth.credentials)
+  end
+
+  def authenticate_trusted_consumer
+    unauthenticated!  unless auth.provided?
+    bad_request!      unless auth.basic?
+    unauthenticated!  unless core?(*auth.credentials)
   end
 
 end
