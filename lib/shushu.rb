@@ -30,7 +30,7 @@ module Shushu
     end
   )
 
-  Sequel.database_timezone = :utc
+  Sequel.database_timezone    = :utc
   Sequel.application_timezone = :utc
   Sequel.default_timezone     = :utc
 
