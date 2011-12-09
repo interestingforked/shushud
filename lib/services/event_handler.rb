@@ -6,7 +6,7 @@ module EventHandler
   extend self
 
   def find(conditions)
-    BillableEvent.filter(:provider_id => conditions[:provider_id], :resource_id => conditions[:resource_id]).all
+    BillableEvent.filter(:provider_id => conditions[:provider_id], :hid => conditions[:hid]).all
   end
 
   def find_open(provider_id, event_id)
@@ -37,7 +37,7 @@ module EventHandler
     BillableEvent.create(
       :event_id       => args[:event_id],
       :provider_id    => args[:provider_id],
-      :resource_id    => args[:resource_id],
+      :hid            => args[:hid],
       :rate_code_id   => find_rate_code_id(args[:rate_code]),
       :qty            => args[:qty],
       :reality_from   => args[:reality_from],

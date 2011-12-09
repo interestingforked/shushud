@@ -25,7 +25,7 @@ class ApiTest < ShushuTest
 
     get_body = put_body.merge({
       "provider_id" => @provider.id,
-      "resource_id" => "123",
+      "hid" => "123",
       "event_id"    => "1"
     })
     get "/resources/123/billable_events"

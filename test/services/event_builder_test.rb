@@ -12,7 +12,7 @@ class EventBuilderTest < ShushuTest
   def test_handle_incomming_when_missing_rate_code
     args = {
       :provider_id    => @provider.id,
-      :resource_id    => "app123",
+      :hid            => "app123",
       :qty            => 1,
       :rate_code      => "invalid-slug",
       :reality_from   => Time.mktime(2011,1)
@@ -24,7 +24,7 @@ class EventBuilderTest < ShushuTest
   def test_handle_incoming_when_open_new
     args = {
       :provider_id    => @provider.id,
-      :resource_id    => "app123",
+      :hid            => "app123",
       :qty            => 1,
       :rate_code      => @rate_code.slug,
       :reality_from   => Time.mktime(2011,1)
@@ -42,7 +42,7 @@ class EventBuilderTest < ShushuTest
     args = {
       :provider_id    => @provider.id,
       :event_id       => '123',
-      :resource_id    => "app123",
+      :hid            => "app123",
       :qty            => 1,
       :rate_code_id   => @rate_code[:id],
       :reality_from   => Time.mktime(2011,1)
@@ -58,7 +58,7 @@ class EventBuilderTest < ShushuTest
     args = {
       :provider_id    => @provider.id,
       :event_id       => '123',
-      :resource_id    => "app123",
+      :hid            => "app123",
       :qty            => 1,
       :rate_code_id   => @rate_code[:id],
       :reality_from   => Time.mktime(2011,1)
@@ -73,7 +73,7 @@ class EventBuilderTest < ShushuTest
     args = {
       :provider_id    => @provider.id,
       :event_id       => '123',
-      :resource_id    => "app123",
+      :hid            => "app123",
       :qty            => 1,
       :rate_code_id   => @rate_code[:id],
       :reality_from   => Time.mktime(2011,1)

@@ -2,7 +2,7 @@ class BillableEvent < Sequel::Model
 
   ILLEGAL_CHANGE = "illegal change"
 
-  ATTRS = [:provider_id, :resource_id, :event_id, :reality_from, :reality_to, :qty, :rate_code_id]
+  ATTRS = [:provider_id, :hid, :event_id, :reality_from, :reality_to, :qty, :rate_code_id]
 
   def self.find_or_instantiate_by_provider_and_event(provider_id, event_id)
     params = {:provider_id => provider_id, :event_id => event_id}
@@ -13,7 +13,7 @@ class BillableEvent < Sequel::Model
     {
       :provider_id => self[:provider_id],
       :event_id    => self[:event_id],
-      :resource_id => self[:resource_id],
+      :hid         => self[:hid],
       :rate_code   => rate_code[:slug],
       :qty         => self[:qty],
       :from        => self[:reality_from].to_s,

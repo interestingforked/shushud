@@ -7,23 +7,23 @@ class EventsApi < Sinatra::Application
     content_type :json
   end
 
-  get "/:resource_id/billable_events" do
+  get "/:hid/billable_events" do
     provider = Provider[params[:provider_id]]
     builder = EventBuilder.new(EventHandler)
 
-    cond = {:resource_id => params[:resource_id], :provider_id => params[:provider_id]}
+    cond = {:hid => params[:hid], :provider_id => params[:provider_id]}
     events = builder.find(cond)
     JSON.dump(events.map(&:api_values))
   end
 
-  put "/:resource_id/billable_events/:event_id" do
+  put "/:hid/billable_events/:event_id" do
     provider = Provider[params[:provider_id]]
     builder = EventBuilder.new(EventHandler)
 
     http_status, event = builder.handle_incomming(
       :provider_id    => params[:provider_id],
       :event_id       => params[:event_id],
-      :resource_id    => params[:resource_id],
+      :hid            => params[:hid],
       :rate_code      => params[:rate_code],
       :qty            => params[:qty],
       :reality_from   => params[:from],
@@ -33,7 +33,7 @@ class EventsApi < Sinatra::Application
     body(JSON.dump(event.api_values))
   end
 
-  delete "/:resource_id/billable_events/:event_id" do
+  delete "/:hid/billable_events/:event_id" do
   end
 
 end
