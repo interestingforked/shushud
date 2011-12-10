@@ -22,6 +22,15 @@ class ResourceOwnershipApiTest < ShushuTest
     assert_equal second_account.id, updated_record["account_id"].to_i
   end
 
+  def test_deactivate_record
+    setup_auth
+    post "/resource_ownerships", {:account_id => account.id, :hid => "123"}
+    put "/resource_ownerships", {:prev_account_id => account.id, :account_id => nil, :hid => "123"}
+    assert_equal 200, last_response.status
+    updated_record = JSON.parse(last_response.body)
+    assert_equal account.id, updated_record["account_id"].to_i
+  end
+
   def test_query_record
     setup_auth
     get "/resource_ownerships", {:account_id => account.id}

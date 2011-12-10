@@ -35,11 +35,11 @@ module Shushu
 
   def self.http_api
     @@http_api ||= Rack::Builder.new do
-      map("/heartbeat")          {run HeartbeatApi}
-      map("/resources")          {run EventsApi}
-      map("/rate_codes")         {run RateCodeApi}
-      map("/providers")          {run ProviderApi}
-      map("/resource_ownerships"){run ResourceOwnershipApi}
+      map("/heartbeat")           {run HeartbeatApi}
+      map("/resources")           {run EventsApi}
+      map("/rate_codes")          {run RateCodeApi}
+      map("/providers")           {run ProviderApi}
+      map("/resource_ownerships") {run ResourceOwnershipApi}
     end
   end
 

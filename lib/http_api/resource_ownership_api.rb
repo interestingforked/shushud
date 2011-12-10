@@ -14,7 +14,6 @@ class ResourceOwnershipApi < Sinatra::Application
   get("/")    {perform(:query, query)}
   post("/")   {perform(:activate, account_id, hid)}
   put("/")    {perform(:transfer, prev_account_id, account_id, hid)}
-  delete("/") {perform(:deactivate, account_id, hid)}
 
   def perform(method, *args)
     begin
