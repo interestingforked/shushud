@@ -7,12 +7,12 @@ class ResourceOwnershipApi < Sinatra::Application
     authenticate_trusted_consumer
   end
 
-  # when someone queries for both account_id and hid.
-  class QueryMutexErr < RuntimeError; end
-
+  # This happens when someone queries for both account_id and hid.
+  QueryMutexErr = Class.new(RuntimeError)
 
   get("/")    {perform(:query, query)}
   post("/")   {perform(:activate, account_id, hid)}
+  # Transfer to new account and deactive use this endpoint.
   put("/")    {perform(:transfer, prev_account_id, account_id, hid)}
 
   def perform(method, *args)
