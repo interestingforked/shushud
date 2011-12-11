@@ -31,3 +31,28 @@ $ curl -X PUT http://shushu.heroku.com/resources/:hid/billable_events/:event_id 
 ```
 
 ## Querying Events
+
+### Find all events by account_id
+
+```bash
+$ curl -X GET \
+  https://shushu.heorku.com/accounts/:account_id/billable_events?period_start=2011-11-01&period_end=2011-12-01
+
+HTTP/1.1 200 OK
+{
+  [
+    {
+      "event_id": 12345,
+      "group": "dyno",
+      "name": "web",
+      "description": "",
+      "qty": 750,
+      "rate": 5,
+      "from": "2011-11-01 00:00:01 UTC",
+      "to": "2011-12-01 00:00:00 UTC",
+      "state": "open"
+    }
+  ]
+}
+```
+
