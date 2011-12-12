@@ -11,6 +11,7 @@ calls that have identical *event_id*, *state* values will be ignored.
 * time: The UTC time in which the event occured.
 * state: Can be 'open' or 'close'.
 * rate_code: The slug of the rate code associated with the event. See the rate_code API doc.
+* product_name: In the case where the rate code does not define a product_name, each billable_event belonging to that rate_code must specifu a product_name.
 
 ### Open Event
 
@@ -19,7 +20,8 @@ $ curl -X PUT http://shushu.heroku.com/resources/:hid/billable_events/:event_id 
   -d "qty=1" \
   -d "time=2011-12-01 00:00:00" \
   -d "state=open" \
-  -d "rate_code=RT01"
+  -d "rate_code=RT01" \
+  -d "product_name=web"
 ```
 
 ### Close Event
