@@ -33,26 +33,24 @@ class ResourceOwnershipApiTest < ShushuTest
 
   def test_query_record
     setup_auth
-    get "/resource_ownerships", {:account_id => account.id}
-    assert_equal 404, last_response.status
+    get "/resource_ownerships", {:account_id => account.id, :from => "2011-11-01", :to => "2011-12-01"}
+    assert_equal(200, last_response.status)
+    assert_equal([], JSON.parse(last_response.body))
   end
 
-  def test_query_record_finds_with_hid
+  def test_query_record_with_data
     setup_auth
     post "/resource_ownerships", {:account_id => account.id, :hid => "123"}
-    newly_created_r = JSON.parse(last_response.body)
-    hid = newly_created_r["hid"]
-    get "/resource_ownerships", {:hid => hid}
-    assert_equal 200, last_response.status
-  end
+    assert_equal(201, last_response.status)
 
-  def test_query_record_finds_with_account_id
-    setup_auth
-    post "/resource_ownerships", {:account_id => account.id, :hid => "123"}
-    newly_created_r = JSON.parse(last_response.body)
-    account_id = newly_created_r["account_id"]
-    get "/resource_ownerships", {:account_id => account_id}
-    assert_equal 200, last_response.status
+    f, t = (Time.now - 1000), (Time.now + 1000)
+    get "/resource_ownerships", {:account_id => account.id, :from => f, :to => t}
+    results = JSON.parse(last_response.body)
+    assert_equal(1, results.length)
+    result = results.pop
+    assert_equal(200, last_response.status)
+    assert_equal(account.id, result["account_id"])
+    assert_equal("123", result["hid"])
   end
 
   def account

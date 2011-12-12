@@ -9,6 +9,14 @@ class ResourceOwnershipRecordTest < ShushuTest
     assert(!records.empty?, "Expected to find some records")
   end
 
+  def test_collapse_returns_from
+    account = build_account
+    build_resource_ownership_record(:account_id => account.id, :hid => "123", :time => jan, :state => ResourceOwnershipRecord::Active)
+    records = ResourceOwnershipRecord.collapse(account.id, jan, feb).all
+    record = records.first
+    assert_equal(jan, record[:from])
+  end
+
   def test_collapse_returns_from_and_to
     account = build_account
     build_resource_ownership_record(:account_id => account.id, :hid => "123", :time => jan, :state => ResourceOwnershipRecord::Active)

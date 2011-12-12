@@ -18,7 +18,7 @@ class BillableEvent < Sequel::Model
     )
   end
 
-  def api_values
+  def to_h
     {
       :id          => self[:id],
       :provider_id => self[:provider_id],

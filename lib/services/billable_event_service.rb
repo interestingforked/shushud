@@ -4,8 +4,7 @@ module BillableEventService
   def find(conditions)
     BillableEvent.
       filter(:provider_id => conditions[:provider_id], :hid => conditions[:hid]).
-      all.
-      map(&:api_values)
+      all
   end
 
   def handle_new_event(args)
@@ -14,13 +13,12 @@ module BillableEventService
       shulog("#event_open")
       if event = BillableEvent[:state => BillableEvent::Open, :event_id => args[:event_id]]
         shulog("#event_found")
-        event.api_values
+        event
       else
-        open(args).api_values
-      end
-    when BillableEvent::Close
+        open(args)
+      end when BillableEvent::Close
       shulog("#event_close")
-      close(args).api_values
+      close(args)
     else
       shulog("#unhandled_state args=#{args}")
       raise(ArgumentError, "Unable to create new event with args=#{args}")

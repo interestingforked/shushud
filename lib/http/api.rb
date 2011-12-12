@@ -44,7 +44,7 @@ module Http
     get "/resource_ownerships" do
       authenticate_trusted_consumer
       perform do
-        ResourceOwnershipService.query(params[:account_id], params[:hid])
+        ResourceOwnershipService.query(params[:account_id], params[:from], params[:to])
       end
     end
 
@@ -117,13 +117,9 @@ module Http
       begin
         exception_message = nil
         res = yield
-        json_res = if res.respond_to?(:to_h)
-          JSON.dump(res.to_h)
-        else
-          JSON.dump(res)
-        end
+        json = build_json(res)
         status(status_based_on_verb(request.request_method))
-        body(json_res)
+        body(json)
       rescue RuntimeError => e
         log("#http_api_runtime_error e=#{e.message} s=#{e.backtrace}")
         status(400)
@@ -152,6 +148,16 @@ module Http
       case verb
       when "POST" then 201
       when "PUT"  then 200
+      end
+    end
+
+    def build_json(obj)
+      if obj.respond_to?(:to_h)
+        JSON.dump(obj.to_h)
+      elsif obj.respond_to?(:keys)
+        JSON.dump(obj)
+      elsif obj.respond_to?(:each)
+        JSON.dump(obj.map(&:to_h))
       end
     end
 

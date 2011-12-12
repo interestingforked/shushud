@@ -2,16 +2,12 @@ module ResourceOwnershipService
 
   extend self
 
-  def query(account_id, hid)
-    query = if !(account_id.nil? ^ hid.nil?)
-      raise(RuntimeError, "Please choose account_id XOR hid")
-    elsif account_id
-      {:account_id => account_id}
-    elsif hid
-      {:hid => hid}
-    end
-    query[:state] = ResourceOwnershipRecord::Active
-    ResourceOwnershipRecord[query] || raise(Shushu::NotFound, "Unable to find ResourceOwnershipRecord with #{query}")
+  # You can pass time represented as strings of instances of Time.
+  def query(account_id, from, to)
+    from  = Time.parse(from)  if from.class == String
+    to    = Time.parse(to)    if to.class   == String
+
+    ResourceOwnershipRecord.collapse(account_id, from, to).all
   end
 
   def activate(account_id, hid)
@@ -44,7 +40,8 @@ module ResourceOwnershipService
     ResourceOwnershipRecord.create({
       :account_id => account_id,
       :hid        => hid,
-      :state      => state
+      :state      => state,
+      :time       => Time.now
     })
   end
 
