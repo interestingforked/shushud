@@ -29,7 +29,6 @@ class EventsApiTest < ShushuTest
     assert_equal("456", JSON.parse(last_response.body).first["event_id"])
   end
 
-
   def test_open_event
     setup_auth
     body = {
@@ -39,7 +38,7 @@ class EventsApiTest < ShushuTest
       :state      => 'open'
     }
     put("/resources/123/billable_events/1", body)
-    assert_equal(201, last_response.status)
+    assert_equal(200, last_response.status)
     assert_equal('2011-01-01 00:00:00 UTC', JSON.parse(last_response.body)["time"])
     assert_equal('open', JSON.parse(last_response.body)["state"])
   end
@@ -69,7 +68,7 @@ class EventsApiTest < ShushuTest
       :state      => 'open'
     }
     put "/resources/app123/billable_events/1", put_body
-    assert_equal 201, last_response.status
+    assert_equal 200, last_response.status
     put "/resources/app123/billable_events/1", put_body
     put "/resources/app123/billable_events/1", put_body
     assert_equal 200, last_response.status

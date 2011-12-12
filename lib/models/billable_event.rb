@@ -33,6 +33,7 @@ class BillableEvent < Sequel::Model
 
   def rate_code
     RateCode[self[:rate_code_id]]
+    {:slug => "hi"}
   end
 
 end

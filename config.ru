@@ -1,2 +1,2 @@
 require './lib/shushu'
-Rack::Handler::Thin.run(Shushu.http_api, :Port => ENV["PORT"])
+Rack::Handler::Thin.run(HttpApi, :Port => ENV["PORT"])

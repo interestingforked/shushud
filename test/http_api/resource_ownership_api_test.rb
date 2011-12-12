@@ -9,7 +9,7 @@ class ResourceOwnershipApiTest < ShushuTest
   def test_activate_record
     setup_auth
     post "/resource_ownerships", {:account_id => account.id, :hid => "123"}
-    assert_equal 200, last_response.status
+    assert_equal 201, last_response.status
   end
 
   def test_transfer_record

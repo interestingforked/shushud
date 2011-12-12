@@ -1,9 +1,12 @@
 class RateCode < Sequel::Model
 
-  PUBLIC_ATTRS = [:slug, :rate, :description]
-
-  def api_values
-    values.select {|v| PUBLIC_ATTRS.include?(v)}
+  def to_h
+    {
+      :slug => self[:slug],
+      :rate => self[:rate],
+      :group => self[:product_group],
+      :name => self[:product_name]
+    }
   end
 
 end

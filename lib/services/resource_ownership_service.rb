@@ -1,12 +1,17 @@
 module ResourceOwnershipService
 
-  class NoAccount < Exception; end
-
   extend self
 
-  def query(query)
+  def query(account_id, hid)
+    query = if !(account_id.nil? ^ hid.nil?)
+      raise(RuntimeError, "Please choose account_id XOR hid")
+    elsif account_id
+      {:account_id => account_id}
+    elsif hid
+      {:hid => hid}
+    end
     query[:state] = ResourceOwnershipRecord::Active
-    ResourceOwnershipRecord[query] || raise(NoAccount)
+    ResourceOwnershipRecord[query] || raise(HttpApi::NotFound, "Unable to find ResourceOwnershipRecord with #{query}")
   end
 
   def activate(account_id, hid)
@@ -31,9 +36,10 @@ module ResourceOwnershipService
 
   def assert_valid_account_id!(*ids)
     unless ids.all? {|i| Account.exists?(i)}
-      raise(NoAccount, "Could not find account with ids=#{ids}")
+      raise(HttpApi::NotFound, "Could not find account with ids=#{ids}")
     end
   end
+
 
   def create_record(account_id, hid, state)
     ResourceOwnershipRecord.create({

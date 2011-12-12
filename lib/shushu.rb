@@ -32,25 +32,10 @@ module Shushu
   )
 
   Sequel.default_timezone = :utc
-
-  def self.http_api
-    @@http_api ||= Rack::Builder.new do
-      map("/heartbeat")           {run HeartbeatApi}
-      map("/resources")           {run EventsApi}
-      map("/rate_codes")          {run RateCodeApi}
-      map("/providers")           {run ProviderApi}
-      map("/resource_ownerships") {run ResourceOwnershipApi}
-    end
-  end
-
 end
 
-require './lib/http_api/authentication'
-require './lib/http_api/events_api'
-require './lib/http_api/heartbeat_api'
-require './lib/http_api/rate_code_api'
-require './lib/http_api/provider_api'
-require './lib/http_api/resource_ownership_api'
+require './lib/http_authentication'
+require './lib/http_api'
 
 require './lib/models/billable_event'
 require './lib/models/provider'
@@ -58,5 +43,6 @@ require './lib/models/rate_code'
 require './lib/models/account'
 require './lib/models/resource_ownership_record'
 
-require './lib/services/event_handler'
+require './lib/services/billable_event_service'
 require './lib/services/resource_ownership_service'
+require './lib/services/rate_code_service'

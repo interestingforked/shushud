@@ -41,12 +41,4 @@ class RateCodeApiTest < ShushuTest
     assert_equal 200, last_response.status
   end
 
-  def test_update_rate_code_with_unkonwn_vals
-    setup_auth
-    RateCode.create(:provider_id => @provider.id, :slug => "rt01", :rate => 5)
-
-    put "/rate_codes/rt01", {:rate_code => {:something_strange  => 10}}
-    assert_equal 422, last_response.status
-  end
-
 end

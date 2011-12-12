@@ -14,4 +14,13 @@ class ResourceOwnershipRecord < Sequel::Model
     EOD
   end
 
+  def to_h
+    {
+      :account_id => self[:account_id],
+      :hid        => self[:hid],
+      :from       => self[:from],
+      :to         => self[:to]
+      }
+  end
+
 end
