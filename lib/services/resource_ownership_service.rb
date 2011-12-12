@@ -40,7 +40,6 @@ module ResourceOwnershipService
     end
   end
 
-
   def create_record(account_id, hid, state)
     ResourceOwnershipRecord.create({
       :account_id => account_id,
