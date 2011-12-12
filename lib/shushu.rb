@@ -32,6 +32,11 @@ module Shushu
   )
 
   Sequel.default_timezone = :utc
+
+  def self.test?
+    ENV["RACK_ENV"] == "test"
+  end
+
 end
 
 require './lib/http_authentication'

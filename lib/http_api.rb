@@ -139,9 +139,10 @@ class HttpApi < Sinatra::Base
     rescue DataConflict       => e
       status(409)
       body(e.message)
-    #rescue Exception    => e
-    #  status(500)
-    #  body(e.message)
+    rescue Exception    => e
+      status(500)
+      body(e.message)
+      raise if Shushu.test?
     end
   end
 
