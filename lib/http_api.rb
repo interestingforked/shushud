@@ -127,19 +127,24 @@ class HttpApi < Sinatra::Base
       end
       status(status_based_on_verb(request.request_method))
       body(json_res)
-    rescue RuntimeError       => e
+    rescue RuntimeError => e
+      log("#http_api_runtime_error e=#{e.message} s=#{e.backtrace}")
       status(400)
       body(e.message)
     rescue AuthorizationError => e
+      log("#http_api_authorization_error e=#{e.message} s=#{e.backtrace}")
       status(403)
       body(e.message)
-    rescue NotFound           => e
+    rescue NotFound => e
+      log("#http_api_find_error e=#{e.message} s=#{e.backtrace}")
       status(404)
       body(e.message)
-    rescue DataConflict       => e
+    rescue DataConflict => e
+      log("#http_api_data_error e=#{e.message} s=#{e.backtrace}")
       status(409)
       body(e.message)
-    rescue Exception    => e
+    rescue Exception => e
+      log("#http_api_error e=#{e.message} s=#{e.backtrace}")
       status(500)
       body(e.message)
       raise if Shushu.test?
@@ -154,7 +159,7 @@ class HttpApi < Sinatra::Base
   end
 
   def log(msg)
-    shulog("api=resource_ownership_records_api account=#{account_id} hid=#{hid} #{msg}")
+    shulog("account=#{params[:account_id]} provider=#{params[:provider_id]} hid=#{params[:hid]} #{msg}")
   end
 
 end
