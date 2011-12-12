@@ -17,7 +17,10 @@ module Shushu
 
   VERSION = 0
 
-  class ShushuError < ::RuntimeError; end
+  NotFound            = Class.new(Exception)
+  DataConflict        = Class.new(Exception)
+  AuthorizationError  = Class.new(Exception)
+  ShushuError         = Class.new(RuntimeError)
 
   DB = (
     case ENV["RACK_ENV"].to_s
@@ -39,8 +42,8 @@ module Shushu
 
 end
 
-require './lib/http_authentication'
-require './lib/http_api'
+require './lib/http/authentication'
+require './lib/http/api'
 
 require './lib/models/billable_event'
 require './lib/models/provider'

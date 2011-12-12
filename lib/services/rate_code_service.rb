@@ -7,7 +7,7 @@ module RateCodeService
       rate_code
     else
       shulog("action=get_rate_code not_found slug=#{slug}")
-      raise(HttpApi::NotFound, "Could not find rate code with slug=#{slug}")
+      raise(Shushu::NotFound, "Could not find rate code with slug=#{slug}")
     end
   end
 
@@ -19,7 +19,7 @@ module RateCodeService
         target_id = args.delete(:target_provider_id)
         create_record(args.merge(:provider_id => target_id))
       else
-        raise(HttpApi::AuthorizationError, "Provider is not authrozied to create rate_codes")
+        raise(Shushu::AuthorizationError, "Provider is not authrozied to create rate_codes")
       end
     end
   end
@@ -52,7 +52,7 @@ module RateCodeService
         end
       else
         shulog("action=update_rate_code not_found rate_code_id=#{args[:rate_code_id]}")
-        raise(HttpApi::NotFound, "Could not find rate_code with slug=#{args[:slug]}")
+        raise(Shushu::NotFound, "Could not find rate_code with slug=#{args[:slug]}")
       end
     rescue Sequel::Error => e
       raise(RuntimeError, e.message)

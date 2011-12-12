@@ -11,7 +11,7 @@ module ResourceOwnershipService
       {:hid => hid}
     end
     query[:state] = ResourceOwnershipRecord::Active
-    ResourceOwnershipRecord[query] || raise(HttpApi::NotFound, "Unable to find ResourceOwnershipRecord with #{query}")
+    ResourceOwnershipRecord[query] || raise(Shushu::NotFound, "Unable to find ResourceOwnershipRecord with #{query}")
   end
 
   def activate(account_id, hid)
@@ -36,7 +36,7 @@ module ResourceOwnershipService
 
   def assert_valid_account_id!(*ids)
     unless ids.all? {|i| Account.exists?(i)}
-      raise(HttpApi::NotFound, "Could not find account with ids=#{ids}")
+      raise(Shushu::NotFound, "Could not find account with ids=#{ids}")
     end
   end
 

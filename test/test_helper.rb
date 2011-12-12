@@ -32,7 +32,7 @@ class ShushuTest < MiniTest::Unit::TestCase
   end
 
   def app
-    HttpApi
+    Http::Api
   end
 
   def jan
