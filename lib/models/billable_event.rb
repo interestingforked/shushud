@@ -3,21 +3,6 @@ class BillableEvent < Sequel::Model
   Open = "open"
   Close = "close"
 
-  # I expect that provider_id & rate_code have been validated by this point.
-  def self.append_new_event(args, state)
-    shulog("#event_creation #{args}")
-    create(
-      :provider_id      => args[:provider_id],
-      :rate_code_id     => args[:rate_code_id],
-      :event_id         => args[:event_id],
-      :hid              => args[:hid],
-      :qty              => args[:qty],
-      :time             => args[:time],
-      :state            => state,
-      :transitioned_at  => Time.now
-    )
-  end
-
   def to_h
     {
       :id          => self[:id],
@@ -33,7 +18,6 @@ class BillableEvent < Sequel::Model
 
   def rate_code
     RateCode[self[:rate_code_id]]
-    {:slug => "hi"}
   end
 
 end
