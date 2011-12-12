@@ -110,6 +110,7 @@ class HttpApi < Sinatra::Base
   end
 
   get "/rate_codes/:rate_code_slug" do
+    authenticate_provider
     perform do
       RateCodeService.find(params[:rate_code_slug])
     end
