@@ -4,70 +4,9 @@ BEGIN;
 SET timezone TO 'UTC';
 
 /*
-  Helpers
-*/
-
-CREATE OR REPLACE FUNCTION last_day(timestamptz)
-RETURNS timestamptz AS
-$$
-  SELECT (date_trunc('MONTH', $1) + INTERVAL '1 MONTH - 1 day');
-$$ LANGUAGE 'sql' IMMUTABLE STRICT;
-
-CREATE OR REPLACE FUNCTION first_day(timestamptz)
-RETURNS timestamptz AS
-$$
-  SELECT date_trunc('MONTH', $1);
-$$ LANGUAGE 'sql' IMMUTABLE STRICT;
-
-/*
   BillableUnit
   Setup correct from and to timestamps
 */
-
-CREATE VIEW billable_units AS
-  SELECT
-    a.hid,
-    a.time as from,
-    COALESCE(b.time, now()) as to
-
-    FROM billable_events a
-    LEFT OUTER JOIN billable_events b
-    ON
-          a.event_id    = b.event_id
-      AND a.state       = 'open'
-      AND b.state       = 'close'
-    WHERE
-          a.state       = 'open'
-;
-
-CREATE VIEW resource_ownerships AS
-  SELECT
-    a.account_id,
-    a.hid,
-    a.time as from,
-    COALESCE(b.time, now()) as to
-
-    FROM resource_ownership_records a
-    LEFT OUTER JOIN resource_ownership_records b
-    ON
-          a.event_id    = b.event_id
-      AND a.state       = 'active'
-      AND b.state       = 'inactive'
-    WHERE
-          a.state       = 'active'
-;
-
-CREATE VIEW billables AS
-SELECT
-  resource_ownerships.account_id,
-  billable_units.hid,
-  GREATEST(billable_units.from, resource_ownerships.from, (SELECT * from first_day('2000-01-01'))) as from,
-  LEAST(billable_units.to, resource_ownerships.to, (SELECT * from last_day('2000-01-31'))) as to
-  FROM billable_units
-  INNER JOIN resource_ownerships
-    ON
-      billable_units.hid = resource_ownerships.hid
-;
 
 /*
   Test
