@@ -34,6 +34,7 @@ module Shushu
     end
   )
 
+  DB["SET timezone TO 'UTC'"]
   Sequel.default_timezone = :utc
 
   def self.test?
