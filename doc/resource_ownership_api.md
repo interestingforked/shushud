@@ -3,7 +3,7 @@
 ## Purpose
 
 Providers will be submitting billable events that are related to a resource in
-the cloud. (A resource will primaraly be a heroku app but we should not limit
+the cloud. (A resource will primarily be a heroku app but we should not limit
 ourselves to an app, hence we use resource as the noun.) When we build an
 invoice for an account, we will need to determine which billable events will
 be associated with the invoice. We will also need to take into consideration
@@ -16,11 +16,7 @@ the owners for the period of time that they owned the resource.
 
 Each consumer will have a secret token. Basic HTTP will be used to validate the
 token.
-
-### Event ID
-
-The problem with receiving events that involve activation and deactivation is
-that it is difficult to determine which active event to deactivate upon
+### Event ID The problem with receiving events that involve activation and deactivation is that it is difficult to determine which active event to deactivate upon
 receiving a deactivation call. Consider an hid and two accounts. Say that this
 hid bounces back and forth between accounts. Also suppose that one of the
 deactivation calls was delayed by the client. This implies that our API will be
@@ -43,6 +39,16 @@ $ curl -i -X POST http://shushu.heroku.com/resource_ownerships \
 
 ```
 
+**Responses**
+
+* 201 - Resource ownership record was created.
+* 404 - Account not found.
+* 409 - There is already an activation resource_ownership_record with the submitted event_id.
+
+```
+  {"account_id": "123", "hid": "987", "event_id": "456", "state": "active"}
+```
+
 ### Transfer
 
 ```bash
@@ -53,6 +59,16 @@ $ curl -i -X PUT http://shushu.heroku.com/resource_ownerships \
   -d "prev_event_id=456" \
   -d "event_id=789"
 ```
+**Responses**
+
+* 200 - Resource ownership record was transfered.
+* 404 - Account not found.
+* 409 - There is already an activation resource_ownership_record with the submitted event_id.
+
+```
+  {"account_id": "456", "hid": "987", "event_id": "789", "state": "active"}
+```
+
 
 ### Deactivate
 
@@ -63,4 +79,7 @@ $ curl -i -X DELETE http://shushu.heroku.com/resource_ownerships \
   -d "event_id=789"
 ```
 
+### Issues
 
+It is not clear what would happen if a transfer call was issued with the
+identical account_ids. Likewise for transferes with identical event_ids.
