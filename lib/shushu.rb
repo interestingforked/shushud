@@ -54,5 +54,6 @@ require './lib/models/usage_report'
 
 require './lib/services/billable_event_service'
 require './lib/services/billable_unit_builder'
+require './lib/services/usage_report_service'
 require './lib/services/resource_ownership_service'
 require './lib/services/rate_code_service'

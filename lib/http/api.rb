@@ -14,6 +14,16 @@ module Http
     end
 
     #
+    # UsageReports
+    #
+    get "/accounts/:account_id/usage_reports" do
+      authenticate_trusted_consumer
+      perform do
+        UsageReportService.build_report(params[:account_id], params[:from], params[:to])
+      end
+    end
+
+    #
     # BillableEvents
     #
     get "/resources/:hid/billable_events" do

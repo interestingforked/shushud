@@ -11,4 +11,13 @@ class BillableUnit
     yield self
   end
 
+  def to_h
+    {
+      :hid        => hid,
+      :account_id => account_id,
+      :from       => from,
+      :to         => to
+    }
+  end
+
 end
