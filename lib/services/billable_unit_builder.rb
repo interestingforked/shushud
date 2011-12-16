@@ -27,5 +27,4 @@ module BillableUnitBuilder
     end
   end
 
-
 end
