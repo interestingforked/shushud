@@ -4,6 +4,7 @@ gem 'pg'
 gem 'thin'
 gem 'sinatra'
 gem 'sequel'
+gem 'yajl-ruby', :require => 'yajl'
 
 group :test do
   gem 'ruby-debug19', :require => 'ruby-debug'

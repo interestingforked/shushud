@@ -151,14 +151,8 @@ module Http
       end
     end
 
-    def build_json(obj)
-      if obj.respond_to?(:to_h)
-        JSON.dump(obj.to_h)
-      elsif obj.respond_to?(:keys)
-        JSON.dump(obj)
-      elsif obj.respond_to?(:each)
-        JSON.dump(obj.map(&:to_h))
-      end
+    def build_json(service_result)
+      Yajl::Encoder.encode(service_result)
     end
 
     def log(msg)
