@@ -69,5 +69,4 @@ class BillableUnitBuilderTest < ShushuTest
     assert_in_delta(feb, billable_unit.to, 2)
   end
 
-
 end
