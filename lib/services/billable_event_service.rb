@@ -9,22 +9,17 @@ module BillableEventService
   end
 
   def handle_new_event(args)
-    res = open_or_close(args)
-    res.to_h
-  end
-
-  def open_or_close(args)
     case args[:state]
     when BillableEvent::Open
       shulog("#event_open")
       if event = BillableEvent[:state => BillableEvent::Open, :event_id => args[:event_id]]
         shulog("#event_found")
-        event
+        event.to_h
       else
-        open(args)
+        open(args).to_h
       end when BillableEvent::Close
       shulog("#event_close")
-      close(args)
+      close(args).to_h
     else
       shulog("#unhandled_state args=#{args}")
       raise(ArgumentError, "Unable to create new event with args=#{args}")
