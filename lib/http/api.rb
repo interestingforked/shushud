@@ -51,21 +51,21 @@ module Http
     #
     # ResourceOwnership
     #
-    get "/resource_ownerships" do
+    get "/accounts/:account_id/resource_ownerships" do
       authenticate_trusted_consumer
       perform do
         ResourceOwnershipService.query(params[:account_id], params[:from], params[:to])
       end
     end
 
-    post "/resource_ownerships" do
+    post "/accounts/:account_id/resource_ownerships/:event_id" do
       authenticate_trusted_consumer
       perform do
         ResourceOwnershipService.activate(params[:account_id], params[:hid], params[:time], params[:event_id])
       end
     end
 
-    put "/resource_ownerships" do
+    put "/accounts/:prev_account_id/resource_ownerships/:prev_event_id" do
       authenticate_trusted_consumer
       perform do
         ResourceOwnershipService.transfer(
@@ -76,6 +76,13 @@ module Http
           params[:prev_event_id],
           params[:event_id]
         )
+      end
+    end
+
+    delete "/accounts/:account_id/resource_ownerships/:event_id" do
+      authenticate_trusted_consumer
+      perform do
+        ResourceOwnershipService.deactivate(params[:account_id], params[:hid], params[:time], params[:event_id])
       end
     end
 

@@ -16,7 +16,10 @@ the owners for the period of time that they owned the resource.
 
 Each consumer will have a secret token. Basic HTTP will be used to validate the
 token.
-### Event ID The problem with receiving events that involve activation and deactivation is that it is difficult to determine which active event to deactivate upon
+
+### Event ID
+
+The problem with receiving events that involve activation and deactivation is that it is difficult to determine which active event to deactivate upon
 receiving a deactivation call. Consider an hid and two accounts. Say that this
 hid bounces back and forth between accounts. Also suppose that one of the
 deactivation calls was delayed by the client. This implies that our API will be
@@ -32,11 +35,9 @@ support the prev_event_id and the new_account_id as well.
 ### Activate
 
 ```bash
-$ curl -i -X POST http://shushu.heroku.com/resource_ownerships \
-  -d "hid=987" \
-  -d "account_id=123" \
-  -d "event_id=456"
-
+$ curl -i -X POST https://shushu.heroku.com/accounts/:account_id/resource_ownerships/:event_id \
+  -d "hid=987"
+  -d "time=1999-12-31 00:00:00 UTC"
 ```
 
 **Responses**
@@ -46,18 +47,17 @@ $ curl -i -X POST http://shushu.heroku.com/resource_ownerships \
 * 409 - There is already an activation resource_ownership_record with the submitted event_id.
 
 ```
-  {"account_id": "123", "hid": "987", "event_id": "456", "state": "active"}
+{"account_id": "123", "hid": "987", "event_id": "456", "state": "active"}
 ```
 
 ### Transfer
 
 ```bash
-$ curl -i -X PUT http://shushu.heroku.com/resource_ownerships \
+$ curl -i -X PUT https://shushu.heroku.com/accounts/:prev_account_id/resource_ownerships/:prev_event_id \
   -d "hid=987" \
-  -d "prev_account_id=123" \
-  -d "account_id=456" \
-  -d "prev_event_id=456" \
-  -d "event_id=789"
+  -d "account_id=123" \
+  -d "event_id=456" \
+  -d "time=1999-12-31 00:00:00 UTC"
 ```
 **Responses**
 
@@ -66,17 +66,23 @@ $ curl -i -X PUT http://shushu.heroku.com/resource_ownerships \
 * 409 - There is already an activation resource_ownership_record with the submitted event_id.
 
 ```
-  {"account_id": "456", "hid": "987", "event_id": "789", "state": "active"}
+{"account_id": "456", "hid": "987", "event_id": "789", "state": "active"}
 ```
-
 
 ### Deactivate
 
 ```bash
-$ curl -i -X DELETE http://shushu.heroku.com/resource_ownerships \
-  -d "hid=987" \
-  -d "account_id=456" \
-  -d "event_id=789"
+$ curl -i -X DELETE https://shushu.heroku.com/accounts/:account_id/resource_ownerships/:event_id \
+  -d "hid=789" \
+  -d "time=1999-12-31 00:00:00 UTC"
+```
+
+### Query
+
+The motivation behind this endpoint is to provide a debugging interface.
+
+```bash
+$ curl -X GET https://shushu.heroku.com/accounts/:account_id/resource_ownerships
 ```
 
 ### Issues
