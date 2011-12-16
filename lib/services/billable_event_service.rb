@@ -4,10 +4,16 @@ module BillableEventService
   def find(conditions)
     BillableEvent.
       filter(:provider_id => conditions[:provider_id], :hid => conditions[:hid]).
-      all
+      all.
+      map(&:to_h)
   end
 
   def handle_new_event(args)
+    res = open_or_close(args)
+    res.to_h
+  end
+
+  def open_or_close(args)
     case args[:state]
     when BillableEvent::Open
       shulog("#event_open")
