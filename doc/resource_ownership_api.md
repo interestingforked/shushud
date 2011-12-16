@@ -16,7 +16,9 @@ the owners for the period of time that they owned the resource.
 
 Each consumer will have a secret token. Basic HTTP will be used to validate the
 token.
-### Event ID The problem with receiving events that involve activation and deactivation is that it is difficult to determine which active event to deactivate upon
+### Event ID 
+
+The problem with receiving events that involve activation and deactivation is that it is difficult to determine which active event to deactivate upon
 receiving a deactivation call. Consider an hid and two accounts. Say that this
 hid bounces back and forth between accounts. Also suppose that one of the
 deactivation calls was delayed by the client. This implies that our API will be
