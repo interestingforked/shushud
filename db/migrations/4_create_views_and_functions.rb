@@ -34,6 +34,7 @@ Sequel.migration do
 
       CREATE OR REPLACE VIEW resource_ownerships AS
         SELECT
+          a.event_id,
           a.account_id,
           a.hid,
           a.time as from,

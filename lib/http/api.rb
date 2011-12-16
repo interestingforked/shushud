@@ -51,14 +51,21 @@ module Http
     post "/resource_ownerships" do
       authenticate_trusted_consumer
       perform do
-        ResourceOwnershipService.activate(params[:account_id], params[:hid])
+        ResourceOwnershipService.activate(params[:account_id], params[:hid], params[:time], params[:event_id])
       end
     end
 
     put "/resource_ownerships" do
       authenticate_trusted_consumer
       perform do
-        ResourceOwnershipService.transfer(params[:prev_account_id], params[:account_id], params[:hid])
+        ResourceOwnershipService.transfer(
+          params[:prev_account_id],
+          params[:account_id],
+          params[:hid],
+          params[:time],
+          params[:prev_event_id],
+          params[:event_id]
+        )
       end
     end
 
