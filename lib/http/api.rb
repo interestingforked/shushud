@@ -42,7 +42,7 @@ module Http
           :hid            => params[:hid],
           :event_id       => params[:event_id],
           :qty            => params[:qty],
-          :time           => params[:time],
+          :time           => decode_time(params[:time]),
           :state          => params[:state]
         )
       end
@@ -61,7 +61,7 @@ module Http
     post "/accounts/:account_id/resource_ownerships/:event_id" do
       authenticate_trusted_consumer
       perform do
-        ResourceOwnershipService.activate(params[:account_id], params[:hid], params[:time], params[:event_id])
+        ResourceOwnershipService.activate(params[:account_id], params[:hid], decode_time(params[:time]), params[:event_id])
       end
     end
 
@@ -72,7 +72,7 @@ module Http
           params[:prev_account_id],
           params[:account_id],
           params[:hid],
-          params[:time],
+          decode_time(params[:time]),
           params[:prev_event_id],
           params[:event_id]
         )
@@ -82,7 +82,7 @@ module Http
     delete "/accounts/:account_id/resource_ownerships/:event_id" do
       authenticate_trusted_consumer
       perform do
-        ResourceOwnershipService.deactivate(params[:account_id], params[:hid], params[:time], params[:event_id])
+        ResourceOwnershipService.deactivate(params[:account_id], params[:hid], decode_time(params[:time]), params[:event_id])
       end
     end
 
@@ -177,6 +177,10 @@ module Http
 
     def build_json(service_result)
       Yajl::Encoder.encode(service_result)
+    end
+
+    def decode_time(t)
+      CGI.unescape(t.to_s)
     end
 
     def log(msg)

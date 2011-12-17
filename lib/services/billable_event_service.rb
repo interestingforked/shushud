@@ -48,7 +48,7 @@ module BillableEventService
       :event_id         => args[:event_id],
       :hid              => args[:hid],
       :qty              => args[:qty],
-      :time             => decode_time(args[:time]),
+      :time             => args[:time],
       :state            => BillableEvent::Open,
       :transitioned_at  => Time.now
     )
@@ -62,14 +62,10 @@ module BillableEventService
       :event_id         => args[:event_id],
       :hid              => args[:hid],
       :qty              => args[:qty],
-      :time             => decode_time(args[:time]),
+      :time             => args[:time],
       :state            => BillableEvent::Close,
       :transitioned_at  => Time.now
     )
-  end
-
-  def decode_time(t)
-    Time.parse(t)
   end
 
 end

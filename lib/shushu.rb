@@ -1,5 +1,6 @@
 require 'rubygems'
 require 'logger'
+require 'cgi'
 
 Bundler.require
 
