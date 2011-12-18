@@ -19,7 +19,7 @@ module Http
     get "/accounts/:account_id/usage_reports" do
       authenticate_trusted_consumer
       perform do
-        UsageReportService.build_report(params[:account_id], params[:from], params[:to])
+        UsageReportService.build_report(params[:account_id], decode_time(params[:from]), decode_time(params[:to]))
       end
     end
 
@@ -54,7 +54,7 @@ module Http
     get "/accounts/:account_id/resource_ownerships" do
       authenticate_trusted_consumer
       perform do
-        ResourceOwnershipService.query(params[:account_id], params[:from], params[:to])
+        ResourceOwnershipService.query(params[:account_id], decode_time(params[:from]), decode_time(params[:to]))
       end
     end
 

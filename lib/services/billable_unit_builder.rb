@@ -21,9 +21,9 @@ module BillableUnitBuilder
   def build_billable_units(item)
     BillableUnit.new do |bu|
       bu.account_id = item[:account_id]
-      bu.hid = item[:hid]
-      bu.from = item[:from]
-      bu.to = item[:to]
+      bu.hid        = item[:hid]
+      bu.from       = item[:from]
+      bu.to         = item[:to]
     end
   end
 
