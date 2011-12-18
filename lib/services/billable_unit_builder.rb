@@ -24,6 +24,13 @@ module BillableUnitBuilder
       bu.hid        = item[:hid]
       bu.from       = item[:from]
       bu.to         = item[:to]
+      #TODO Actually solve the problem...
+      bu.rate = 5
+      bu.rate_period = "hour"
+      bu.qty = 1
+      bu.product_group = "dyno"
+      bu.product_name = "web"
+      bu.total = 5
     end
   end
 
