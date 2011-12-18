@@ -5,14 +5,14 @@ class ResourceOwnershipRecordTest < ShushuTest
   def test_collapse
     account = build_account
     build_resource_ownership_record(:event_id => "event1",:account_id => account.id, :hid => "123", :time => jan, :state => ResourceOwnershipRecord::Active)
-    records = ResourceOwnershipRecord.collapse(account.id, jan, feb)
+    records = ResourceOwnershipRecord.collapse(account.id)
     assert(!records.empty?, "Expected to find some records")
   end
 
   def test_collapse_returns_from
     account = build_account
     build_resource_ownership_record(:event_id => "event1",:account_id => account.id, :hid => "123", :time => jan, :state => ResourceOwnershipRecord::Active)
-    records = ResourceOwnershipRecord.collapse(account.id, jan, feb)
+    records = ResourceOwnershipRecord.collapse(account.id)
     record = records.first
     assert_equal(jan, record[:from])
   end
@@ -21,7 +21,7 @@ class ResourceOwnershipRecordTest < ShushuTest
     account = build_account
     build_resource_ownership_record(:event_id => "event1", :account_id => account.id, :hid => "123", :time => jan, :state => ResourceOwnershipRecord::Active)
     build_resource_ownership_record(:event_id => "event1", :account_id => account.id, :hid => "123", :time => feb, :state => ResourceOwnershipRecord::Inactive)
-    records = ResourceOwnershipRecord.collapse(account.id, jan, feb)
+    records = ResourceOwnershipRecord.collapse(account.id)
     assert_equal(1, records.count)
     record = records.first
     assert_equal(feb, record[:to])
@@ -30,7 +30,7 @@ class ResourceOwnershipRecordTest < ShushuTest
   def test_collapse_returns_to_as_current_time_when_active
     account = build_account
     build_resource_ownership_record(:event_id => "event1",:account_id => account.id, :hid => "123", :time => jan, :state => ResourceOwnershipRecord::Active)
-    records = ResourceOwnershipRecord.collapse(account.id, jan, feb)
+    records = ResourceOwnershipRecord.collapse(account.id)
     record = records.first
     assert_in_delta(Time.now, record[:to], 2)
   end

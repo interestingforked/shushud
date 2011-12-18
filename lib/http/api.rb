@@ -54,7 +54,7 @@ module Http
     get "/accounts/:account_id/resource_ownerships" do
       authenticate_trusted_consumer
       perform do
-        ResourceOwnershipService.query(params[:account_id], decode_time(params[:from]), decode_time(params[:to]))
+        ResourceOwnershipService.query(params[:account_id])
       end
     end
 
@@ -180,7 +180,7 @@ module Http
     end
 
     def decode_time(t)
-      CGI.unescape(t.to_s)
+      Time.parse(CGI.unescape(t.to_s))
     end
 
     def log(msg)

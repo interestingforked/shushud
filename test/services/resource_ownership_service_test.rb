@@ -24,7 +24,7 @@ class ResourceOwnershipServiceTest < ShushuTest
     second_account = build_account
     ResourceOwnershipService.activate(account.id, "123", t1, "event1")
     ResourceOwnershipService.transfer(account.id, second_account.id, "123", (t1 + 100), "event1", "event2")
-    records = ResourceOwnershipService.query(account.id, t1, t2)
+    records = ResourceOwnershipService.query(account.id)
     record = records.first
     assert_equal(account.id, record[:account_id])
     assert_equal((t1 + 100), record[:to])
@@ -34,7 +34,7 @@ class ResourceOwnershipServiceTest < ShushuTest
     second_account = build_account
     ResourceOwnershipService.activate(account.id, "123", t1, "event1")
     ResourceOwnershipService.transfer(account.id, second_account.id, "123", t2, "event1", "event2")
-    records = ResourceOwnershipService.query(second_account.id, t1, t2)
+    records = ResourceOwnershipService.query(second_account.id)
     record = records.first
     assert_equal(second_account.id, record[:account_id])
     assert_equal(t2.to_i, record[:from].to_i)
@@ -46,7 +46,7 @@ class ResourceOwnershipServiceTest < ShushuTest
     ResourceOwnershipService.transfer(account.id, second_account.id, "123", (t1 + 1000), "event1", "event2")
     ResourceOwnershipService.transfer(second_account.id, account.id, "123", (t1 + 2000), "event2", "event3")
     ResourceOwnershipService.transfer(account.id, second_account.id, "123", (t1 + 3000), "event3", "event4")
-    records = ResourceOwnershipService.query(account.id, t1, t2)
+    records = ResourceOwnershipService.query(account.id)
     assert_equal(2, records.length)
     record = records.first
     assert_equal(account.id, record[:account_id])

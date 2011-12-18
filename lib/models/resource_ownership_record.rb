@@ -4,7 +4,7 @@ class ResourceOwnershipRecord < Sequel::Model
   Inactive = "inactive"
 
   # should return a collection of hashes
-  def self.collapse(account_id, from, to)
+  def self.collapse(account_id)
     Shushu::DB[<<-EOD, account_id].all
       SELECT * from resource_ownerships where account_id = ?
     EOD

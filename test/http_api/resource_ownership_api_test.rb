@@ -8,15 +8,15 @@ class ResourceOwnershipApiTest < ShushuTest
 
   def test_activate_record
     setup_auth
-    post "/accounts/#{account.id}/resource_ownerships/event1", {:hid => "123"}
+    post "/accounts/#{account.id}/resource_ownerships/event1", {:hid => "123", :time => Time.now.utc.to_s}
     assert_equal 201, last_response.status
   end
 
   def test_transfer_record
     setup_auth
     second_account = build_account
-    post "/accounts/#{account.id}/resource_ownerships/event1", {:hid => "123"}
-    put "/accounts/#{account.id}/resource_ownerships/event1", {:account_id => second_account.id, :hid => "123", :event_id => "event2"}
+    post "/accounts/#{account.id}/resource_ownerships/event1", {:hid => "123", :time => Time.now.utc.to_s}
+    put "/accounts/#{account.id}/resource_ownerships/event1", {:account_id => second_account.id, :hid => "123", :event_id => "event2", :time => Time.now.utc.to_s}
     assert_equal 200, last_response.status
     updated_record = JSON.parse(last_response.body)
     assert_equal second_account.id, updated_record["account_id"].to_i
@@ -24,8 +24,8 @@ class ResourceOwnershipApiTest < ShushuTest
 
   def test_deactivate_record
     setup_auth
-    post "/accounts/#{account.id}/resource_ownerships/event1", {:hid => "123"}
-    delete "/accounts/#{account.id}/resource_ownerships/event1", {:hid => "123"}
+    post "/accounts/#{account.id}/resource_ownerships/event1", {:hid => "123", :time => Time.now.utc.to_s}
+    delete "/accounts/#{account.id}/resource_ownerships/event1", {:hid => "123", :time => Time.now.utc.to_s}
     assert_equal 200, last_response.status
     updated_record = JSON.parse(last_response.body)
     assert_equal account.id, updated_record["account_id"].to_i
@@ -33,7 +33,7 @@ class ResourceOwnershipApiTest < ShushuTest
 
   def test_query_record_with_data
     setup_auth
-    post "/accounts/#{account.id}/resource_ownerships/event1", {:hid => "123"}
+    post "/accounts/#{account.id}/resource_ownerships/event1", {:hid => "123", :time => Time.now.utc.to_s}
     assert_equal(201, last_response.status)
 
     f, t = (Time.now - 1000), (Time.now + 1000)

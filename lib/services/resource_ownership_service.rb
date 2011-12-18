@@ -2,12 +2,8 @@ module ResourceOwnershipService
 
   extend self
 
-  # You can pass time represented as strings of instances of Time.
-  def query(account_id, from, to)
-    from  = Time.parse(from)  if from.class == String
-    to    = Time.parse(to)    if to.class   == String
-
-    ResourceOwnershipRecord.collapse(account_id, from, to)
+  def query(account_id)
+    ResourceOwnershipRecord.collapse(account_id)
   end
 
   def activate(account_id, hid, time, event_id)
