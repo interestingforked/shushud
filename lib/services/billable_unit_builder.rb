@@ -27,6 +27,10 @@ module BillableUnitBuilder
             billable_units.hid = resource_ownerships.hid
         WHERE
           resource_ownerships.account_id = #{account_id}
+          AND
+            (billable_units.from, billable_units.to)
+            OVERLAPS
+            (resource_ownerships.from, resource_ownerships.to)
       ;
     EOD
   end

@@ -31,7 +31,7 @@ class UsageReportServiceTest < ShushuTest
       :hid        => "app123",
       :event_id   => 1,
       :state      => ResourceOwnershipRecord::Active,
-      :time       => jan
+      :time       => jan - 100
     )
     BillableEvent.create(
       :hid          => "app123",
