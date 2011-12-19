@@ -121,4 +121,25 @@ class BillableUnitBuilderTest < ShushuTest
     assert_equal(2678400.0, billable_unit.qty)
   end
 
+  def test_billable_units_qty_computation_on_open_event
+    account = build_account
+    rate_code = build_rate_code
+    ResourceOwnershipRecord.create(
+      :account_id => account.id,
+      :hid        => "app123",
+      :event_id   => 1,
+      :state      => ResourceOwnershipRecord::Active,
+      :time       => jan
+    )
+    BillableEvent.create(
+      :hid          => "app123",
+      :event_id     => 1,
+      :state        => BillableEvent::Open,
+      :time         => Time.now - 60,
+      :rate_code_id => rate_code.id
+    )
+    billable_unit = BillableUnitBuilder.build(account.id, jan, (Time.now + 60)).pop
+    assert_in_delta(60.0, billable_unit.qty, 1)
+  end
+
 end
