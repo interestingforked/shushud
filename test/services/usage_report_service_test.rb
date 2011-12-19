@@ -4,6 +4,7 @@ class UsageReportServiceTest < ShushuTest
 
   def test_report_returns_hash
     account = build_account
+    rate_code = build_rate_code
     ResourceOwnershipRecord.create(
       :account_id => account.id,
       :hid        => "app123",
@@ -12,10 +13,11 @@ class UsageReportServiceTest < ShushuTest
       :time       => jan
     )
     BillableEvent.create(
-      :hid      => "app123",
-      :event_id => 1,
-      :state    => BillableEvent::Open,
-      :time     => jan
+      :hid          => "app123",
+      :rate_code_id => rate_code.id,
+      :event_id     => 1,
+      :state        => BillableEvent::Open,
+      :time         => jan
     )
     report = UsageReportService.build_report(account.id, jan, feb)
     assert_equal(Hash, report.class)
@@ -23,6 +25,7 @@ class UsageReportServiceTest < ShushuTest
 
   def test_report_returns_billable_units
     account = build_account
+    rate_code = build_rate_code
     ResourceOwnershipRecord.create(
       :account_id => account.id,
       :hid        => "app123",
@@ -31,10 +34,11 @@ class UsageReportServiceTest < ShushuTest
       :time       => jan
     )
     BillableEvent.create(
-      :hid      => "app123",
-      :event_id => 1,
-      :state    => BillableEvent::Open,
-      :time     => jan
+      :hid          => "app123",
+      :rate_code_id => rate_code.id,
+      :event_id     => 1,
+      :state        => BillableEvent::Open,
+      :time         => jan
     )
     report = UsageReportService.build_report(account.id, jan, feb)
     billable_unit = report[:billable_units].first

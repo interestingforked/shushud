@@ -58,3 +58,5 @@ require './lib/services/billable_unit_builder'
 require './lib/services/usage_report_service'
 require './lib/services/resource_ownership_service'
 require './lib/services/rate_code_service'
+require './lib/services/calculator'
+
