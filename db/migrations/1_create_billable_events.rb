@@ -14,6 +14,7 @@ Sequel.migration do
       foreign_key :provider_id, :providers
     end
     add_column :rate_codes, :rate,          "int"
+    add_column :rate_codes, :rate_period,   "varchar(255)"
     add_column :rate_codes, :slug,          "varchar(255)"
     add_column :rate_codes, :product_group, "varchar(255)"
     add_column :rate_codes, :product_name,  "varchar(255)"

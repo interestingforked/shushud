@@ -7,8 +7,16 @@ module BillableUnitBuilder
         resource_ownerships.account_id,
         billable_units.hid,
         GREATEST(billable_units.from, resource_ownerships.from, ?) as from,
-        LEAST(billable_units.to, resource_ownerships.to, ?) as to
+        LEAST(billable_units.to, resource_ownerships.to, ?) as to,
+        rate_codes.product_name,
+        rate_codes.product_group,
+        rate_codes.rate,
+        rate_codes.rate_period
+
         FROM billable_units
+        LEFT OUTER JOIN rate_codes
+          ON
+            rate_codes.id = billable_units.rate_code_id
         INNER JOIN resource_ownerships
           ON
             billable_units.hid = resource_ownerships.hid
@@ -20,17 +28,17 @@ module BillableUnitBuilder
 
   def build_billable_units(item)
     BillableUnit.new do |bu|
-      bu.account_id = item[:account_id]
-      bu.hid        = item[:hid]
-      bu.from       = item[:from]
-      bu.to         = item[:to]
+      bu.account_id     = item[:account_id]
+      bu.hid            = item[:hid]
+      bu.from           = item[:from]
+      bu.to             = item[:to]
+      bu.rate           = item[:rate]
+      bu.rate_period    = item[:rate_period]
+      bu.product_group  = item[:product_group]
+      bu.product_name   = item[:product_name]
       #TODO Actually solve the problem...
-      bu.rate = 5
-      bu.rate_period = "hour"
-      bu.qty = 1
-      bu.product_group = "dyno"
-      bu.product_name = "web"
       bu.total = 5
+      bu.qty = 1
     end
   end
 
