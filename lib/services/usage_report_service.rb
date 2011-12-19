@@ -12,6 +12,7 @@ module UsageReportService
       :billable_units => billable_units.map(&:to_h),
       :total          => Calculator.total(billable_units)
     }.tap do |hash|
+      hash = hash.dup
       hash.delete(:billable_units) # Lets not log this. It will be huge.
       shulog("#usage_report_success account=#{account_id} from=#{from} to=#{to} #{hash.map {|k,v| [k,'=',v].join}}")
     end
