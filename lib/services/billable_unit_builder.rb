@@ -45,9 +45,7 @@ module BillableUnitBuilder
       bu.rate_period    = item[:rate_period]
       bu.product_group  = item[:product_group]
       bu.product_name   = item[:product_name]
-      #TODO Actually solve the problem...
-      bu.total = 5
-      bu.qty = item[:qty]
+      bu.qty            = item[:qty]
     end
   end
 
