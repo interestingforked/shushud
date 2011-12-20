@@ -2,9 +2,10 @@ module UsageReportService
   extend self
 
   def build_report(account_id, from, to)
+    shulog("#usage_report_requested account=#{account_id} ")
     report = UsageReport.new(account_id, from, to)
     billable_units = report.billable_units
-    #TODO Remove stubbed total
+    shulog("#usage_report_build_complete units=#{billable_units.length} ")
     {
       :account_id     => account_id,
       :from           => from,
