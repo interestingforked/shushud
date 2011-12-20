@@ -43,7 +43,7 @@ module BillableUnitBuilder
 
   def build_billable_units(item)
     BillableUnit.new do |bu|
-      bu.account_id     = item["account_id"].to_i
+      bu.account_id     = item["account_id"]
       bu.hid            = item["hid"]
       bu.from           = item["from_timestamp"]
       bu.to             = item["to_timestamp"]
