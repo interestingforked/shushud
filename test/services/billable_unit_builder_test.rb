@@ -22,7 +22,7 @@ class BillableUnitBuilderTest < ShushuTest
     assert_equal(1, billable_units.length)
 
     billable_unit = billable_units.first
-    assert_equal(jan, billable_unit.from)
+    assert_equal(jan, Time.parse(billable_unit.from))
   end
 
   def test_two_owners_one_event
@@ -59,14 +59,14 @@ class BillableUnitBuilderTest < ShushuTest
     billable_units = BillableUnitBuilder.build(account.id, jan, feb)
     assert_equal(1, billable_units.length)
     billable_unit = billable_units.first
-    assert_equal(jan, billable_unit.from)
-    assert_equal((jan + 100), billable_unit.to)
+    assert_equal(jan, Time.parse(billable_unit.from))
+    assert_equal((jan + 100), Time.parse(billable_unit.to))
 
     billable_units = BillableUnitBuilder.build(another_account.id, jan, feb)
     assert_equal(1, billable_units.length)
     billable_unit = billable_units.last
-    assert_equal((jan + 100), billable_unit.from)
-    assert_in_delta(feb, billable_unit.to, 2)
+    assert_equal((jan + 100), Time.parse(billable_unit.from))
+    assert_in_delta(feb, Time.parse(billable_unit.to), 2)
   end
 
   def test_billable_units_include_rate_code_information

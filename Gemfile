@@ -4,7 +4,7 @@ gem 'pg'
 gem 'thin'
 gem 'sinatra'
 gem 'sequel'
-gem 'yajl-ruby', :require => 'yajl'
+gem 'yajl-ruby', :require => 'yajl'   # faster json encoding
 
 group :test do
   gem 'ruby-debug19', :require => 'ruby-debug'

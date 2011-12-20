@@ -43,8 +43,8 @@ class UsageReportServiceTest < ShushuTest
     report = UsageReportService.build_report(account.id, jan, feb)
     billable_unit = report[:billable_units].first
     assert_equal("app123", billable_unit[:hid])
-    assert_equal(jan, billable_unit[:from])
-    assert_in_delta(feb, billable_unit[:to], 2)
+    assert_equal(jan, Time.parse(billable_unit[:from]))
+    assert_in_delta(feb, Time.parse(billable_unit[:to]), 2)
   end
 
 end
