@@ -2,7 +2,8 @@ module BillableUnitBuilder
   extend self
 
   def build(account_id, from, to)
-    Shushu::DB.fetch(<<-EOD, from, to, account_id).all.map {|item| build_billable_units(item)}
+    shulog("#selecting_billable_units account=#{account_id}")
+    units = Shushu::DB.fetch(<<-EOD, from, to, account_id).all
       SELECT
         resource_ownerships.account_id,
         billable_units.hid,
@@ -33,6 +34,8 @@ module BillableUnitBuilder
             (resource_ownerships.from, resource_ownerships.to)
       ;
     EOD
+    shulog("#buliding_billable_units account=#{account_id}")
+    units.map {|item| build_billable_units(item)}
   end
 
   def build_billable_units(item)
