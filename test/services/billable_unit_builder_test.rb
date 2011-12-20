@@ -118,7 +118,7 @@ class BillableUnitBuilderTest < ShushuTest
       :rate_code_id => rate_code.id
     )
     billable_unit = BillableUnitBuilder.build(account.id, jan, feb).pop
-    assert_equal(432000.0, billable_unit.qty)
+    assert_equal(120.0, billable_unit.qty)
   end
 
   def test_billable_units_qty_computation_on_open_event
@@ -135,11 +135,11 @@ class BillableUnitBuilderTest < ShushuTest
       :hid          => "app123",
       :event_id     => 1,
       :state        => BillableEvent::Open,
-      :time         => Time.now - 60,
+      :time         => Time.now - 3600,
       :rate_code_id => rate_code.id
     )
-    billable_unit = BillableUnitBuilder.build(account.id, jan, (Time.now + 999)).pop
-    assert_in_delta(60.0, billable_unit.qty, 1)
+    billable_unit = BillableUnitBuilder.build(account.id, jan, Time.now).pop
+    assert_in_delta(1.0, billable_unit.qty, 0.001)
   end
 
 end

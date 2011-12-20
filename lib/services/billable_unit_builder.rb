@@ -9,9 +9,9 @@ module BillableUnitBuilder
         GREATEST(billable_units.from, resource_ownerships.from, '#{from}') as from_timestamp,
         LEAST(billable_units.to, resource_ownerships.to, '#{to}') as to_timestamp,
         (
-          extract('epoch' FROM
+          (extract('epoch' FROM
             LEAST(billable_units.to, resource_ownerships.to, '#{to}') - GREATEST(billable_units.from, resource_ownerships.from, '#{from}')
-          )
+          ) / (3600)) -- convert seconds into hours
         ) as qty,
         rate_codes.product_name,
         rate_codes.product_group,
