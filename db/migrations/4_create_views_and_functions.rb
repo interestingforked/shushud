@@ -51,5 +51,6 @@ Sequel.migration do
                 a.state       = 'active'
       ;
     EOD
+
   end
 end
