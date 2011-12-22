@@ -5,13 +5,13 @@ Sequel.migration do
       CREATE TYPE usage_report_type AS (
         account_id int,
         hid varchar(255),
-        from_timestamp timestamptz,
-        to_timestamp timestamptz,
+        "from" timestamptz,
+        "to" timestamptz,
         qty numeric,
         product_name varchar(255),
         product_group varchar(255),
         rate int,
-        rate_codes varchar(255)
+        rate_period varchar(255)
       );
 
       CREATE OR REPLACE FUNCTION usage_report(int, timestamptz, timestamptz) RETURNS SETOF usage_report_type
@@ -19,8 +19,8 @@ Sequel.migration do
           SELECT
             resource_ownerships.account_id,
             billable_units.hid,
-            GREATEST(billable_units.from, resource_ownerships.from, $2) as from_timestamp,
-            LEAST(billable_units.to, resource_ownerships.to, $3) as to_timestamp,
+            GREATEST(billable_units.from, resource_ownerships.from, $2) as from,
+            LEAST(billable_units.to, resource_ownerships.to, $3) as to,
             (
               (extract('epoch' FROM
                 LEAST(billable_units.to, resource_ownerships.to, $3) - GREATEST(billable_units.from, resource_ownerships.from, $2)
