@@ -13,9 +13,6 @@ module Kernel
 end
 
 module Shushu
-
-  VERSION = 0
-
   NotFound            = Class.new(Exception)
   DataConflict        = Class.new(Exception)
   AuthorizationError  = Class.new(Exception)
@@ -39,7 +36,6 @@ module Shushu
   def self.test?
     ENV["RACK_ENV"] == "test"
   end
-
 end
 
 require './lib/http/authentication'
@@ -56,4 +52,3 @@ require './lib/services/usage_report_service'
 require './lib/services/resource_ownership_service'
 require './lib/services/rate_code_service'
 require './lib/services/calculator'
-
