@@ -14,12 +14,12 @@ module Http
     end
 
     #
-    # UsageReports
+    # Reports
     #
     get "/accounts/:account_id/usage_reports" do
       authenticate_trusted_consumer
       perform do
-        UsageReportService.build_report(params[:account_id], decode_time(params[:from]), decode_time(params[:to]))
+        ReportService.usage_report(params[:account_id], decode_time(params[:from]), decode_time(params[:to]))
       end
     end
 

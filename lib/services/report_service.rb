@@ -1,7 +1,7 @@
-module UsageReportService
+module ReportService
   extend self
 
-  def build_report(account_id, from, to)
+  def usage_report(account_id, from, to)
     shulog("#usage_report_requested account=#{account_id} from=#{from} to=#{to}")
     billable_units = query_usage_report(account_id, from, to)
     {
