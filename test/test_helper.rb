@@ -20,6 +20,7 @@ class ShushuTest < MiniTest::Unit::TestCase
     Shushu::DB.run("DELETE FROM rate_codes CASCADE")
     Shushu::DB.run("DELETE FROM providers CASCADE")
     Shushu::DB.run("DELETE FROM resource_ownership_records CASCADE")
+    Shushu::DB.run("DELETE FROM account_ownership_records CASCADE")
     Shushu::DB.run("DELETE FROM accounts CASCADE")
   end
 
