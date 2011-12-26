@@ -22,4 +22,17 @@ module ReportService
     end
   end
 
+  def invoice(payment_method_id, from, to)
+    billable_units = Shushu::DB.synchronize do |conn|
+      conn.exec("SELECT * FROM invoice($1, $2, $3)", [payment_method_id, from, to]).to_a
+    end
+    {
+      :payment_method_id => payment_method_id,
+      :from              => from,
+      :to                => to,
+      :billable_units    => billable_units,
+      :total             => Calculator.total(billable_units)
+    }
+  end
+
 end

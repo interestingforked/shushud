@@ -14,6 +14,7 @@ Sequel.migration do
         rate_period varchar(255)
       );
 
+
       CREATE OR REPLACE FUNCTION usage_report(int, timestamptz, timestamptz) RETURNS SETOF usage_report_type
         AS $$
           SELECT

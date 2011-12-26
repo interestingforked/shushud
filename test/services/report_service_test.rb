@@ -163,4 +163,50 @@ class ReportServiceTest < ShushuTest
     assert_in_delta(1.0, billable_unit["qty"].to_f, 0.001)
   end
 
+  def test_invoice_two_accounts_one_event
+    payment_method = build_rate_code
+    account = build_account
+    another_account = build_account
+    ResourceOwnershipRecord.create(
+      :account_id => account.id,
+      :hid        => "app123",
+      :event_id   => 1,
+      :state      => ResourceOwnershipRecord::Active,
+      :time       => jan
+    )
+    ResourceOwnershipRecord.create(
+      :account_id => account.id,
+      :hid        => "app123",
+      :event_id   => 1,
+      :state      => ResourceOwnershipRecord::Inactive,
+      :time       => jan + 100
+    )
+    ResourceOwnershipRecord.create(
+      :account_id => another_account.id,
+      :hid        => "app123",
+      :event_id   => 2,
+      :state      => ResourceOwnershipRecord::Active,
+      :time       => jan + 100
+    )
+    BillableEvent.create(
+      :hid      => "app123",
+      :event_id => 1,
+      :state    => BillableEvent::Open,
+      :time     => jan
+    )
+
+    billable_units = ReportService.query_usage_report(account.id, jan, feb)
+    assert_equal(1, billable_units.length)
+    billable_unit = billable_units.first
+    assert_equal(jan, Time.parse(billable_unit["from"]))
+    assert_equal((jan + 100), Time.parse(billable_unit["to"]))
+
+    billable_units = ReportService.query_usage_report(another_account.id, jan, feb)
+    assert_equal(1, billable_units.length)
+    billable_unit = billable_units.last
+    assert_equal((jan + 100), Time.parse(billable_unit["from"]))
+    assert_in_delta(feb, Time.parse(billable_unit["to"]), 2)
+  end
+
+
 end

@@ -18,6 +18,10 @@ module ShushuHelpers
     Account.create(opts)
   end
 
+  def build_payment_method(opts={})
+    PaymentMethod.create(opts)
+  end
+
   def build_resource_ownership_record(opts={})
     ResourceOwnershipRecord.create({
       :hid => "12345",

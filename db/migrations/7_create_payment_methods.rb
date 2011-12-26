@@ -42,6 +42,52 @@ Sequel.migration do
           WHERE
                 a.state       = 'active'
       ;
+
+      -- don't forget to add a payment_method_id filter.
+      CREATE OR REPLACE VIEW payment_methods_with_hids AS
+        SELECT DISTINCT ON (resource_ownerships.hid)
+          account_ownerships.payment_method_id,
+          resource_ownerships.hid,
+          account_ownerships.from,
+          account_ownerships.to
+        FROM
+          account_ownerships,
+          resource_ownerships
+        WHERE
+          account_ownerships.account_id = resource_ownerships.account_id
+        ORDER BY
+          resource_ownerships.hid,
+          resource_ownerships.to DESC
+      ;
+
+      CREATE TYPE invoice_report_type AS (
+        hid varchar(255),
+        payment_method_id int,
+        "from" timestamptz,
+        "to" timestamptz
+        --qty numeric,
+        --product_name varchar(255),
+        --product_group varchar(255),
+        --rate int,
+        --rate_period varchar(255)
+      );
+
+      CREATE OR REPLACE FUNCTION invoice(int, timestamptz, timestamptz) RETURNS SETOF invoice_report_type
+        AS $$
+          SELECT
+            billable_units.hid,
+            payment_methods_with_hids.payment_method_id,
+            GREATEST(billable_units.from, payment_methods_with_hids.from, $2) as from,
+            LEAST(billable_units.to, payment_methods_with_hids.to, $3) as to
+          FROM
+            payment_methods_with_hids
+          INNER JOIN billable_units
+            ON billable_units.hid = payment_methods_with_hids.hid
+          WHERE
+                payment_methods_with_hids.payment_method_id = $1
+            AND ($2, $3) OVERLAPS (payment_methods_with_hids.from, payment_methods_with_hids.to)
+        $$ LANGUAGE SQL
+      ;
     EOD
 
   end

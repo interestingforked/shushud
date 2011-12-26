@@ -19,6 +19,7 @@ Sequel.migration do
       CREATE OR REPLACE VIEW billable_units AS
         SELECT
           a.hid,
+          a.event_id,
           a.rate_code_id,
           a.time as from,
           COALESCE(b.time, now()) as to
