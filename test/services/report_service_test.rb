@@ -164,9 +164,23 @@ class ReportServiceTest < ShushuTest
   end
 
   def test_invoice_two_accounts_one_event
-    payment_method = build_rate_code
-    account = build_account
-    another_account = build_account
+    payment_method = build_payment_method
+    account = build_account(:payment_method_id => payment_method.id)
+    another_account = build_account(:payment_method_id => payment_method.id)
+    AccountOwnershipRecord.create(
+      :account_id        => account.id,
+      :payment_method_id => payment_method.id,
+      :state             => AccountOwnershipRecord::Active,
+      :time              => jan,
+      :event_id          => 1
+    )
+    AccountOwnershipRecord.create(
+      :account_id        => another_account.id,
+      :payment_method_id => payment_method.id,
+      :state             => AccountOwnershipRecord::Active,
+      :time              => jan,
+      :event_id          => 2
+    )
     ResourceOwnershipRecord.create(
       :account_id => account.id,
       :hid        => "app123",
@@ -194,19 +208,12 @@ class ReportServiceTest < ShushuTest
       :state    => BillableEvent::Open,
       :time     => jan
     )
-
-    billable_units = ReportService.query_usage_report(account.id, jan, feb)
+    invoice = ReportService.invoice(payment_method.id, jan, feb)
+    billable_units = invoice[:billable_units]
     assert_equal(1, billable_units.length)
     billable_unit = billable_units.first
     assert_equal(jan, Time.parse(billable_unit["from"]))
-    assert_equal((jan + 100), Time.parse(billable_unit["to"]))
-
-    billable_units = ReportService.query_usage_report(another_account.id, jan, feb)
-    assert_equal(1, billable_units.length)
-    billable_unit = billable_units.last
-    assert_equal((jan + 100), Time.parse(billable_unit["from"]))
-    assert_in_delta(feb, Time.parse(billable_unit["to"]), 2)
+    assert_equal(feb, Time.parse(billable_unit["to"]))
   end
-
 
 end
