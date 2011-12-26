@@ -43,20 +43,30 @@ Sequel.migration do
                 a.state       = 'active'
       ;
 
-      -- don't forget to add a payment_method_id filter.
-      CREATE OR REPLACE VIEW payment_methods_with_hids AS
-        SELECT DISTINCT ON (resource_ownerships.hid, account_ownerships.payment_method_id)
+      CREATE OR REPLACE VIEW compacted_res_own AS
+        SELECT
+          hid,
           account_ownerships.payment_method_id,
-          resource_ownerships.hid,
-          account_ownerships.from,
-          account_ownerships.to
-        FROM resource_ownerships
+          min(resource_ownerships.from) as from,
+          max(resource_ownerships.to) as to
+        FROM
+          resource_ownerships
         INNER JOIN account_ownerships
           ON account_ownerships.account_id = resource_ownerships.account_id
-        ORDER BY
-          resource_ownerships.hid,
-          account_ownerships.payment_method_id,
-          resource_ownerships.to DESC
+        GROUP BY
+          hid, account_ownerships.payment_method_id
+        ;
+
+      -- don't forget to add a payment_method_id filter.
+      CREATE OR REPLACE VIEW compacted_act_own AS
+        SELECT DISTINCT ON(account_ownerships.payment_method_id, compacted_res_own.hid)
+          compacted_res_own.hid,
+          compacted_res_own.payment_method_id,
+          GREATEST(account_ownerships.from, compacted_res_own.from) as from,
+          LEAST(account_ownerships.to, compacted_res_own.to) as to
+        FROM account_ownerships
+        INNER JOIN compacted_res_own
+          ON account_ownerships.payment_method_id = compacted_res_own.payment_method_id
       ;
 
       CREATE TYPE invoice_report_type AS (
@@ -75,16 +85,16 @@ Sequel.migration do
         AS $$
           SELECT
             billable_units.hid,
-            payment_methods_with_hids.payment_method_id,
-            GREATEST(billable_units.from, payment_methods_with_hids.from, $2) as from,
-            LEAST(billable_units.to, payment_methods_with_hids.to, $3) as to
+            compacted_act_own.payment_method_id,
+            GREATEST(billable_units.from, compacted_act_own.from, $2) as from,
+            LEAST(billable_units.to, compacted_act_own.to, $3) as to
           FROM
-            payment_methods_with_hids
+            compacted_act_own
           INNER JOIN billable_units
-            ON billable_units.hid = payment_methods_with_hids.hid
+            ON billable_units.hid = compacted_act_own.hid
           WHERE
-                payment_methods_with_hids.payment_method_id = $1
-            AND ($2, $3) OVERLAPS (payment_methods_with_hids.from, payment_methods_with_hids.to)
+                compacted_act_own.payment_method_id = $1
+            AND ($2, $3) OVERLAPS (compacted_act_own.from, compacted_act_own.to)
         $$ LANGUAGE SQL
       ;
     EOD
