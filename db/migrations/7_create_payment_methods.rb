@@ -45,18 +45,17 @@ Sequel.migration do
 
       -- don't forget to add a payment_method_id filter.
       CREATE OR REPLACE VIEW payment_methods_with_hids AS
-        SELECT DISTINCT ON (resource_ownerships.hid)
+        SELECT DISTINCT ON (resource_ownerships.hid, account_ownerships.payment_method_id)
           account_ownerships.payment_method_id,
           resource_ownerships.hid,
           account_ownerships.from,
           account_ownerships.to
-        FROM
-          account_ownerships,
-          resource_ownerships
-        WHERE
-          account_ownerships.account_id = resource_ownerships.account_id
+        FROM resource_ownerships
+        INNER JOIN account_ownerships
+          ON account_ownerships.account_id = resource_ownerships.account_id
         ORDER BY
           resource_ownerships.hid,
+          account_ownerships.payment_method_id,
           resource_ownerships.to DESC
       ;
 

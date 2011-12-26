@@ -216,4 +216,29 @@ class ReportServiceTest < ShushuTest
     assert_equal(feb, Time.parse(billable_unit["to"]))
   end
 
+  def test_invoice_two_accounts_many_events
+    payment_method = build_payment_method
+    another_payment_method = build_payment_method
+
+    account = build_account(:payment_method_id => payment_method.id)
+    another_account = build_account(:payment_method_id => another_payment_method.id)
+
+    build_act_own(account.id, payment_method.id, 1, AccountOwnershipRecord::Active, jan)
+    build_act_own(another_account.id, another_payment_method.id, 2, AccountOwnershipRecord::Active, jan)
+
+    build_res_own(account.id, "app123", 1, ResourceOwnershipRecord::Active, jan)
+    build_res_own(account.id, "app123", 1, ResourceOwnershipRecord::Inactive, jan + 100)
+    build_res_own(another_account.id, "app123", 2, ResourceOwnershipRecord::Active, jan + 101)
+
+    build_billable_event("app123", 1, BillableEvent::Open, jan)
+    build_billable_event("app124", 2, BillableEvent::Open, jan)
+
+    invoice = ReportService.invoice(payment_method.id, jan, feb)
+    billable_units = invoice[:billable_units]
+    assert_equal(1, billable_units.length)
+    billable_unit = billable_units.first
+    assert_equal(jan, Time.parse(billable_unit["from"]))
+    assert_equal(feb, Time.parse(billable_unit["to"]))
+  end
+
 end
