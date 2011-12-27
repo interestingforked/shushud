@@ -61,7 +61,7 @@ module Http
     post "/accounts/:account_id/resource_ownerships/:event_id" do
       authenticate_trusted_consumer
       perform do
-        ResourceOwnershipService.activate(params[:account_id], params[:hid], decode_time(params[:time]), params[:event_id])
+        ResourceOwnershipService.activate(dec_int(params[:account_id]), params[:hid], decode_time(params[:time]), params[:event_id])
       end
     end
 
@@ -69,8 +69,8 @@ module Http
       authenticate_trusted_consumer
       perform do
         ResourceOwnershipService.transfer(
-          params[:prev_account_id],
-          params[:account_id],
+          dec_int(params[:prev_account_id]),
+          dec_int(params[:account_id]),
           params[:hid],
           decode_time(params[:time]),
           params[:prev_event_id],
@@ -82,7 +82,7 @@ module Http
     delete "/accounts/:account_id/resource_ownerships/:event_id" do
       authenticate_trusted_consumer
       perform do
-        ResourceOwnershipService.deactivate(params[:account_id], params[:hid], decode_time(params[:time]), params[:event_id])
+        ResourceOwnershipService.deactivate(dec_int(params[:account_id]), params[:hid], decode_time(params[:time]), params[:event_id])
       end
     end
 
@@ -181,6 +181,10 @@ module Http
 
     def decode_time(t)
       Time.parse(CGI.unescape(t.to_s))
+    end
+
+    def dec_int(i)
+      i.to_i if i
     end
 
     def log(msg)

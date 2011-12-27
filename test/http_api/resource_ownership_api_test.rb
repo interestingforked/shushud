@@ -12,6 +12,12 @@ class ResourceOwnershipApiTest < ShushuTest
     assert_equal 201, last_response.status
   end
 
+  def test_activate_record_with_invalid_account_id
+    setup_auth
+    post "/accounts/INVALID_ID/resource_ownerships/event1", {:hid => "123", :time => Time.now.utc.to_s}
+    assert_equal 404, last_response.status
+  end
+
   def test_transfer_record
     setup_auth
     second_account = build_account

@@ -10,6 +10,13 @@ class ResourceOwnershipRecord < Sequel::Model
     EOD
   end
 
+  def validate
+    super
+    if !Account.exists?(self[:account_id])
+      raise(Shushu::NotFound, "Could not find account with id=#{self[:account_id]}")
+    end
+  end
+
   def to_h
     {
       :account_id => self[:account_id],
