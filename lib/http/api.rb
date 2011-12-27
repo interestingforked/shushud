@@ -19,7 +19,7 @@ module Http
     get "/accounts/:account_id/usage_reports" do
       authenticate_trusted_consumer
       perform do
-        ReportService.usage_report(params[:account_id], decode_time(params[:from]), decode_time(params[:to]))
+        ReportService.usage_report(params[:account_id], dec_time(params[:from]), dec_time(params[:to]))
       end
     end
 
@@ -42,7 +42,7 @@ module Http
           :hid            => params[:hid],
           :event_id       => params[:event_id],
           :qty            => params[:qty],
-          :time           => decode_time(params[:time]),
+          :time           => dec_time(params[:time]),
           :state          => params[:state]
         )
       end
@@ -61,7 +61,7 @@ module Http
     post "/accounts/:account_id/resource_ownerships/:event_id" do
       authenticate_trusted_consumer
       perform do
-        ResourceOwnershipService.activate(dec_int(params[:account_id]), params[:hid], decode_time(params[:time]), params[:event_id])
+        ResourceOwnershipService.activate(dec_int(params[:account_id]), params[:hid], dec_time(params[:time]), params[:event_id])
       end
     end
 
@@ -72,7 +72,7 @@ module Http
           dec_int(params[:prev_account_id]),
           dec_int(params[:account_id]),
           params[:hid],
-          decode_time(params[:time]),
+          dec_time(params[:time]),
           params[:prev_event_id],
           params[:event_id]
         )
@@ -82,7 +82,7 @@ module Http
     delete "/accounts/:account_id/resource_ownerships/:event_id" do
       authenticate_trusted_consumer
       perform do
-        ResourceOwnershipService.deactivate(dec_int(params[:account_id]), params[:hid], decode_time(params[:time]), params[:event_id])
+        ResourceOwnershipService.deactivate(dec_int(params[:account_id]), params[:hid], dec_time(params[:time]), params[:event_id])
       end
     end
 
@@ -179,7 +179,7 @@ module Http
       Yajl::Encoder.encode(service_result)
     end
 
-    def decode_time(t)
+    def dec_time(t)
       Time.parse(CGI.unescape(t.to_s))
     end
 
