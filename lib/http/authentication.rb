@@ -6,12 +6,12 @@ module Http
     end
 
     def bad_request!
-      throw(:halt, [400, 'Bad Request'])
+      throw(:halt, [400, Yajl::Encoder.encode("Bad Request")])
     end
 
     def unauthenticated!(realm="shushu.heroku.com")
       response['WWW-Authenticate'] = %(Basic realm="Restricted Area")
-      throw(:halt, [401, "Not authorized\n"])
+      throw(:halt, [401, Yajl::Encoder.encode("Not authorized")])
     end
 
     def authenticated?
