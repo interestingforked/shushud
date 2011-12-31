@@ -44,6 +44,10 @@ This endpoint facilitates the changing of a payment method for an account. This
 is useful when you want to change the payment method for a Heorku team for
 instance.
 
+When an account is transfered to another payment_method, the invoice will
+reflect the change by accruing charges for both payment_methods during their
+respective ownership periods. However, usage reports will remain unchanged.
+
 ```bash
 $ curl -i -X POST https://shushu.heroku.com/payment_methods/:prev_payment_method_id/account_ownerships/:prev_event_id \
   -d "account_id=654"

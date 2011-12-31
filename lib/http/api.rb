@@ -49,6 +49,35 @@ module Http
     end
 
     #
+    # AccountOwnership
+    #
+    post "/payment_methods/:payment_method_id/account_ownerships/:event_id" do
+      authenticate_trusted_consumer
+      perform do
+        AccountOwnershipService.activate(
+          dec_int(params[:payment_method_id]),
+          dec_int(params[:account_id]),
+          dec_time(params[:time]),
+          params[:event_id]
+        )
+      end
+    end
+
+    put "/payment_methods/:prev_payment_method_id/account_ownerships/:prev_event_id" do
+      authenticate_trusted_consumer
+      perform do
+        AccountOwnershipService.transfer(
+          dec_int(params[:prev_payment_method_id]),
+          dec_int(params[:payment_method_id]),
+          dec_int(params[:account_id]),
+          dec_time(params[:time]),
+          params[:prev_event_id],
+          params[:event_id]
+        )
+      end
+    end
+
+    #
     # ResourceOwnership
     #
     get "/accounts/:account_id/resource_ownerships" do
