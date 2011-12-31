@@ -14,6 +14,16 @@ module Http
     end
 
     #
+    # Accounts
+    #
+    post "/accounts" do
+      authenticate_trusted_consumer
+      perform do
+        Account.create.to_h
+      end
+    end
+
+    #
     # Reports
     #
     get "/accounts/:account_id/usage_reports" do
