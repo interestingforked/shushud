@@ -1,6 +1,19 @@
 # Billable Events
 
-## Creating Events
+## Purpose
+
+BillableEvents are the life blood of Shushu. These events will be folded and
+combined into an invoice. BillableEvents go into the system and BillableUnits
+come out.
+
+## API
+
+### Authentication
+
+You must submit your pvoider id and provider token as username and password for
+the API's basic HTTP authentication.
+
+### Creating Events
 
 This API is idempotent. After the first open or close, subsequent
 calls that have identical *event_id*, *state* values will be ignored.
@@ -13,7 +26,7 @@ calls that have identical *event_id*, *state* values will be ignored.
 * rate_code: The slug of the rate code associated with the event. See the rate_code API doc.
 * product_name: In the case where the rate code does not define a product_name, each billable_event belonging to that rate_code must specifu a product_name.
 
-### Open Event
+#### Open Event
 
 ```bash
 $ curl -X PUT http://shushu.heroku.com/resources/:hid/billable_events/:event_id \
@@ -24,7 +37,20 @@ $ curl -X PUT http://shushu.heroku.com/resources/:hid/billable_events/:event_id 
   -d "product_name=web"
 ```
 
-### Close Event
+**Response Code**
+
+* 200 - Event as already been recorded.
+* 201 - Event recorded.
+* 404 - Rate Code not found.
+
+**Response Body**
+
+```
+{"account_id": "123", "hid": "987", "event_id": "456", "state": "active"}
+```
+
+
+#### Close Event
 
 ```bash
 $ curl -X PUT http://shushu.heroku.com/resources/:hid/billable_events/:event_id \
@@ -32,9 +58,20 @@ $ curl -X PUT http://shushu.heroku.com/resources/:hid/billable_events/:event_id 
   -d "state=close"
 ```
 
-## Querying Events
+**Response Code**
 
-### Find all events by account_id
+* 200 - Event as already been recorded.
+* 201 - Event recorded.
+
+**Response Body**
+
+```
+{"account_id": "123", "hid": "987", "event_id": "456", "state": "active"}
+```
+
+### Querying Events
+
+#### Find all events by account_id
 
 ```bash
 $ curl -X GET \
