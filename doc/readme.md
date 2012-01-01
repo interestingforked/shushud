@@ -7,24 +7,10 @@ All of The Vault's services are made available over an HTTP API.
 All API endpoints require authentication. The API requires HTTP Basic
 Authentication over SSL. All non-SSL requests will be redirected to HTTPS.
 
-## Distributed Systems
+## Event IDs
 
-If you are working with this API, you are participating in a distributed system.
-Needless to say, with great power comes great responsibility. There are many
-things to be concerned with, however there are a couple of issues in particular that I
-would like to address now.
-
-### Event IDs
-
-There are several APIs in Shushu that deal with records that live in a FSM. You
-will be opening and closing billable_events, activating and de-activating
-account ownership records and so on...
-
-When working with this type of data, it is
-handy to think of the state transitions as statements in a transaction. Thus, to
-ensure that we properly deal with the transaction, the API requires that you
-submit an ID that will identify the transaction upon each request. You, the
-client of this API, will be responsible for remembering the ID.
+An event id is client generated token that is used to represent an entity in the
+client's system.
 
 Think of what might happen if we did not have such an ID. Lets say that we are
 dealing with a resource ownership record. This record knows who owned what and
