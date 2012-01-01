@@ -12,26 +12,6 @@ the owners for the period of time that they owned the resource.
 
 ## API
 
-### Authentication
-
-Each consumer will have a secret token. Basic HTTP will be used to validate the
-token.
-
-### Event ID
-
-The problem with receiving events that involve activation and deactivation is that it is difficult to determine which active event to deactivate upon
-receiving a deactivation call. Consider an hid and two accounts. Say that this
-hid bounces back and forth between accounts. Also suppose that one of the
-deactivation calls was delayed by the client. This implies that our API will be
-receiving call in no particular order. Also given that there will be many
-records that match account_id and hid and even state (when calls are delayed) we
-need a systematic way to track which call belongs to which
-resource_ownership_record. Hence, event_id.
-
-Event_ids group events together. To deactivate a resource_ownership_record, one
-must provide the event_id that was used to activate the record. Transfers will
-support the prev_event_id and the new_account_id as well.
-
 ### Activate
 
 ```bash
