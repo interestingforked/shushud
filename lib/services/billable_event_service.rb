@@ -10,7 +10,7 @@ module BillableEventService
   end
 
   def handle_new_event(args)
-    if event = BillableEvent.prev_recorded(args[:state], args[:event_id])
+    if event = BillableEvent.prev_recorded(args[:state], args[:entity_id])
       shulog("#event_found")
       [200, event.to_h]
     else
@@ -51,7 +51,7 @@ module BillableEventService
     BillableEvent.create(
       :provider_id      => resolve_provider_id(args[:provider_id]),
       :rate_code_id     => resolve_rate_code_id(args[:rate_code_slug]),
-      :event_id         => args[:event_id],
+      :entity_id         => args[:entity_id],
       :hid              => args[:hid],
       :qty              => args[:qty],
       :time             => args[:time],
@@ -65,7 +65,7 @@ module BillableEventService
     BillableEvent.create(
       :provider_id      => resolve_provider_id(args[:provider_id]),
       :rate_code_id     => resolve_rate_code_id(args[:rate_code_slug]),
-      :event_id         => args[:event_id],
+      :entity_id         => args[:entity_id],
       :hid              => args[:hid],
       :qty              => args[:qty],
       :time             => args[:time],

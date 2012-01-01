@@ -16,7 +16,7 @@ Sequel.migration do
 
       CREATE OR REPLACE VIEW account_ownerships AS
         SELECT
-          a.event_id,
+          a.entity_id,
           a.payment_method_id,
           a.account_id,
           a.time as from,
@@ -25,7 +25,7 @@ Sequel.migration do
           FROM account_ownership_records a
           LEFT OUTER JOIN account_ownership_records b
           ON
-                a.event_id    = b.event_id
+                a.entity_id    = b.entity_id
             AND a.state       = 'active'
             AND b.state       = 'inactive'
           WHERE
@@ -36,7 +36,7 @@ Sequel.migration do
       CREATE OR REPLACE VIEW billable_units AS
         SELECT
           a.hid,
-          a.event_id,
+          a.entity_id,
           a.rate_code_id,
           a.time as from,
           COALESCE(b.time, now()) as to
@@ -44,7 +44,7 @@ Sequel.migration do
           FROM billable_events a
           LEFT OUTER JOIN billable_events b
           ON
-                a.event_id    = b.event_id
+                a.entity_id    = b.entity_id
             AND a.state       = 'open'
             AND b.state       = 'close'
           WHERE
@@ -53,7 +53,7 @@ Sequel.migration do
 
       CREATE OR REPLACE VIEW resource_ownerships AS
         SELECT
-          a.event_id,
+          a.entity_id,
           a.account_id,
           a.hid,
           a.time as from,
@@ -62,7 +62,7 @@ Sequel.migration do
           FROM resource_ownership_records a
           LEFT OUTER JOIN resource_ownership_records b
           ON
-                a.event_id    = b.event_id
+                a.entity_id    = b.entity_id
             AND a.state       = 'active'
             AND b.state       = 'inactive'
           WHERE

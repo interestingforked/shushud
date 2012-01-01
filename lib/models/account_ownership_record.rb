@@ -18,7 +18,7 @@ class AccountOwnershipRecord < Sequel::Model
 
   def to_h
     {
-      :event_id          => self[:event_id],
+      :entity_id          => self[:entity_id],
       :payment_method_id => self[:payment_method_id],
       :account_id        => self[:account_id],
       :from              => self[:from],

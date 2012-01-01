@@ -21,11 +21,11 @@ Sequel.migration do
       foreign_key :payment_method_id, :payment_methods
       foreign_key :account_id, :accounts
     end
-    add_column :account_ownership_records, :event_id,   "varchar(255)"
+    add_column :account_ownership_records, :entity_id,   "varchar(255)"
     add_column :account_ownership_records, :time,       "timestamptz"
     add_column :account_ownership_records, :state,      "varchar(255)"
     alter_table(:account_ownership_records) do
-      add_unique_constraint([:event_id, :state])
+      add_unique_constraint([:entity_id, :state])
     end
 
     #ResourceOwnershipRecord
@@ -33,12 +33,12 @@ Sequel.migration do
       primary_key :id
       foreign_key :account_id, :accounts
     end
-    add_column :resource_ownership_records, :event_id,    "varchar(255)"
+    add_column :resource_ownership_records, :entity_id,    "varchar(255)"
     add_column :resource_ownership_records, :hid,         "varchar(255)"
     add_column :resource_ownership_records, :time,        "timestamptz"
     add_column :resource_ownership_records, :state,       "varchar(255)"
     alter_table(:resource_ownership_records) do
-      add_unique_constraint([:event_id, :state])
+      add_unique_constraint([:entity_id, :state])
     end
 
 
@@ -68,13 +68,13 @@ Sequel.migration do
       foreign_key :rate_code_id, :rate_codes
     end
     add_column :billable_events, :qty,                "int"
-    add_column :billable_events, :event_id,           "varchar(255)"
+    add_column :billable_events, :entity_id,           "varchar(255)"
     add_column :billable_events, :hid,                "varchar(255)"
     add_column :billable_events, :time,               "timestamptz"
     add_column :billable_events, :state,              "varchar(255)"
     add_column :billable_events, :transitioned_at,    "varchar(255)"
     alter_table(:billable_events) do
-      add_unique_constraint([:event_id, :state])
+      add_unique_constraint([:entity_id, :state])
     end
 
   end

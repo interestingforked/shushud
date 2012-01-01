@@ -12,21 +12,21 @@ class BillableEventsApiTest < ShushuTest
     authorize(@provider.id, @provider.token)
   end
 
-  def open_event(event_id, opts={})
+  def open_event(entity_id, opts={})
     body = {
       "qty"       => 1,
       "rate_code" => @rate_code.slug,
       "time"      => '2011-01-01 00:00:00',
       "state"     => 'open'
     }.merge(opts)
-    put "resources/123/billable_events/#{event_id || 1}", body
+    put "resources/123/billable_events/#{entity_id || 1}", body
   end
 
   def test_get_events
     setup_auth
     open_event("456")
     get("/resources/123/billable_events")
-    assert_equal("456", JSON.parse(last_response.body).first["event_id"])
+    assert_equal("456", JSON.parse(last_response.body).first["entity_id"])
   end
 
   def test_open_event
@@ -43,7 +43,7 @@ class BillableEventsApiTest < ShushuTest
     assert_equal('open', JSON.parse(last_response.body)["state"])
   end
 
-  def test_open_event_on_second_call_returns_same_billable_event_id
+  def test_open_event_on_second_call_returns_same_billable_entity_id
     setup_auth
     put_body = {
       :qty        => 1,
@@ -54,11 +54,11 @@ class BillableEventsApiTest < ShushuTest
 
     put "/resources/app123@heroku.com/billable_events/1", put_body
     assert_equal(201, last_response.status)
-    billable_event_id = JSON.parse(last_response.body)["id"]
-    assert(!billable_event_id.nil?, "Did not receive id")
+    billable_entity_id = JSON.parse(last_response.body)["id"]
+    assert(!billable_entity_id.nil?, "Did not receive id")
     put "/resources/app123@heroku.com/billable_events/1", put_body
     assert_equal(200, last_response.status)
-    assert_equal billable_event_id, JSON.parse(last_response.body)["id"]
+    assert_equal billable_entity_id, JSON.parse(last_response.body)["id"]
   end
 
   def test_open_event_on_third_call

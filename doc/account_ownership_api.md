@@ -23,7 +23,7 @@ In order to build an invoice for a payment method, the payment method must be as
 more accounts. This API endpoint will allow you to activate the association.
 
 ```bash
-$ curl -i -X POST https://shushu.heroku.com/payment_methods/:payment_method_id/account_ownerships/:event_id \
+$ curl -i -X POST https://shushu.heroku.com/payment_methods/:payment_method_id/account_ownerships/:entity_id \
   -d "account_id=987"
   -d "time=1999-12-31 00:00:00 UTC"
 ```
@@ -35,7 +35,7 @@ $ curl -i -X POST https://shushu.heroku.com/payment_methods/:payment_method_id/a
 * 409 - This association already exists.
 
 ```
-{"payment_method_id": "123", "account_id": "987", "event_id": "456", "state": "active"}
+{"payment_method_id": "123", "account_id": "987", "entity_id": "456", "state": "active"}
 ```
 
 ### Transfer
@@ -49,7 +49,7 @@ reflect the change by accruing charges for both payment_methods during their
 respective ownership periods. However, usage reports will remain unchanged.
 
 ```bash
-$ curl -i -X POST https://shushu.heroku.com/payment_methods/:prev_payment_method_id/account_ownerships/:prev_event_id \
+$ curl -i -X POST https://shushu.heroku.com/payment_methods/:prev_payment_method_id/account_ownerships/:prev_entity_id \
   -d "account_id=654"
   -d "time=2000-01-01 00:00:00 UTC"
 ```
@@ -61,5 +61,5 @@ $ curl -i -X POST https://shushu.heroku.com/payment_methods/:prev_payment_method
 * 409 - This association already exists.
 
 ```
-{"payment_method_id": "123", "account_id": "654", "event_id": "333", "state": "active"}
+{"payment_method_id": "123", "account_id": "654", "entity_id": "333", "state": "active"}
 ```

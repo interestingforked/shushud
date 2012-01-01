@@ -15,7 +15,7 @@ the owners for the period of time that they owned the resource.
 ### Activate
 
 ```bash
-$ curl -i -X POST https://shushu.heroku.com/accounts/:account_id/resource_ownerships/:event_id \
+$ curl -i -X POST https://shushu.heroku.com/accounts/:account_id/resource_ownerships/:entity_id \
   -d "hid=987"
   -d "time=1999-12-31 00:00:00 UTC"
 ```
@@ -24,35 +24,35 @@ $ curl -i -X POST https://shushu.heroku.com/accounts/:account_id/resource_owners
 
 * 201 - Resource ownership record was created.
 * 404 - Account not found.
-* 409 - There is already an activation resource_ownership_record with the submitted event_id.
+* 409 - There is already an activation resource_ownership_record with the submitted entity_id.
 
 ```
-{"account_id": "123", "hid": "987", "event_id": "456", "state": "active"}
+{"account_id": "123", "hid": "987", "entity_id": "456", "state": "active"}
 ```
 
 ### Transfer
 
 ```bash
-$ curl -i -X PUT https://shushu.heroku.com/accounts/:prev_account_id/resource_ownerships/:prev_event_id \
+$ curl -i -X PUT https://shushu.heroku.com/accounts/:prev_account_id/resource_ownerships/:prev_entity_id \
   -d "hid=987" \
   -d "account_id=123" \
-  -d "event_id=456" \
+  -d "entity_id=456" \
   -d "time=1999-12-31 00:00:00 UTC"
 ```
 **Responses**
 
 * 200 - Resource ownership record was transfered.
 * 404 - Account not found.
-* 409 - There is already an activation resource_ownership_record with the submitted event_id.
+* 409 - There is already an activation resource_ownership_record with the submitted entity_id.
 
 ```
-{"account_id": "456", "hid": "987", "event_id": "789", "state": "active"}
+{"account_id": "456", "hid": "987", "entity_id": "789", "state": "active"}
 ```
 
 ### Deactivate
 
 ```bash
-$ curl -i -X DELETE https://shushu.heroku.com/accounts/:account_id/resource_ownerships/:event_id \
+$ curl -i -X DELETE https://shushu.heroku.com/accounts/:account_id/resource_ownerships/:entity_id \
   -d "hid=789" \
   -d "time=1999-12-31 00:00:00 UTC"
 ```
@@ -68,4 +68,4 @@ $ curl -X GET https://shushu.heroku.com/accounts/:account_id/resource_ownerships
 ### Issues
 
 It is not clear what would happen if a transfer call was issued with the
-identical account_ids. Likewise for transferes with identical event_ids.
+identical account_ids. Likewise for transferes with identical entity_ids.

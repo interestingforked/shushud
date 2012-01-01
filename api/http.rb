@@ -52,14 +52,14 @@ module Api
       end
     end
 
-    put "/resources/:hid/billable_events/:event_id" do
+    put "/resources/:hid/billable_events/:entity_id" do
       authenticate_provider #sets params[:provider_id]
       perform do
         BillableEventService.handle_new_event(
           :provider_id    => params[:provider_id],
           :rate_code_slug => params[:rate_code],
           :hid            => params[:hid],
-          :event_id       => params[:event_id],
+          :entity_id       => params[:entity_id],
           :qty            => params[:qty],
           :time           => dec_time(params[:time]),
           :state          => params[:state]
@@ -70,19 +70,19 @@ module Api
     #
     # AccountOwnership
     #
-    post "/payment_methods/:payment_method_id/account_ownerships/:event_id" do
+    post "/payment_methods/:payment_method_id/account_ownerships/:entity_id" do
       authenticate_trusted_consumer
       perform do
         AccountOwnershipService.activate(
           dec_int(params[:payment_method_id]),
           dec_int(params[:account_id]),
           dec_time(params[:time]),
-          params[:event_id]
+          params[:entity_id]
         )
       end
     end
 
-    put "/payment_methods/:prev_payment_method_id/account_ownerships/:prev_event_id" do
+    put "/payment_methods/:prev_payment_method_id/account_ownerships/:prev_entity_id" do
       authenticate_trusted_consumer
       perform do
         AccountOwnershipService.transfer(
@@ -90,8 +90,8 @@ module Api
           dec_int(params[:payment_method_id]),
           dec_int(params[:account_id]),
           dec_time(params[:time]),
-          params[:prev_event_id],
-          params[:event_id]
+          params[:prev_entity_id],
+          params[:entity_id]
         )
       end
     end
@@ -106,14 +106,14 @@ module Api
       end
     end
 
-    post "/accounts/:account_id/resource_ownerships/:event_id" do
+    post "/accounts/:account_id/resource_ownerships/:entity_id" do
       authenticate_trusted_consumer
       perform do
-        ResourceOwnershipService.activate(dec_int(params[:account_id]), params[:hid], dec_time(params[:time]), params[:event_id])
+        ResourceOwnershipService.activate(dec_int(params[:account_id]), params[:hid], dec_time(params[:time]), params[:entity_id])
       end
     end
 
-    put "/accounts/:prev_account_id/resource_ownerships/:prev_event_id" do
+    put "/accounts/:prev_account_id/resource_ownerships/:prev_entity_id" do
       authenticate_trusted_consumer
       perform do
         ResourceOwnershipService.transfer(
@@ -121,16 +121,16 @@ module Api
           dec_int(params[:account_id]),
           params[:hid],
           dec_time(params[:time]),
-          params[:prev_event_id],
-          params[:event_id]
+          params[:prev_entity_id],
+          params[:entity_id]
         )
       end
     end
 
-    delete "/accounts/:account_id/resource_ownerships/:event_id" do
+    delete "/accounts/:account_id/resource_ownerships/:entity_id" do
       authenticate_trusted_consumer
       perform do
-        ResourceOwnershipService.deactivate(dec_int(params[:account_id]), params[:hid], dec_time(params[:time]), params[:event_id])
+        ResourceOwnershipService.deactivate(dec_int(params[:account_id]), params[:hid], dec_time(params[:time]), params[:entity_id])
       end
     end
 

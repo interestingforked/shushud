@@ -8,14 +8,14 @@ class ReportServiceTest < ShushuTest
     ResourceOwnershipRecord.create(
       :account_id => account.id,
       :hid        => "app123",
-      :event_id   => 1,
+      :entity_id   => 1,
       :state      => ResourceOwnershipRecord::Active,
       :time       => jan
     )
     BillableEvent.create(
       :hid          => "app123",
       :rate_code_id => rate_code.id,
-      :event_id     => 1,
+      :entity_id     => 1,
       :state        => BillableEvent::Open,
       :time         => jan
     )
@@ -28,13 +28,13 @@ class ReportServiceTest < ShushuTest
     ResourceOwnershipRecord.create(
       :account_id => account.id,
       :hid        => "app123",
-      :event_id   => 1,
+      :entity_id   => 1,
       :state      => ResourceOwnershipRecord::Active,
       :time       => jan
     )
     BillableEvent.create(
       :hid      => "app123",
-      :event_id => 1,
+      :entity_id => 1,
       :state    => BillableEvent::Open,
       :time     => jan
     )
@@ -52,27 +52,27 @@ class ReportServiceTest < ShushuTest
     ResourceOwnershipRecord.create(
       :account_id => account.id,
       :hid        => "app123",
-      :event_id   => 1,
+      :entity_id   => 1,
       :state      => ResourceOwnershipRecord::Active,
       :time       => jan
     )
     ResourceOwnershipRecord.create(
       :account_id => account.id,
       :hid        => "app123",
-      :event_id   => 1,
+      :entity_id   => 1,
       :state      => ResourceOwnershipRecord::Inactive,
       :time       => jan + 100
     )
     ResourceOwnershipRecord.create(
       :account_id => another_account.id,
       :hid        => "app123",
-      :event_id   => 2,
+      :entity_id   => 2,
       :state      => ResourceOwnershipRecord::Active,
       :time       => jan + 100
     )
     BillableEvent.create(
       :hid      => "app123",
-      :event_id => 1,
+      :entity_id => 1,
       :state    => BillableEvent::Open,
       :time     => jan
     )
@@ -96,13 +96,13 @@ class ReportServiceTest < ShushuTest
     ResourceOwnershipRecord.create(
       :account_id => account.id,
       :hid        => "app123",
-      :event_id   => 1,
+      :entity_id   => 1,
       :state      => ResourceOwnershipRecord::Active,
       :time       => jan
     )
     BillableEvent.create(
       :hid          => "app123",
-      :event_id     => 1,
+      :entity_id     => 1,
       :state        => BillableEvent::Open,
       :time         => jan,
       :rate_code_id => rate_code.id
@@ -120,20 +120,20 @@ class ReportServiceTest < ShushuTest
     ResourceOwnershipRecord.create(
       :account_id => account.id,
       :hid        => "app123",
-      :event_id   => 1,
+      :entity_id   => 1,
       :state      => ResourceOwnershipRecord::Active,
       :time       => jan
     )
     BillableEvent.create(
       :hid          => "app123",
-      :event_id     => 1,
+      :entity_id     => 1,
       :state        => BillableEvent::Open,
       :time         => jan,
       :rate_code_id => rate_code.id
     )
     BillableEvent.create(
       :hid          => "app123",
-      :event_id     => 1,
+      :entity_id     => 1,
       :state        => BillableEvent::Close,
       :time         => jan + (60 * 60 * 24 * 5), #5days
       :rate_code_id => rate_code.id
@@ -148,13 +148,13 @@ class ReportServiceTest < ShushuTest
     ResourceOwnershipRecord.create(
       :account_id => account.id,
       :hid        => "app123",
-      :event_id   => 1,
+      :entity_id   => 1,
       :state      => ResourceOwnershipRecord::Active,
       :time       => jan
     )
     BillableEvent.create(
       :hid          => "app123",
-      :event_id     => 1,
+      :entity_id     => 1,
       :state        => BillableEvent::Open,
       :time         => Time.now - 3600,
       :rate_code_id => rate_code.id

@@ -3,14 +3,14 @@ class BillableEvent < Sequel::Model
   Open = "open"
   Close = "close"
 
-  def self.prev_recorded(state, event_id)
-    events = filter("event_id = ? AND state = ?", event_id, state).all
+  def self.prev_recorded(state, entity_id)
+    events = filter("entity_id = ? AND state = ?", entity_id, state).all
     if events.length == 0
       nil
     elsif events.length == 1
       events.pop
     else
-      raise(ShushuError, "Found #{events.length} events with state=#{state} AND event_id=#{event_id}")
+      raise(ShushuError, "Found #{events.length} events with state=#{state} AND entity_id=#{entity_id}")
     end
   end
 
@@ -18,7 +18,7 @@ class BillableEvent < Sequel::Model
     {
       :id          => self[:id],
       :provider_id => self[:provider_id],
-      :event_id    => self[:event_id],
+      :entity_id    => self[:entity_id],
       :hid         => self[:hid],
       :rate_code   => rate_code[:slug],
       :qty         => self[:qty],

@@ -16,10 +16,10 @@ the API's basic HTTP authentication.
 ### Creating Events
 
 This API is idempotent. After the first open or close, subsequent
-calls that have identical *event_id*, *state* values will be ignored.
+calls that have identical *entity_id*, *state* values will be ignored.
 
 * hid: The id of the resource. (i.e. app_id)
-* event_id: An id that is unique to the provider of events. (i.e. psmgr's upid)
+* entity_id: An id that is unique to the provider of events. (i.e. psmgr's upid)
 * qty: In most cases, this will be 1. However, if a provider wishes to batch events of the same rate_code, the qty field may not be 1.
 * time: The UTC time in which the event occured.
 * state: Can be 'open' or 'close'.
@@ -29,7 +29,7 @@ calls that have identical *event_id*, *state* values will be ignored.
 #### Open Event
 
 ```bash
-$ curl -X PUT http://shushu.heroku.com/resources/:hid/billable_events/:event_id \
+$ curl -X PUT http://shushu.heroku.com/resources/:hid/billable_events/:entity_id \
   -d "qty=1" \
   -d "time=2011-12-01 00:00:00" \
   -d "state=open" \
@@ -46,14 +46,14 @@ $ curl -X PUT http://shushu.heroku.com/resources/:hid/billable_events/:event_id 
 **Response Body**
 
 ```
-{"account_id": "123", "hid": "987", "event_id": "456", "state": "active"}
+{"account_id": "123", "hid": "987", "entity_id": "456", "state": "active"}
 ```
 
 
 #### Close Event
 
 ```bash
-$ curl -X PUT http://shushu.heroku.com/resources/:hid/billable_events/:event_id \
+$ curl -X PUT http://shushu.heroku.com/resources/:hid/billable_events/:entity_id \
   -d "time=2011-12-02 00:00:00" \
   -d "state=close"
 ```
@@ -66,7 +66,7 @@ $ curl -X PUT http://shushu.heroku.com/resources/:hid/billable_events/:event_id 
 **Response Body**
 
 ```
-{"account_id": "123", "hid": "987", "event_id": "456", "state": "active"}
+{"account_id": "123", "hid": "987", "entity_id": "456", "state": "active"}
 ```
 
 ### Querying Events
@@ -81,7 +81,7 @@ HTTP/1.1 200 OK
 {
   [
     {
-      "event_id": 12345,
+      "entity_id": 12345,
       "group": "dyno",
       "name": "web",
       "description": "",
