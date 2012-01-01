@@ -17,7 +17,8 @@ module BillableEventService
         event.to_h
       else
         open(args).to_h
-      end when BillableEvent::Close
+      end
+    when BillableEvent::Close
       shulog("#event_close")
       close(args).to_h
     else
