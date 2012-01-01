@@ -1,8 +1,17 @@
 module Http
   class Api < Sinatra::Base
 
-    helpers {include Authentication}
+    include Authentication
+    include Helpers
+
     before  {content_type(:json)}
+    #
+    # Errors
+    #
+    not_found do
+      status(404)
+      body(enc_json("Not Found"))
+    end
 
     #
     # Heartbeat
@@ -205,25 +214,6 @@ module Http
         body(enc_json(e.message))
         raise if Shushu.test?
       end
-    end
-
-    def status_based_on_verb(verb)
-      case verb
-      when "POST" then 201
-      when "PUT"  then 200
-      end
-    end
-
-    def enc_json(hash)
-      Yajl::Encoder.encode(hash)
-    end
-
-    def dec_time(t)
-      Time.parse(CGI.unescape(t.to_s))
-    end
-
-    def dec_int(i)
-      i.to_i if i
     end
 
     def log(msg)
