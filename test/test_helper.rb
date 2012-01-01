@@ -1,4 +1,3 @@
-$:.unshift("api")
 $:.unshift("lib")
 $:.unshift("test")
 
