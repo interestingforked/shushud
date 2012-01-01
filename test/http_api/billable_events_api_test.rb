@@ -104,4 +104,19 @@ class BillableEventsApiTest < ShushuTest
     assert_equal 200, last_response.status
   end
 
+  def test_close_event_a_second_time
+    setup_auth
+    body = {
+      :qty        => 1,
+      :rate_code  => @rate_code.slug,
+      :time       => '2011-01-01 00:00:00 +0000',
+      :state      => 'open'
+    }
+    put "/resources/123/billable_events/1", body
+    put "/resources/123/billable_events/1", body.merge({:state => "close", :time => '2011-01-01 00:00:01 +0000'})
+    assert_equal 200, last_response.status
+    put "/resources/123/billable_events/1", body.merge({:state => "close", :time => '2011-01-01 00:00:01 +0000'})
+    assert_equal 200, last_response.status
+  end
+
 end

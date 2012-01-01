@@ -9,15 +9,14 @@ module BillableEventService
   end
 
   def handle_new_event(args)
+    if event = BillableEvent[:state => BillableEvent::Open, :event_id => args[:event_id]]
+      shulog("#event_found")
+      return event.to_h
+    end
     case args[:state]
     when BillableEvent::Open
       shulog("#event_open")
-      if event = BillableEvent[:state => BillableEvent::Open, :event_id => args[:event_id]]
-        shulog("#event_found")
-        event.to_h
-      else
-        open(args).to_h
-      end
+      open(args).to_h
     when BillableEvent::Close
       shulog("#event_close")
       close(args).to_h
