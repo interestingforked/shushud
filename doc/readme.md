@@ -7,10 +7,10 @@ All of The Vault's services are made available over an HTTP API.
 All API endpoints require authentication. The API requires HTTP Basic
 Authentication over SSL. All non-SSL requests will be redirected to HTTPS.
 
-## Event IDs
+## Entity IDs
 
-An event id is client generated token that is used to represent an entity in the
-client's system.
+An entity id is client generated token that is used to represent an entity in the
+client's system. Shushu requires this ID to cluster groups of events.
 
 Think of what might happen if we did not have such an ID. Lets say that we are
 dealing with a resource ownership record. This record knows who owned what and
@@ -25,11 +25,12 @@ record1.5, our connection was partitioned and I never acknowledged. This means
 that I incorrectly charged a customers account and based on my data I had no way
 of knowing that I was in an erroneous state.
 
-Now, if record1 had event_id=001, and when you told me about record2, you
-included event_id=002 as the previous event_id and event_id=003 as the new id, I
-can now systematically deduce that I am in an erroneous state.
+Now, if record1 had entity_id=001, and when you told me about record2, you
+included entity_id=002 as the previous entity_id and entity_id=003 as the new
+entity_id , I can now systematically deduce that I am in an erroneous state.
 
-Therefore, event ids aid Shushu in keeping reliable data.
+Therefore, entity_ids help Shushu in preventing monetary actions on unreliable
+data.
 
 ## HTTP Status Codes
 
