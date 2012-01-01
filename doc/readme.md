@@ -7,9 +7,17 @@ All of The Vault's services are made available over an HTTP API.
 All API endpoints require authentication. The API requires HTTP Basic
 Authentication over SSL. All non-SSL requests will be redirected to HTTPS.
 
+## Time
+
+All of the APIs in Shushu rely on the client's time. Times should be sent in
+is8601 compatible format. I will use timestamps like: 2012-01-01 00:00:00 UTC,
+throughout the documentation. Shushu does keep track of internal time of
+changes, however, client's should not rely upon any time that Shushu
+maintians.
+
 ## Entity IDs
 
-An entity id is client generated token that is used to represent an entity in the
+An entity_id is client generated token that is used to represent an entity in the
 client's system. Shushu requires this ID to cluster groups of events.
 
 Think of what might happen if we did not have such an ID. Lets say that we are
