@@ -68,7 +68,7 @@ Sequel.migration do
       foreign_key :rate_code_id, :rate_codes
     end
     add_column :billable_events, :qty,                "int"
-    add_column :billable_events, :entity_id,           "varchar(255)"
+    add_column :billable_events, :entity_id,          "varchar(255)"
     add_column :billable_events, :hid,                "varchar(255)"
     add_column :billable_events, :time,               "timestamptz"
     add_column :billable_events, :state,              "varchar(255)"
