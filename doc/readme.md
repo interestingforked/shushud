@@ -41,7 +41,7 @@ of knowing that I was in an erroneous state.
 
 Now, if record1 had event_id=001, and when you told me about record2, you
 included event_id=002 as the previous event_id and event_id=003 as the new id, I
-can now systematically deduce that I am missing date.
+can now systematically deduce that I am in an erroneous state.
 
 Therefore, event ids aid Shushu in keeping reliable data.
 
