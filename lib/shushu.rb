@@ -38,9 +38,9 @@ module Shushu
   end
 end
 
-require './lib/http/authentication'
-require './lib/http/helpers'
-require './lib/http/api'
+require './api/authentication'
+require './api/helpers'
+require './api/http'
 
 require './lib/models/billable_event'
 require './lib/models/provider'

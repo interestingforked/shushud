@@ -1,12 +1,5 @@
-module Http
+module Api
   module Helpers
-
-    def status_based_on_verb(verb)
-      case verb
-      when "POST" then 201
-      when "PUT"  then 200
-      end
-    end
 
     def enc_json(hash)
       Yajl::Encoder.encode(hash)

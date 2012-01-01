@@ -2,31 +2,37 @@ module BillableEventService
   extend self
 
   def find(conditions)
-    BillableEvent.
-      filter(:provider_id => conditions[:provider_id], :hid => conditions[:hid]).
-      all.
-      map(&:to_h)
+    events = BillableEvent.filter(
+      :provider_id => conditions[:provider_id],
+      :hid => conditions[:hid]
+    ).all
+    [200, events.map(&:to_h)]
   end
 
   def handle_new_event(args)
-    if event = BillableEvent[:state => BillableEvent::Open, :event_id => args[:event_id]]
+    if event = BillableEvent.prev_recorded(args[:state], args[:event_id])
       shulog("#event_found")
-      return event.to_h
+      [200, event.to_h]
+    else
+      [201, open_or_close(args).to_h]
     end
+  end
+
+  private
+
+  def open_or_close(args)
     case args[:state]
     when BillableEvent::Open
       shulog("#event_open")
-      open(args).to_h
+      open(args)
     when BillableEvent::Close
       shulog("#event_close")
-      close(args).to_h
+      close(args)
     else
       shulog("#unhandled_state args=#{args}")
       raise(ArgumentError, "Unable to create new event with args=#{args}")
     end
   end
-
-  private
 
   def resolve_rate_code_id(slug)
     if rc = RateCode[:slug => slug]

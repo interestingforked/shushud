@@ -23,7 +23,7 @@ class ResourceOwnershipApiTest < ShushuTest
     second_account = build_account
     post "/accounts/#{account.id}/resource_ownerships/event1", {:hid => "123", :time => Time.now.utc.to_s}
     put "/accounts/#{account.id}/resource_ownerships/event1", {:account_id => second_account.id, :hid => "123", :event_id => "event2", :time => Time.now.utc.to_s}
-    assert_equal 200, last_response.status
+    assert_equal 201, last_response.status
     updated_record = JSON.parse(last_response.body)
     assert_equal second_account.id, updated_record["account_id"].to_i
   end
@@ -32,7 +32,7 @@ class ResourceOwnershipApiTest < ShushuTest
     setup_auth
     post "/accounts/#{account.id}/resource_ownerships/event1", {:hid => "123", :time => Time.now.utc.to_s}
     delete "/accounts/#{account.id}/resource_ownerships/event1", {:hid => "123", :time => Time.now.utc.to_s}
-    assert_equal 200, last_response.status
+    assert_equal 201, last_response.status
     updated_record = JSON.parse(last_response.body)
     assert_equal account.id, updated_record["account_id"].to_i
   end

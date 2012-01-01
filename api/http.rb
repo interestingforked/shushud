@@ -1,5 +1,5 @@
-module Http
-  class Api < Sinatra::Base
+module Api
+  class Http < Sinatra::Base
 
     include Authentication
     include Helpers
@@ -28,7 +28,7 @@ module Http
     post "/accounts" do
       authenticate_trusted_consumer
       perform do
-        Account.create.to_h
+        [201, Account.create.to_h]
       end
     end
 
@@ -187,11 +187,9 @@ module Http
 
     def perform
       begin
-        exception_message = nil
-        res = yield
-        json = enc_json(res)
-        status(status_based_on_verb(request.request_method))
-        body(json)
+        s, b = yield
+        status(s)
+        body(enc_json(b))
       rescue RuntimeError => e
         log("#http_api_runtime_error e=#{e.message} s=#{e.backtrace}")
         status(400)

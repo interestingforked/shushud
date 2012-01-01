@@ -1,4 +1,4 @@
-module Http
+module Api
   module Authentication
 
     def auth

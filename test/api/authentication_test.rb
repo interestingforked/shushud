@@ -20,7 +20,7 @@ class AuthenticationTest < ShushuTest
   def setup
     super
     @auth = TestAuth.new
-    @auth.send(:extend, Http::Authentication)
+    @auth.send(:extend, Api::Authentication)
 
     @provider = Provider.create(:token => "abc123")
   end

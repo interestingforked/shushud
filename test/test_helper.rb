@@ -1,3 +1,4 @@
+$:.unshift("api")
 $:.unshift("lib")
 $:.unshift("test")
 
@@ -33,7 +34,7 @@ class ShushuTest < MiniTest::Unit::TestCase
   end
 
   def app
-    Http::Api
+    Api::Http
   end
 
   def jan

@@ -1,14 +1,14 @@
 module OwnershipService
   def query(primary_id)
-    model.collapse(primary_id)
+    [200, model.collapse(primary_id)]
   end
 
   def activate(primary_id, secondary_id, time, event_id)
-    create_record(primary_id, secondary_id, model.active, time, event_id)
+    [201, create_record(primary_id, secondary_id, model.active, time, event_id)]
   end
 
   def deactivate(primary_id, secondary_id, time, event_id)
-    create_record(primary_id, secondary_id, model.inactive, time, event_id)
+    [201, create_record(primary_id, secondary_id, model.inactive, time, event_id)]
   end
 
   def transfer(previos_primary_id, new_primary_id, secondary_id, time, prev_event_id, new_event_id)
@@ -16,7 +16,7 @@ module OwnershipService
       deactivate(previos_primary_id, secondary_id, time, prev_event_id)
     else
       deactivate(previos_primary_id, secondary_id, time, prev_event_id)
-      create_record(new_primary_id, secondary_id, model.active, time, new_event_id)
+      [201, create_record(new_primary_id, secondary_id, model.active, time, new_event_id)]
     end
   end
 end

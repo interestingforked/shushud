@@ -19,7 +19,7 @@ class ReportServiceTest < ShushuTest
       :state        => BillableEvent::Open,
       :time         => jan
     )
-    report = ReportService.usage_report(account.id, jan, feb)
+    _, report = ReportService.usage_report(account.id, jan, feb)
     assert_equal(Hash, report.class)
   end
 
@@ -177,7 +177,7 @@ class ReportServiceTest < ShushuTest
 
     build_billable_event("app123", 1, BillableEvent::Open, jan)
 
-    invoice = ReportService.invoice(payment_method.id, jan, feb)
+    _, invoice = ReportService.invoice(payment_method.id, jan, feb)
     billable_units = invoice[:billable_units]
     assert_equal(1, billable_units.length)
     billable_unit = billable_units.first
@@ -202,14 +202,14 @@ class ReportServiceTest < ShushuTest
     build_billable_event("app123", 1, BillableEvent::Open, jan)
     build_billable_event("app124", 2, BillableEvent::Open, jan)
 
-    invoice = ReportService.invoice(payment_method.id, jan, feb)
+    _, invoice = ReportService.invoice(payment_method.id, jan, feb)
     billable_units = invoice[:billable_units]
     assert_equal(1, billable_units.length)
     billable_unit = billable_units.first
     assert_equal(jan, Time.parse(billable_unit["from"]))
     assert_equal((jan + 100), Time.parse(billable_unit["to"]))
 
-    invoice = ReportService.invoice(another_payment_method.id, jan, feb)
+    _, invoice = ReportService.invoice(another_payment_method.id, jan, feb)
     billable_units = invoice[:billable_units]
     assert_equal(1, billable_units.length)
     billable_unit = billable_units.first
