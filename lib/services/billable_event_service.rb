@@ -51,9 +51,10 @@ module BillableEventService
     BillableEvent.create(
       :provider_id      => resolve_provider_id(args[:provider_id]),
       :rate_code_id     => resolve_rate_code_id(args[:rate_code_slug]),
-      :entity_id         => args[:entity_id],
+      :entity_id        => args[:entity_id],
       :hid              => args[:hid],
       :qty              => args[:qty],
+      :product_name     => args[:product_name],
       :time             => args[:time],
       :state            => BillableEvent::Open,
       :transitioned_at  => Time.now
@@ -65,9 +66,10 @@ module BillableEventService
     BillableEvent.create(
       :provider_id      => resolve_provider_id(args[:provider_id]),
       :rate_code_id     => resolve_rate_code_id(args[:rate_code_slug]),
-      :entity_id         => args[:entity_id],
+      :entity_id        => args[:entity_id],
       :hid              => args[:hid],
       :qty              => args[:qty],
+      :product_name     => args[:product_name],
       :time             => args[:time],
       :state            => BillableEvent::Close,
       :transitioned_at  => Time.now

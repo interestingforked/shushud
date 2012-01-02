@@ -37,11 +37,18 @@ Sequel.migration do
         SELECT
           a.hid,
           a.entity_id,
-          a.rate_code_id,
           a.time as from,
-          COALESCE(b.time, now()) as to
+          COALESCE(b.time, now()) as to,
+          a.rate_code_id,
+          rate_codes.product_group,
+          COALESCE(rate_codes.product_name, a.product_name) as product_name,
+          rate_codes.rate,
+          rate_codes.rate_period
 
           FROM billable_events a
+          LEFT OUTER JOIN rate_codes
+          ON
+            rate_codes.id = a.rate_code_id
           LEFT OUTER JOIN billable_events b
           ON
                 a.entity_id    = b.entity_id
@@ -108,10 +115,10 @@ Sequel.migration do
                 LEAST(billable_units.to, compacted_act_own.to, $3) - GREATEST(billable_units.from, compacted_act_own.from, $2)
               )::numeric / (3600)) -- convert seconds into hours
             ) as qty,
-            rate_codes.product_name,
-            rate_codes.product_group,
-            rate_codes.rate,
-            rate_codes.rate_period
+            billable_units.product_name,
+            billable_units.product_group,
+            billable_units.rate,
+            billable_units.rate_period
           FROM
             compacted_act_own
           INNER JOIN billable_units
@@ -136,10 +143,10 @@ Sequel.migration do
                 LEAST(billable_units.to, resource_ownerships.to, $3) - GREATEST(billable_units.from, resource_ownerships.from, $2)
               )::numeric / (3600)) -- convert seconds into hours
             ) as qty,
-            rate_codes.product_name,
-            rate_codes.product_group,
-            rate_codes.rate,
-            rate_codes.rate_period
+            billable_units.product_name,
+            billable_units.product_group,
+            billable_units.rate,
+            billable_units.rate_period
 
             FROM billable_units
             LEFT OUTER JOIN rate_codes

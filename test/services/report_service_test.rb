@@ -217,4 +217,49 @@ class ReportServiceTest < ShushuTest
     assert_equal(feb, Time.parse(billable_unit["to"]))
   end
 
+  def test_invoice_uses_product_name_on_events_when_not_present_on_rate_code
+    account = build_account
+    rate_code = build_rate_code(:product_name => nil)
+    ResourceOwnershipRecord.create(
+      :account_id => account.id,
+      :hid        => "app123",
+      :entity_id   => 1,
+      :state      => ResourceOwnershipRecord::Active,
+      :time       => jan
+    )
+    BillableEvent.create(
+      :hid          => "app123",
+      :product_name => "web",
+      :entity_id    => 1,
+      :state        => BillableEvent::Open,
+      :time         => Time.now - 3600,
+      :rate_code_id => rate_code.id
+    )
+    billable_unit = ReportService.query_usage_report(account.id, jan, Time.now).pop
+    assert_equal("web", billable_unit["product_name"])
+  end
+
+  def test_invoice_uses_product_name_on_rate_codes_when_present
+    account = build_account
+    rate_code = build_rate_code(:product_name => "specialweb")
+    ResourceOwnershipRecord.create(
+      :account_id => account.id,
+      :hid        => "app123",
+      :entity_id   => 1,
+      :state      => ResourceOwnershipRecord::Active,
+      :time       => jan
+    )
+    BillableEvent.create(
+      :hid          => "app123",
+      :product_name => "web",
+      :entity_id    => 1,
+      :state        => BillableEvent::Open,
+      :time         => Time.now - 3600,
+      :rate_code_id => rate_code.id
+    )
+    billable_unit = ReportService.query_usage_report(account.id, jan, Time.now).pop
+    assert_equal("specialweb", billable_unit["product_name"])
+  end
+
+
 end

@@ -58,8 +58,9 @@ module Api
         BillableEventService.handle_new_event(
           :provider_id    => params[:provider_id],
           :rate_code_slug => params[:rate_code],
+          :product_name   => params[:product_name],
           :hid            => params[:hid],
-          :entity_id       => params[:entity_id],
+          :entity_id      => params[:entity_id],
           :qty            => params[:qty],
           :time           => dec_time(params[:time]),
           :state          => params[:state]
