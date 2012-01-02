@@ -39,13 +39,15 @@ $ curl -X PUT http://1:pass@localhost:$PORT/resources/app123/billable_events/1 \
   -d "from=2011-01-01 00:00:00" \
   -d "qty=1" \
   -d "rate_code=RT01"
-
 ```
+
+Please see the [docs](https://github.com/heroku/shushu/docs) for more detailed
+usage.
 
 ## Running Tests
 
 ```bash
 $ bundle
-$ bundle exec bin/reset test
+$ bundle exec bin/db test
 $ bundle exec turn test/
 ```
