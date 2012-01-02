@@ -41,7 +41,7 @@ $ curl -X PUT http://1:pass@localhost:$PORT/resources/app123/billable_events/1 \
   -d "rate_code=RT01"
 ```
 
-Please see the [docs](https://github.com/heroku/shushu/docs) for more detailed
+Please see the [docs](https://github.com/heroku/shushu/tree/master/doc) for more detailed
 usage.
 
 ## Running Tests
