@@ -15,15 +15,14 @@ the API's basic HTTP authentication.
 
 ### Creating Events
 
-This API is idempotent. After the first open or close, subsequent
-calls that have identical *entity_id*, *state* values will be ignored.
+This API is idempotent with respect to: *provider_id*, *entity_id* & *state*.
 
 * hid: The id of the resource. (i.e. app_id)
-* entity_id: An id that is unique to the provider of events. (i.e. psmgr's upid)
+* entity_id: An id that is unique to the provider of events. See doc on [entity_ids.](https://github.com/heroku/shushu/tree/master/doc)
 * qty: In most cases, this will be 1. However, if a provider wishes to batch events of the same rate_code, the qty field may not be 1.
-* time: The UTC time in which the event occured.
+* time: The UTC time in which the event occured. See doc on [time.](https://github.com/heroku/shushu/tree/master/doc)
 * state: Can be 'open' or 'close'.
-* rate_code: The slug of the rate code associated with the event. See the rate_code API doc.
+* rate_code: The slug of the rate code associated with the event. See doc on [rate_codes.](https://github.com/heroku/shushu/blob/master/doc/rate_code_api.md)
 * product_name: In the case where the rate code does not define a product_name, each billable_event belonging to that rate_code must specifu a product_name.
 
 #### Open Event
@@ -41,6 +40,8 @@ $ curl -X PUT http://shushu.heroku.com/resources/:hid/billable_events/:entity_id
 
 * 200 - Event as already been recorded.
 * 201 - Event recorded.
+* 400 - Missing required arguments.
+* 401 - Incorrect Authentication.
 * 404 - Rate Code not found.
 
 **Response Body**
@@ -62,6 +63,9 @@ $ curl -X PUT http://shushu.heroku.com/resources/:hid/billable_events/:entity_id
 
 * 200 - Event as already been recorded.
 * 201 - Event recorded.
+* 400 - Missing required arguments.
+* 401 - Incorrect Authentication.
+* 409 - Incorrect timestamp. Closed happened before Open.
 
 **Response Body**
 
@@ -70,6 +74,8 @@ $ curl -X PUT http://shushu.heroku.com/resources/:hid/billable_events/:entity_id
 ```
 
 ### Querying Events
+
+Deprecation eminent! You should be using a report to retrieve billable_units.
 
 #### Find all events by account_id
 
