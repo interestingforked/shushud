@@ -75,7 +75,7 @@ Sequel.migration do
     add_column :billable_events, :state,              "varchar(255)"
     add_column :billable_events, :transitioned_at,    "varchar(255)"
     alter_table(:billable_events) do
-      add_unique_constraint([:entity_id, :state])
+      add_unique_constraint([:provider_id, :entity_id, :state])
     end
 
   end

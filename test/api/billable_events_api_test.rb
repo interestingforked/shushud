@@ -59,6 +59,22 @@ class BillableEventsApiTest < ShushuTest
     assert_equal(401, last_response.status)
   end
 
+  def test_open_event_with_used_entity_id_but_diff_provider
+    setup_auth
+    body = {
+      :qty        => 1,
+      :rate_code  => @rate_code.slug,
+      :time       => '2011-01-01 00:00:00',
+      :state      => 'open'
+    }
+    put("/resources/123/billable_events/1", body)
+    assert_equal(201, last_response.status)
+    another_provider = build_provider
+    authorize(another_provider.id, another_provider.token)
+    put("/resources/123/billable_events/1", body)
+    assert_equal(201, last_response.status)
+  end
+
   def test_open_event_on_second_call_returns_same_billable_entity_id
     setup_auth
     put_body = {

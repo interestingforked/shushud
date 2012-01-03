@@ -11,8 +11,8 @@ module BillableEventService
 
   def handle_new_event(args)
     check_args!(args)
-    if event = BillableEvent.prev_recorded(args[:state], args[:entity_id])
-      shulog("#event_found")
+    if event = BillableEvent.prev_recorded(args[:state], args[:entity_id], args[:provider_id])
+      shulog("#event_found provider=#{event[:provider_id]} entity=#{event[:entity_id]}")
       [200, event.to_h]
     else
       [201, open_or_close(args).to_h]
