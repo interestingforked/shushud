@@ -1,17 +1,18 @@
 module Api
   module Authentication
+    include Helpers
 
     def auth
       @auth ||= Rack::Auth::Basic::Request.new(request.env)
     end
 
     def bad_request!
-      throw(:halt, [400, Yajl::Encoder.encode("Bad Request")])
+      throw(:halt, [400, enc_json("Bad Request")])
     end
 
     def unauthenticated!(realm="shushu.heroku.com")
       response['WWW-Authenticate'] = %(Basic realm="Restricted Area")
-      throw(:halt, [401, Yajl::Encoder.encode("Not authorized")])
+      throw(:halt, [401, enc_json("Not authorized")])
     end
 
     def authenticated?
