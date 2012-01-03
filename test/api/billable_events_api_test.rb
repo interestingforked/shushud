@@ -47,6 +47,18 @@ class BillableEventsApiTest < ShushuTest
     assert_equal(400, last_response.status)
   end
 
+  def test_open_event_with_incorrect_auth
+    authorize('something that is not a provider id', 'not a provider token')
+    body = {
+      :qty        => 1,
+      :rate_code  => @rate_code.slug,
+      :time       => '2011-01-01 00:00:00',
+      :state      => 'open'
+    }
+    put("/resources/123/billable_events/1", body)
+    assert_equal(401, last_response.status)
+  end
+
   def test_open_event_on_second_call_returns_same_billable_entity_id
     setup_auth
     put_body = {

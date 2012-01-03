@@ -19,7 +19,7 @@ module Api
     end
 
     def authenticate(provider_id, provider_token)
-      if provider = Provider.find(:id => provider_id)
+      if provider = Provider.find(:id => provider_id.to_i)
         if provider.token == provider_token
           request.env["PROVIDER_ID"] = provider_id.to_i
           params[:provider_id] = provider_id.to_i
