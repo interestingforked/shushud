@@ -191,7 +191,7 @@ module Api
         s, b = yield
         status(s)
         body(enc_json(b))
-      rescue RuntimeError => e
+      rescue RuntimeError, ArgumentError => e
         log("#http_api_runtime_error e=#{e.message} s=#{e.backtrace}")
         status(400)
         body(enc_json(e.message))

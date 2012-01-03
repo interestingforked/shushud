@@ -13,10 +13,10 @@ module Kernel
 end
 
 module Shushu
-  NotFound            = Class.new(Exception)
-  DataConflict        = Class.new(Exception)
-  AuthorizationError  = Class.new(Exception)
-  ShushuError         = Class.new(RuntimeError)
+  ShushuError         = Class.new(Exception)
+  NotFound            = Class.new(ShushuError)
+  DataConflict        = Class.new(ShushuError)
+  AuthorizationError  = Class.new(ShushuError)
 
   DB = (
     case ENV["RACK_ENV"].to_s

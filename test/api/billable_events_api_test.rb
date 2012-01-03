@@ -22,13 +22,6 @@ class BillableEventsApiTest < ShushuTest
     put "resources/123/billable_events/#{entity_id || 1}", body
   end
 
-  def test_get_events
-    setup_auth
-    open_event("456")
-    get("/resources/123/billable_events")
-    assert_equal("456", JSON.parse(last_response.body).first["entity_id"])
-  end
-
   def test_open_event
     setup_auth
     body = {
@@ -41,6 +34,17 @@ class BillableEventsApiTest < ShushuTest
     assert_equal(201, last_response.status)
     assert_equal('2011-01-01 00:00:00 UTC', JSON.parse(last_response.body)["time"])
     assert_equal('open', JSON.parse(last_response.body)["state"])
+  end
+
+  def test_open_event_with_incorrect_params
+    setup_auth
+    body = {
+      :qty        => 1,
+      :time       => '2011-01-01 00:00:00',
+      :state      => 'open'
+    }
+    put("/resources/123/billable_events/1", body)
+    assert_equal(400, last_response.status)
   end
 
   def test_open_event_on_second_call_returns_same_billable_entity_id
@@ -123,6 +127,13 @@ class BillableEventsApiTest < ShushuTest
     assert_equal 201, last_response.status
     put "/resources/123/billable_events/1", body.merge({:state => "close", :time => '2011-01-01 00:00:01 +0000'})
     assert_equal 200, last_response.status
+  end
+
+  def test_get_events
+    setup_auth
+    open_event("456")
+    get("/resources/123/billable_events")
+    assert_equal("456", JSON.parse(last_response.body).first["entity_id"])
   end
 
 end

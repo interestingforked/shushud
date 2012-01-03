@@ -10,6 +10,7 @@ module BillableEventService
   end
 
   def handle_new_event(args)
+    check_args!(args)
     if event = BillableEvent.prev_recorded(args[:state], args[:entity_id])
       shulog("#event_found")
       [200, event.to_h]
@@ -31,18 +32,6 @@ module BillableEventService
     else
       shulog("#unhandled_state args=#{args}")
       raise(ArgumentError, "Unable to create new event with args=#{args}")
-    end
-  end
-
-  def resolve_rate_code_id(slug)
-    if rc = RateCode[:slug => slug]
-      rc[:id]
-    end
-  end
-
-  def resolve_provider_id(provider_id)
-    if p = Provider[provider_id]
-      p[:id]
     end
   end
 
@@ -74,6 +63,42 @@ module BillableEventService
       :state            => BillableEvent::Close,
       :transitioned_at  => Time.now
     )
+  end
+
+  def check_args!(args)
+    mis_args = missing_args(args)
+    unless mis_args.empty?
+      raise(ArgumentError, "Missing arguments for billable_event api: #{mis_args}")
+    end
+  end
+
+  def missing_args(args)
+    required_args(args[:state]) - args.reject {|k,v| v.nil?}.keys
+  end
+
+  def required_args(state)
+    case state.to_s
+    when "open"
+      [:provider_id, :rate_code_slug, :entity_id, :hid, :qty, :time, :state]
+    when "close"
+      [:provider_id, :entity_id, :state]
+    end
+  end
+
+  def resolve_rate_code_id(slug)
+    if rc = RateCode[:slug => slug]
+      rc[:id]
+    else
+      raise(Shushu::NotFound, "Could not find rate_code with slug=#{slug}")
+    end
+  end
+
+  def resolve_provider_id(provider_id)
+    if p = Provider[provider_id]
+      p[:id]
+    else
+      raise(Shushu::NotFound, "Could not find provider with id=#{provider_id}")
+    end
   end
 
 end
