@@ -217,7 +217,7 @@ class ReportServiceTest < ShushuTest
     assert_equal(feb, Time.parse(billable_unit["to"]))
   end
 
-  def test_invoice_uses_product_name_on_events_when_not_present_on_rate_code
+  def test_inv_uses_prod_name_on_events_when_not_present_on_rate_code
     account = build_account
     rate_code = build_rate_code(:product_name => nil)
     ResourceOwnershipRecord.create(
@@ -261,5 +261,28 @@ class ReportServiceTest < ShushuTest
     assert_equal("specialweb", billable_unit["product_name"])
   end
 
+  def test_inv_doesnt_care_about_res_own
+    payment_method = build_payment_method
+
+    account = build_account(:payment_method_id => payment_method.id)
+    another_account = build_account(:payment_method_id => payment_method.id)
+
+    build_act_own(account.id, payment_method.id, 1, AccountOwnershipRecord::Active, jan)
+    build_act_own(another_account.id, payment_method.id, 2, AccountOwnershipRecord::Active, jan)
+
+    build_res_own(account.id, "app123", 1, ResourceOwnershipRecord::Active, jan)
+    build_res_own(account.id, "app123", 1, ResourceOwnershipRecord::Inactive, jan + 100)
+    build_res_own(another_account.id, "app123", 2, ResourceOwnershipRecord::Active, jan + 101)
+
+    build_billable_event("app123", 1, BillableEvent::Open, jan)
+    build_billable_event("app124", 2, BillableEvent::Open, jan)
+
+    _, invoice = ReportService.invoice(payment_method.id, jan, feb)
+    billable_units = invoice[:billable_units]
+    assert_equal(1, billable_units.length)
+    billable_unit = billable_units.first
+    assert_equal(jan, Time.parse(billable_unit["from"]))
+    assert_equal(feb, Time.parse(billable_unit["to"]))
+  end
 
 end
