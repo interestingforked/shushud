@@ -18,7 +18,7 @@ class BillableEvent < Sequel::Model
     {
       :id          => self[:id],
       :provider_id => self[:provider_id],
-      :entity_id    => self[:entity_id],
+      :entity_id   => self[:entity_id],
       :hid         => self[:hid],
       :rate_code   => rate_code[:slug],
       :qty         => self[:qty],
