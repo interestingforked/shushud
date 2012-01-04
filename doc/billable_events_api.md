@@ -73,7 +73,7 @@ $ curl -X PUT http://shushu.heroku.com/resources/:hid/billable_events/:entity_id
 {"account_id": "123", "hid": "987", "entity_id": "456", "state": "active"}
 ```
 
-### Issues
+## Issues
 
 There is currently nothing from stopping a provider from submitting an open for
 time=2 and a close for time=1. This would result in the computation of a
