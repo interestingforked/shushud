@@ -78,33 +78,3 @@ $ curl -X PUT http://shushu.heroku.com/resources/:hid/billable_events/:entity_id
 There is currently nothing from stopping a provider from submitting an open for
 time=2 and a close for time=1. This would result in the computation of a
 negative quantity for the corresponding billable_unit.
-
-
-### Querying Events
-
-Deprecation eminent! You should be using a report to retrieve billable_units.
-
-#### Find all events by account_id
-
-```bash
-$ curl -X GET \
-  https://shushu.heorku.com/accounts/:account_id/billable_events?period_start=2011-11-01&period_end=2011-12-01
-
-HTTP/1.1 200 OK
-{
-  [
-    {
-      "entity_id": 12345,
-      "group": "dyno",
-      "name": "web",
-      "description": "",
-      "qty": 750,
-      "rate": 5,
-      "from": "2011-11-01 00:00:01 UTC",
-      "to": "2011-12-01 00:00:00 UTC",
-      "state": "open"
-    }
-  ]
-}
-```
-
