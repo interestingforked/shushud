@@ -65,7 +65,6 @@ $ curl -X PUT http://shushu.heroku.com/resources/:hid/billable_events/:entity_id
 * 201 - Event recorded.
 * 400 - Missing required arguments.
 * 401 - Incorrect Authentication.
-* 409 - Incorrect timestamp. Closed happened before open.
 
 **Response Body**
 
