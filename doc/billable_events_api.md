@@ -65,13 +65,20 @@ $ curl -X PUT http://shushu.heroku.com/resources/:hid/billable_events/:entity_id
 * 201 - Event recorded.
 * 400 - Missing required arguments.
 * 401 - Incorrect Authentication.
-* 409 - Incorrect timestamp. Closed happened before Open.
+* 409 - Incorrect timestamp. Closed happened before open.
 
 **Response Body**
 
 ```
 {"account_id": "123", "hid": "987", "entity_id": "456", "state": "active"}
 ```
+
+### Issues
+
+There is currently nothing from stopping a provider from submitting an open for
+time=2 and a close for time=1. This would result in the computation of a
+negative quantity for the corresponding billable_unit.
+
 
 ### Querying Events
 
