@@ -45,7 +45,7 @@ $ curl -X POST https://shushu.heroku.com/payments \
   -d "amount=1000"
 ```
 
-**Possible Respnoses:**
+**Respnoses:**
 
 * 200 - Payment exists. Nothing to do.
 * 201 - Payment created.
@@ -78,7 +78,7 @@ $ curl -X POST https://shushu.heorku.com/payments/123/payment_attempts \
   -d "capture_at": "2011-12-01 00:00:01 UTC"
 ```
 
-**Possible Responses:**
+**Responses:**
 
 * 201 - Attempt has been created.
 * 400 - Not created. Contains amount which is greater than the amount of Payment.
@@ -129,6 +129,11 @@ Capture Later.
 ```bash
 # View payment_attempts
 $ curl -X GET https://shushu.heroku.com/payments/12345/payment_attempts
+```
+
+**Responses:**
+
+```
 {
   [
     {
