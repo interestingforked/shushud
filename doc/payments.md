@@ -1,6 +1,6 @@
 # Payments
 
-## The problem
+## Purpose
 
 So you got an invoice, now you want to get some money for it.
 Posting a transaction to a payment gateway is only one of the things involved in
@@ -18,18 +18,16 @@ consider the following:
 * Shouldn't care too much about the gateway.
 * Should be scriptable and have a good web UI.
 
-## A Solution
-
-### Synopsis
+## Synopsis
 
 ```
 PaymentMethod -1---n->    CardTokens      * such that 1 token is active
 Payment       -1---n->    PaymentAttempts
 ```
 
-### The API
+## The API
 
-#### Create Payment
+### Create Payment
 
 This endpoint will create a new payment row in the database if there is not already a
 row with the given invoice_id.
@@ -62,7 +60,7 @@ $ curl -X POST https://shushu.heroku.com/payments \
 }
 ```
 
-#### Create PaymentAttempt
+### Create PaymentAttempt
 
 Once a payment has been created, an attempt must be created in order to capture
 funds from the payment_method.
@@ -126,7 +124,7 @@ Capture Later.
 }
 ```
 
-### Report
+### Query Payment Attempts
 
 ```bash
 # View payment_attempts
