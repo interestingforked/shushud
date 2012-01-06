@@ -11,6 +11,7 @@ to usage & billing.
 * Manage rate codes for billable events.
 * Provide API for retrieving usage reports and invoices.
 * Track and store account ownerships and resource ownerships.
+* Interact with payment gateway to collect money for invoices.
 
 ## Links
 
