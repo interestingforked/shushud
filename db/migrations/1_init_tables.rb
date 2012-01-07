@@ -32,6 +32,12 @@ Sequel.migration do
     add_column :payment_attempt_records, :state,        "varchar(255)"
     add_column :payment_attempt_records, :wait_until,   "timestamptz"
     add_column :payment_attempt_records, :time,         "timestamptz"
+    # couldn't find a good way to do this in sequel.
+    execute(<<-EOD)
+      CREATE UNIQUE INDEX succeeded_receivable_attempt
+      ON payment_attempt_records
+      (receivable_id, (state = 'succeeded'))
+    EOD
 
     #Account
     create_table(:accounts) do |t|
@@ -39,7 +45,7 @@ Sequel.migration do
       foreign_key :payment_method_id, :payment_methods
     end
 
-    #AccountOwnershipRecords
+    #AccountOwnershipRecord
     create_table(:account_ownership_records) do
       primary_key :id
       foreign_key :payment_method_id, :payment_methods
