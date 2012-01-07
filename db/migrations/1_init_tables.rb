@@ -4,15 +4,39 @@ Sequel.migration do
     create_table(:payment_methods) do
       primary_key :id
     end
-    add_column :payment_methods, :card_token, "varchar(255)"
 
+    #CardToken
+    create_table(:card_tokens) do
+      primary_key :id
+      foreign_key :payment_method_id, :payment_methods
+    end
+    add_column :card_tokens, :token,  "varchar(255)"
+
+    #Receivable
+    create_table(:receivables) do
+      primary_key :id
+      foreign_key :init_payment_method_id, :payment_methods
+    end
+    add_column :receivables, :amount,       "int"
+    add_column :receivables, :period_start, "timestamptz"
+    add_column :receivables, :period_end,   "timestamptz"
+    add_column :receivables, :created_at,   "timestamptz"
+
+    #PaymentAttemptRecord
+    create_table(:payment_attempt_records) do
+      primary_key :id
+      foreign_key :receivable_id, :receivables
+      foreign_key :payment_method_id, :payment_methods
+    end
+    add_column :payment_attempt_records, :retry,        "boolean"
+    add_column :payment_attempt_records, :state,        "varchar(255)"
+    add_column :payment_attempt_records, :wait_until,   "timestamptz"
+    add_column :payment_attempt_records, :time,         "timestamptz"
 
     #Account
     create_table(:accounts) do |t|
       primary_key :id
-    end
-    alter_table(:accounts) do
-      add_foreign_key :payment_method_id, :payment_methods
+      foreign_key :payment_method_id, :payment_methods
     end
 
     #AccountOwnershipRecords
