@@ -11,102 +11,101 @@ consider the following:
 * Do not attempt to charge a card that has a 0 probability of success.
 * Rule based auto-capture.
 * Handle refunds.
-* Allow multiple payments on 1 invoice.
 * Track account/credit card interactions.
 * Allow easy computation of revenue.
 * Provide hooks for failure/success events.
 * Shouldn't care too much about the gateway.
 * Should be scriptable and have a good web UI.
 
-## Synopsis
+## API
 
-```
-PaymentMethod -1---n->    CardTokens      * such that 1 token is active
-Payment       -1---n->    PaymentAttempts
-```
+### Create Receivable
 
-## The API
-
-### Create Payment
-
-This endpoint will create a new payment row in the database if there is not already a
-row with the given invoice_id.
+This endpoint will create a new receivable row in the database if there is not already a
+row with the given payment_id & period.
 
 **Arguments:**
 
 * payment_method_id   - This payment_method will be used to capture funds.
-* invoice_id          - Used only for reference.
 * amount              - An integer representing the amount in pennies.
+* from
+* to
 
 ```bash
-$ curl -X POST https://shushu.heroku.com/payments \
-  -d "payment_method_id=123" \
-  -d "invoice_id=456" \
-  -d "amount=1000"
+$ curl -X POST https://shushu.heroku.com/receivables \
+  -d "init_payment_method_id=123" \
+  -d "amount=1000" \
+  -d "from=2012-01-00" \
+  -d "to=2012-02-00"
 ```
 
 **Respnoses:**
 
-* 200 - Payment exists. Nothing to do.
-* 201 - Payment created.
+* 200 - Receivable exists. Nothing to do.
+* 201 - Receivable created.
 
 ```
 {
-  "payment_id": 123,
-  "invoice_id": 456,
+  "receivable_id": 123,
+  "init_payment_method_id": 456,
   "amount": 1000,
   "state": "pending",
-  "transitioned_at": "2011-12-01 00:00:00 UTC"
+  "from": "2012-01-01",
+  "to": "2012-02-01"
 }
 ```
 
 ### Create PaymentAttempt
 
-Once a payment has been created, an attempt must be created in order to capture
-funds from the payment_method.
+Once a receivable has been created, an attempt must be created in order to capture
+funds from the init_payment_method. It should be noted that you can create a
+receivable using a payment_method_id that is different than the receivable's
+init_payment_method_id. This allows a customer with a bad payment_method to
+create a new payment_method and then settle his outstanding receivables. The
+client should validate that the correct payment_method is paying for the correct
+receivable.
 
 **Arguments:**
 
-* amount - must be less than payment amount. If blank, uses the payment's amount.
-* capture_at - must be greater than the payment's created_at. If blank, request is handled sync.
-* rety - set this to false if you want to override the rety logic.
-* force - ignore the success probability check and force create attempt.
+* payment_method_id - Use this payment_method to capture. Can be different than receivable's init_payment_method
+* wait_until - Must be greater than the payment's created_at. If blank, request is handled sync.
+* retry - Set this to false if you want to override the rety logic.
+* force - Ignore the success probability check and force create attempt.
 
 ```bash
-$ curl -X POST https://shushu.heorku.com/payments/123/payment_attempts \
-  -d "amount=1000" \
-  -d "capture_at": "2011-12-01 00:00:01 UTC"
+$ curl -X POST https://shushu.heorku.com/receivables/123/payment_attempts \
+  -d "payment_method_id=456" \
+  -d "wait_until": "2011-12-01 00:00:01 UTC" \
+  -d "retry=true" \
+  -d "force=true"
 ```
 
 **Responses:**
 
 * 201 - Attempt has been created.
-* 400 - Not created. Contains amount which is greater than the amount of Payment.
-* 404 - Not created. Could not find payment with given payment_id.
+* 404 - Not created. Could not find receivable with the given receivable_id.
 * 422 - Not created. Account action required. Most likely need credit card update.
 
-Capture Now. Failed. Retry eligible.
+Sync Capture. Failed. Retry eligible.
 
 ```
 [
   {
-    "payment_id": 123,
-    "amount": 1000,
+    "receivable_id": 123,
+    "payment_method_id": 456,
     "state": "failed-no-act-req",
-    "created_at": "2011-12-01 00:00:00 UTC",
-    "capture_at": "2011-12-01 00:00:01 UTC",
-    "captured_at": "2011-12-01 00:00:02 UTC",
+    "wait_until": null,
+    "time": "2011-12-01 00:00:01 UTC",
     "gateway_resp": "Some text..."
   },
   {
-    "payment_id": 123,
-    "amount": 1000,
-    "state": "pending-capture",
-    "created_at": "2011-12-01 00:00:03 UTC",
-    "capture_at": "2011-12-05 00:00:03 UTC",
-    "captured_at": null,
+    "receivable_id": 123,
+    "payment_method_id": 456,
+    "state": "ready",
+    "wait_until": "2011-12-05 00:00:00 UTC",
+    "time": "2011-12-01 00:00:01 UTC",
     "gateway_resp": null
-  },
+  }
 ]
 ```
 
@@ -114,12 +113,11 @@ Capture Later.
 
 ```
 {
-  "payment_id": 123,
-  "amount": 1000,
-  "state": "pending-capture",
-  "created_at": "2011-12-01 00:00:00 UTC",
-  "capture_at": "2011-12-01 00:00:10 UTC",
-  "captured_at": null,
+  "receivable_id": 123,
+  "payment_method_id": 456,
+  "state": "ready",
+  "wait_until": "2011-12-05 00:00:00 UTC",
+  "time": "2011-12-01 00:00:00 UTC",
   "gateway_resp": null
 }
 ```
@@ -128,7 +126,7 @@ Capture Later.
 
 ```bash
 # View payment_attempts
-$ curl -X GET https://shushu.heroku.com/payments/12345/payment_attempts
+$ curl -X GET https://shushu.heroku.com/receivables/12345/payment_attempts
 ```
 
 **Responses:**
@@ -137,20 +135,20 @@ $ curl -X GET https://shushu.heroku.com/payments/12345/payment_attempts
 {
   [
     {
-      "payment_id": 123,
-      "created_at": "2011-12-12 00:12:00 UTC",
-      "capture_at": "2011-12-12 00:12:00 UTC",
-      "captured_at": "2011-12-12 00:12:01 UTC",
-      "amount": 1000,
-      "state": "failed-no-action-req"
+      "receivable_id": 123,
+      "payment_method_id": 456,
+      "state": "ready",
+      "wait_until": "2011-12-05 00:00:00 UTC",
+      "time": "2011-12-01 00:00:00 UTC",
+      "gateway_resp": null
     },
     {
-      "payment_id": 123,
-      "created_at": "2011-12-12 00:12:02 UTC",
-      "capture_at": "2011-12-16 00:12:00 UTC",
-      "captured_at": "2011-12-16 00:12:01 UTC",
-      "amount": 1000,
-      "state": "succeeded"
+      "receivable_id": 123,
+      "payment_method_id": 456,
+      "state": "succeeded",
+      "wait_until": null,
+      "time": "2011-12-05 00:00:01 UTC",
+      "gateway_resp": "great success"
     }
   ]
 }
@@ -178,7 +176,7 @@ Shushu::Payments.setup do
   end
 
   when(:updated_credit_card) do |account|
-    account.retry_all_failed_payments
+    account.attempt_all_past_due_receivables
   end
 
 end
