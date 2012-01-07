@@ -33,6 +33,21 @@ module Api
     end
 
     #
+    # Receivables
+    #
+    post "/receivables" do
+      authenticate_trusted_consumer
+      perform do
+        ReceivablesService.create(
+          params[:init_payment_method_id],
+          enc_int(params[:amount]),
+          enc_time(params[:from]),
+          enc_time(params[:to])
+        )
+      end
+    end
+
+    #
     # Reports
     #
     get "/accounts/:account_id/usage_reports" do

@@ -49,9 +49,12 @@ require './lib/models/account'
 require './lib/models/resource_ownership_record'
 require './lib/models/payment_method'
 require './lib/models/account_ownership_record'
+require './lib/models/receivable'
+
 
 require './lib/services/billable_event_service'
 require './lib/services/report_service'
 require './lib/services/ownership_service'
 require './lib/services/rate_code_service'
 require './lib/services/calculator'
+require './lib/services/receivables_service'

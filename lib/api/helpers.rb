@@ -13,5 +13,13 @@ module Api
       i.to_i if i
     end
 
+    def enc_int(i)
+      i.to_i if i
+    end
+
+    def enc_time(t)
+      Time.parse(CGI.unescape(t.to_s))
+    end
+
   end
 end
