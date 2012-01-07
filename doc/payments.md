@@ -58,8 +58,8 @@ $ curl -X POST https://shushu.heroku.com/receivables \
 ### Create PaymentAttempt
 
 Once a receivable has been created, an attempt must be created in order to capture
-funds from the init_payment_method. It should be noted that you can create a
-receivable using a payment_method_id that is different than the receivable's
+funds from the initial payment_method. It should be noted that you can create an
+attempt using a payment_method_id that is different than the receivable's
 init_payment_method_id. This allows a customer with a bad payment_method to
 create a new payment_method and then settle his outstanding receivables. The
 client should validate that the correct payment_method is paying for the correct
