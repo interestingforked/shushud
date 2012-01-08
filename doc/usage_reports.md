@@ -1,24 +1,15 @@
 # Usage Report
 
-## The Problem:
+## Purpose
 
-Each account will own resources over periods of time. This ownership implies that
-there are billable_events associated with the account. We need some way to
-communicate the usage that is incurred by the account for an arbitrary period of
-time. The account should also be able to view historical usage. This usage
-should not be a simple collection of billable events as the data will not
-be easily computable for cost. We need to produce a collection of billable
-units.
-
-
-## A Solution:
-
-A usage report will be a collection of billable_events that have been folded
-into billable units. The report will generated from an account_id and a from and
-to time-stamp. It will not be persisted but computed as the sum of a series of
-billable_events. When an invoice is generated, we could persist the usage report
-to a snapshot service if we wanted to isolate reports from changes in the
-reporting process. A usage report will also have a total dollar amount.
+Providers will be submitting billable_events to Shushu. Each billable_event has
+a state and a time-stamp. (among other things...) In order to get a more holistic
+view of these events, we need to see when one event started and when it was
+stopped. If we have a unit that provides a start and stop time, then we can
+derive a quantity. With a quantity, we can join in a rate_code and produce a
+cost in dollars. The BillableUnit is the object that contains the start/stop,
+qty & total. The UsageReport is a collection of BillableUnits wrapped with
+meta-data.
 
 ## API
 
