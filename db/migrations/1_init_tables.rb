@@ -10,7 +10,8 @@ Sequel.migration do
       primary_key :id
       foreign_key :payment_method_id, :payment_methods
     end
-    add_column :card_tokens, :token,  "varchar(255)"
+    add_column :card_tokens, :created_at, "timestamptz"
+    add_column :card_tokens, :token,      "varchar(255)"
 
     #Receivable
     create_table(:receivables) do
@@ -32,6 +33,7 @@ Sequel.migration do
     add_column :payment_attempt_records, :state,        "varchar(255)"
     add_column :payment_attempt_records, :wait_until,   "timestamptz"
     add_column :payment_attempt_records, :time,         "timestamptz"
+    add_column :payment_attempt_records, :desc,         "text"
     # couldn't find a good way to do this in sequel.
     execute(<<-EOD)
       CREATE UNIQUE INDEX succeeded_receivable_attempt

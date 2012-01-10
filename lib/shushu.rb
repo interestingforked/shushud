@@ -18,6 +18,8 @@ module Shushu
   DataConflict        = Class.new(ShushuError)
   AuthorizationError  = Class.new(ShushuError)
 
+  Conf = {}
+
   DB = (
     case ENV["RACK_ENV"].to_s
     when "production"
@@ -36,6 +38,7 @@ module Shushu
   def self.test?
     ENV["RACK_ENV"] == "test"
   end
+
 end
 
 require './lib/api/helpers'
@@ -51,6 +54,7 @@ require './lib/models/payment_method'
 require './lib/models/account_ownership_record'
 require './lib/models/receivable'
 require './lib/models/payment_attempt_record'
+require './lib/models/card_token'
 
 require './lib/services/billable_event_service'
 require './lib/services/report_service'

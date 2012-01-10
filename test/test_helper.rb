@@ -53,4 +53,21 @@ class ShushuTest < MiniTest::Unit::TestCase
     end
   end
 
+  module TestGateway
+    extend self
+    attr_accessor :force_success
+
+    def success
+      @force_success
+    end
+
+    def charge(token, amount, recid)
+      if success
+        {:success => true, :body => "Things went well."}
+      else
+        {:success => false, :body => "Things did not go well."}
+      end
+    end
+  end
+
 end
