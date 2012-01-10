@@ -59,4 +59,13 @@ module ShushuHelpers
     )
   end
 
+  def build_receivable(pmid, amount, period_start, period_end)
+    Receivable.create(
+      :init_payment_method_id => pmid,
+      :amount                 => amount,
+      :period_start           => period_start,
+      :period_end             => period_end
+    )
+  end
+
 end

@@ -17,7 +17,7 @@ meta-data.
 
 ```bash
 $ curl -X GET https://shushu.heroku.com/accounts/123/usage_reports \
-  -d "from=1999-12-01 00:00:00 UTC"
+  -d "from=1999-12-01 00:00:00 UTC" \
   -d "to=2000-01-01 00:00:00 UTC"
 ```
 

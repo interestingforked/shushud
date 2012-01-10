@@ -48,6 +48,19 @@ module Api
     end
 
     #
+    # PaymentAttempts
+    #
+    post "/receivables/:receivable_id/payment_attempts" do
+      authenticate_trusted_consumer
+      perform do
+        PaymentService.attempt(
+          enc_int(params[:receivable_id]),
+          enc_int(params[:payment_method_id])
+        )
+      end
+    end
+
+    #
     # Reports
     #
     get "/accounts/:account_id/usage_reports" do
