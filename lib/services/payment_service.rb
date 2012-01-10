@@ -1,8 +1,11 @@
 module PaymentService
   extend self
 
+  PREPARE = "prepare"
+  SUCCESS = "success"
+
   def attempt(recid, pmid, wait_until)
-    [201, create_record(recid, pmid, wait_until).to_h]
+    [201, create_record(PREPARE, recid, pmid, wait_until).to_h]
   end
 
   def ready_process
@@ -13,11 +16,12 @@ module PaymentService
 
   private
 
-  def create_record(recid, pmid, wait_until)
+  def create_record(state, recid, pmid, wait_until)
     PaymentAttemptRecord.create(
       :payment_method_id => pmid,
       :receivable_id => recid,
-      :wait_until => wait_until
+      :wait_until => wait_until,
+      :state => state
     )
   end
 

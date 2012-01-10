@@ -19,11 +19,13 @@ Sequel.migration do
           a.payment_method_id,
           a.receivable_id
         FROM payment_attempt_records a
-        LEFT OUTER JOIN payment_attempt_records b
-        ON
-              a.receivable_id = b.receivable_id
-          AND a.state = 'preparing'
-          AND b.state != 'succeeded'
+        WHERE NOT EXISTS (
+          SELECT 1
+          FROM payment_attempt_records b
+          WHERE
+            a.receivable_id = b.receivable_id
+            AND b.state = 'success'
+        )
       ;
 
       CREATE OR REPLACE VIEW account_ownerships AS
