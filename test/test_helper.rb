@@ -22,6 +22,9 @@ class ShushuTest < MiniTest::Unit::TestCase
     Shushu::DB.run("DELETE FROM resource_ownership_records CASCADE")
     Shushu::DB.run("DELETE FROM account_ownership_records CASCADE")
     Shushu::DB.run("DELETE FROM accounts CASCADE")
+    Shushu::DB.run("DELETE FROM card_tokens CASCADE")
+    Shushu::DB.run("DELETE FROM payment_attempt_records CASCADE")
+    Shushu::DB.run("DELETE FROM receivables CASCADE")
   end
 
   def setup

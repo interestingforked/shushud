@@ -1,5 +1,8 @@
 class PaymentAttemptRecord < Sequel::Model
   def to_h
-    {:id => self[:id]}
+    {
+      :id => self[:id],
+      :wait_until => self[:wait_until]
+    }
   end
 end

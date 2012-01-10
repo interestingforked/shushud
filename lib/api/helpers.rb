@@ -18,7 +18,7 @@ module Api
     end
 
     def enc_time(t)
-      Time.parse(CGI.unescape(t.to_s))
+      Time.parse(CGI.unescape(t.to_s)) if t
     end
 
   end

@@ -14,6 +14,18 @@ Sequel.migration do
         rate_period varchar(255)
       );
 
+      CREATE OR REPLACE VIEW payments_ready_for_process AS
+        SELECT
+          a.payment_method_id,
+          a.receivable_id
+        FROM payment_attempt_records a
+        LEFT OUTER JOIN payment_attempt_records b
+        ON
+              a.receivable_id = b.receivable_id
+          AND a.state = 'preparing'
+          AND b.state != 'succeeded'
+      ;
+
       CREATE OR REPLACE VIEW account_ownerships AS
         SELECT
           a.entity_id,

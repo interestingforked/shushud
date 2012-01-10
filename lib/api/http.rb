@@ -55,7 +55,8 @@ module Api
       perform do
         PaymentService.attempt(
           enc_int(params[:receivable_id]),
-          enc_int(params[:payment_method_id])
+          enc_int(params[:payment_method_id]),
+          enc_time(params[:wait_until])
         )
       end
     end
