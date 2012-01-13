@@ -26,6 +26,7 @@ Sequel.migration do
             a.receivable_id = b.receivable_id
             AND b.state = 'success'
         )
+        AND (a.wait_until <= now() OR a.wait_until IS NULL)
       ;
 
       CREATE OR REPLACE VIEW account_ownerships AS

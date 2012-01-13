@@ -34,6 +34,14 @@ class PaymentServiceTest < ShushuTest
     assert_equal(0, PaymentService.ready_process.length)
   end
 
+  def test_find_ready_process_excludes_premature
+    assert_equal(0, PaymentService.ready_process.length)
+    payment_method = build_payment_method
+    receivable = build_receivable(payment_method.id, 1000, jan, feb)
+    build_attempt(PaymentService::PREPARE, receivable.id, payment_method.id, (Time.utc(Time.now.year + 1)), nil)
+    assert_equal(0, PaymentService.ready_process.length)
+  end
+
   def test_process_approved_charge
     TestGateway.force_success = true
     payment_method = build_payment_method
