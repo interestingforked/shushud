@@ -1,6 +1,8 @@
 require 'rubygems'
 require 'logger'
 require 'cgi'
+require 'securerandom'
+require 'digest/sha1'
 
 Bundler.require
 
