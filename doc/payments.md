@@ -4,14 +4,14 @@
 
 So you got an invoice, now you want to get some money for it.
 Posting a transaction to a payment gateway is only one of the things involved in
-managing customer payments. In order to effectively manage this data we must
+managing customer payments. In order to effectively manage payments we must
 consider the following:
 
 * Eliminate possibility of duplicate charge.
 * Do not attempt to charge a card that has a 0 probability of success.
+* Track account/credit card interactions.
 * Rule based auto-capture.
 * Handle refunds.
-* Track account/credit card interactions.
 * Allow easy computation of revenue.
 * Provide hooks for failure/success events.
 * Shouldn't care too much about the gateway.
@@ -21,13 +21,21 @@ consider the following:
 
 ### Create Receivable
 
+A receivable represents money that we expect to collect from a payment_method
+for services ranging over a period of time. We must initialize a receivable with
+a payment_method_id although the receivable can be paid for by a payment_method
+other than the init_payment_method. We allow the changing of payment_methods for
+the case in which we create a receivable for a group of resources belonging to a
+payment_method but the customer would actually prefer to pay for the receivable
+using a new or different payment_method.
+
 This endpoint will create a new receivable row in the database if there is not already a
-row with the given payment_id & period.
+row with the given init_payment_method_id, from, to.
 
 **Arguments:**
 
-* payment_method_id   - This payment_method will be used to capture funds.
-* amount              - An integer representing the amount in pennies.
+* init_payment_method_id - This payment_method will be used to capture funds.
+* amount - An integer representing the amount in pennies.
 * from
 * to
 
@@ -61,7 +69,7 @@ Once a receivable has been created, an attempt must be created in order to captu
 funds from the initial payment_method. It should be noted that you can create an
 attempt using a payment_method_id that is different than the receivable's
 init_payment_method_id. This allows a customer with a bad payment_method to
-create a new payment_method and then settle his outstanding receivables. The
+create a new payment_method and then settle the outstanding receivables. The
 client should validate that the correct payment_method is paying for the correct
 receivable.
 
@@ -157,27 +165,27 @@ $ curl -X GET https://shushu.heroku.com/receivables/12345/payment_attempts
 
 ### Events
 
-Shushu::Payments employs a state machine that allows arbitrary code blocks to be
+The PaymentService employs a state machine that allows arbitrary code blocks to be
 executed upon state transition.
 
-This DSL is located within the config dir of Shushu and should be configured
+This DSL is located within the ./etc dir of Shushu and should be configured
 there.
 
 ```ruby
-Shushu::Payments.setup do
+PaymentService.setup_transitions do |transition|
 
-  when(:actionable_failure) do |failure, attempt|
-    Mailer.send_notice(failure, attempt)
+  transition.to(:failed_no_action) do |opts|
+    five_days_from_now = Time.utc + (60*60*24*5)
+    unless opts[:skip_retry]
+      PaymentService.attempt(opts[:recid], opts[:pmid], five_days_from_now)
+    end
   end
 
-  when(:non_actionable_failure) do |failure, attempt|
-    Mailer.send_notice(failure, attempt)
-    PaymentAttempt.create(:capture_at => Time.now + 4.days)
+  transition.to(:failed_action) do
+    puts("Payment failed, user action is required!")
   end
 
-  when(:updated_credit_card) do |account|
-    account.attempt_all_past_due_receivables
+  transition.to(:success) do
+    puts("Payment captured!")
   end
-
-end
-```
+end```
