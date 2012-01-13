@@ -16,7 +16,7 @@ class Provider < Sequel::Model
   end
 
   def root?
-    self[:root]
+    self[:root] == true
   end
 
 end
