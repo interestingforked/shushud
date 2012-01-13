@@ -63,9 +63,9 @@ class ShushuTest < MiniTest::Unit::TestCase
 
     def charge(token, amount, recid)
       if success
-        {:success => true, :body => "Things went well."}
+        [PaymentService::SUCCESS, "OK"]
       else
-        {:success => false, :body => "Things did not go well."}
+        [PaymentService::FAILED_NOACT, "OH SNAP!"]
       end
     end
   end

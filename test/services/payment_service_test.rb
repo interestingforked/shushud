@@ -4,6 +4,17 @@ class PaymentServiceTest < ShushuTest
   def setup
     super
     Shushu::Conf[:gateway] = TestGateway
+
+    @failed_no_action_flag = false
+    @success_flag = false
+    PaymentService.setup_transitions do |transition|
+      transition.to(:failed_no_action) do |opts|
+        @failed_no_action_flag = true
+      end
+      transition.to(:success) do |opts|
+        @success_flag = true
+      end
+    end
   end
 
   def test_find_ready_process
@@ -31,6 +42,7 @@ class PaymentServiceTest < ShushuTest
     assert_equal(201, res.first)
     payment_attempt = res.last
     assert_equal(PaymentService::SUCCESS, payment_attempt[:state])
+    assert(@success_flag, "The state transition block was not called.")
   end
 
   def test_process_declined_charge
@@ -40,7 +52,8 @@ class PaymentServiceTest < ShushuTest
     res = PaymentService.process(receivable.id, payment_method.id)
     assert_equal(422, res.first)
     payment_attempt = res.last
-    assert_equal(PaymentService::FAILED, payment_attempt[:state])
+    assert_equal(PaymentService::FAILED_NOACT, payment_attempt[:state])
+    assert(@failed_no_action_flag, "The state transition block was not called.")
   end
 
 end

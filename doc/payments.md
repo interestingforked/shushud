@@ -69,7 +69,7 @@ receivable.
 
 * payment_method_id - Use this payment_method to capture. Can be different than receivable's init_payment_method
 * wait_until - Must be greater than the payment's created_at. If blank, request is handled sync.
-* retry - Set this to false if you want to override the rety logic.
+* retry - Set this to false if you want to override the retry logic.
 * force - Ignore the success probability check and force create attempt.
 
 ```bash
