@@ -188,4 +188,5 @@ PaymentService.setup_transitions do |transition|
   transition.to(:success) do
     puts("Payment captured!")
   end
-end```
+end
+```
