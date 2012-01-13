@@ -16,21 +16,7 @@ module Api
     end
 
     def authenticated?
-      request.env["PROVIDER_ID"]
-    end
-
-    def authenticate(provider_id, provider_token)
-      if provider = Provider.find(:id => provider_id.to_i)
-        if provider.token == provider_token
-          request.env["PROVIDER_ID"] = provider_id.to_i
-          params[:provider_id] = provider_id.to_i
-          true
-        else
-          false
-        end
-      else
-        false
-      end
+      request.env["PROVIDER_ID"] || session[:provider_id]
     end
 
     def core?(user, password)
@@ -39,9 +25,29 @@ module Api
 
     def authenticate_provider
       return if authenticated?
-      unauthenticated!  unless auth.provided?
-      bad_request!      unless auth.basic?
-      unauthenticated!  unless authenticate(*auth.credentials)
+      if auth.provided? && auth.basic?
+        pass?(*auth.credentials) || unauthenticated!
+      elsif (params[:provider_id] && params[:provider_token])
+        pass?(params[:provider_id], params[:provider_token]) || unauthenticated!
+      else
+        bad_request!
+      end
+    end
+
+    def pass?(id, token)
+      id = id.to_i
+      if Provider.auth?(id, token)
+        set_provider_id(id.to_i)
+        true
+      else
+        false
+      end
+    end
+
+    def set_provider_id(i)
+      session[:provider_id] = i
+      request.env["PROVIDER_ID"] = i
+      params[:provider_id] = i
     end
 
     def authenticate_trusted_consumer

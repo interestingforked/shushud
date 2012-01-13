@@ -8,7 +8,7 @@ class RateCodeApiTest < ShushuTest
   end
 
   def setup_auth
-    authorize @provider.id, @provider.token
+    authorize @provider.id, "abc123"
   end
 
   def test_create_rate_code

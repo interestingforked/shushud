@@ -1,8 +1,11 @@
 class Provider < Sequel::Model
 
   def self.auth?(id, token)
-    provider = Provider[id] || raise(Shushu::NotFound, "Unable to find provider id=#{id}")
-    provider[:token] == enc(token)
+    if provider = Provider[id]
+      provider[:token] == enc(token)
+    else
+      false
+    end
   end
 
   def self.enc(token)

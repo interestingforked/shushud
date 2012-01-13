@@ -9,7 +9,7 @@ class BillableEventsApiTest < ShushuTest
   end
 
   def setup_auth
-    authorize(@provider.id, @provider.token)
+    authorize(@provider.id, "abc123")
   end
 
   def open_event(entity_id, opts={})
@@ -69,8 +69,8 @@ class BillableEventsApiTest < ShushuTest
     }
     put("/resources/123/billable_events/1", body)
     assert_equal(201, last_response.status)
-    another_provider = build_provider
-    authorize(another_provider.id, another_provider.token)
+    another_provider = build_provider(:token => "another_pasword")
+    authorize(another_provider.id, "another_pasword")
     put("/resources/123/billable_events/1", body)
     assert_equal(201, last_response.status)
   end

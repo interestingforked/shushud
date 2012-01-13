@@ -1,10 +1,11 @@
 module ShushuHelpers
 
   def build_provider(opts={})
-    Provider.create({
+    params = {
       :name  => "sendgrid",
       :token => "password"
-    }.merge(opts))
+    }.merge(opts)
+    Provider.create(params).tap {|p| p.reset_token!(params[:token])}.reload
   end
 
   def build_rate_code(opts={})

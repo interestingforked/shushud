@@ -8,12 +8,12 @@ class HeartbeatApiTest < ShushuTest
   end
 
   def setup_auth
-    authorize(@provider.id, @provider.token)
+    authorize(@provider.id, "abc123")
   end
 
-  def test_heartbeat_with_bad_token
+  def test_heartbeat_with_no_token
     get "/heartbeat"
-    assert_equal 401, last_response.status
+    assert_equal 400, last_response.status
   end
 
   def test_heartbeat
