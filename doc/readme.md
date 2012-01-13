@@ -39,17 +39,3 @@ entity_id , I can now systematically deduce that I am in an erroneous state.
 
 Therefore, entity_ids help Shushu in preventing monetary actions on unreliable
 data.
-
-## HTTP Status Codes
-
-This API will use the following status codes. Also included our some
-troubleshooting tips.
-
-* 200 - OK.
-* 201 - We created a record.
-* 400 - Are you using http basic?
-* 401 - Are you using the correct authentication parameters?
-* 403 - Are you doing something that requires root provider status?
-* 404 - Did you send the correct rate_code slug or account_id?
-* 422 - Was not able to save the record. Could be something semantically wrong with the http body.
-* 500 - Sorry.
