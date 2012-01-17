@@ -9,6 +9,7 @@ Bundler.require
 require "dalli"
 require "rack/session/dalli"
 require "sinatra/cookies"
+require "./lib/gateways/braintree"
 
 $stdout.sync = true
 $logger = Logger.new($stdout)
@@ -26,7 +27,9 @@ module Shushu
   DataConflict        = Class.new(ShushuError)
   AuthorizationError  = Class.new(ShushuError)
 
-  Conf = {}
+  Conf = {
+    :gateway => BraintreeGateway
+  }
 
   DB = (
     case ENV["RACK_ENV"].to_s
