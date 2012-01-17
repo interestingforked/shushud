@@ -12,15 +12,8 @@ require "sinatra/cookies"
 require "./lib/gateways/braintree"
 
 $stderr.sync = $stdout.sync = true
-$logger = Logger.new($stdout)
-$logger.level = Logger::INFO
-
-#TODO replace shulog with $logger
-module Kernel
-  def shulog(msg)
-    $logger.info(msg)
-  end
-end
+Log = Logger.new($stdout)
+Log.level = Logger::INFO
 
 module Shushu
   ShushuError         = Class.new(Exception)
@@ -35,7 +28,7 @@ module Shushu
   DB = (
     case ENV["RACK_ENV"].to_s
     when "production"
-      shulog("connecting production database url=#{ENV["DATABASE_URL"]}")
+      Log.info("connecting production database url=#{ENV["DATABASE_URL"]}")
       Sequel.connect(ENV["DATABASE_URL"])
     when "test"
       Sequel.connect(ENV["TEST_DATABASE_URL"], :logger => Logger.new(File.new("./log/test.log","w")))
@@ -45,7 +38,7 @@ module Shushu
   )
 
   DB.sql_log_level = :debug
-  DB.logger = $logger
+  DB.logger = Log
   DB.execute("SET timezone TO 'UTC'")
   Sequel.default_timezone = :utc
 

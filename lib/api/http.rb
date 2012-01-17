@@ -249,7 +249,7 @@ module Api
     end
 
     def log(msg)
-      shulog("account=#{params[:account_id]} provider=#{session[:provider_id]} hid=#{params[:hid]} #{msg}")
+      Log.info("account=#{params[:account_id]} provider=#{session[:provider_id]} hid=#{params[:hid]} #{msg}")
     end
 
   end

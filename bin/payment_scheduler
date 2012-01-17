@@ -6,10 +6,10 @@ $: << File.expand_path("lib")
 require "shushu"
 require "stalker"
 
-shulog("starting payment scheduler")
+Log.info("starting payment scheduler")
 PaymentService.ready_process.each do |pend|
   recid, pmid = pend["receivable_id"], pend["payment_method_id"]
-  shulog("#enqueue_payment_process receivable=#{recid} payment_method=#{pmid}")
+  Log.info("#enqueue_payment_process receivable=#{recid} payment_method=#{pmid}")
   Stalker.enqueue("payment.process",{:recid  => recid, :pmid => pmid})
 end
-shulog("stopping payment scheduler")
+Log.info("stopping payment scheduler")

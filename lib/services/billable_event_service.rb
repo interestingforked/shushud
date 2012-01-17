@@ -12,7 +12,7 @@ module BillableEventService
   def handle_new_event(args)
     check_args!(args)
     if event = BillableEvent.prev_recorded(args[:state], args[:entity_id], args[:provider_id])
-      shulog("#event_found provider=#{event[:provider_id]} entity=#{event[:entity_id]}")
+      Log.info("#event_found provider=#{event[:provider_id]} entity=#{event[:entity_id]}")
       [200, event.to_h]
     else
       [201, open_or_close(args).to_h]
@@ -24,19 +24,19 @@ module BillableEventService
   def open_or_close(args)
     case args[:state]
     when BillableEvent::Open
-      shulog("#event_open")
+      Log.info("#event_open")
       open(args)
     when BillableEvent::Close
-      shulog("#event_close")
+      Log.info("#event_close")
       close(args)
     else
-      shulog("#unhandled_state args=#{args}")
+      Log.info("#unhandled_state args=#{args}")
       raise(ArgumentError, "Unable to create new event with args=#{args}")
     end
   end
 
   def open(args)
-    shulog("#event_creation #{args}")
+    Log.info("#event_creation #{args}")
     BillableEvent.create(
       :provider_id      => resolve_provider_id(args[:provider_id]),
       :rate_code_id     => resolve_rate_code_id(args[:rate_code_slug]),
@@ -51,7 +51,7 @@ module BillableEventService
   end
 
   def close(args)
-    shulog("#event_creation #{args}")
+    Log.info("#event_creation #{args}")
     BillableEvent.create(
       :provider_id      => resolve_provider_id(args[:provider_id]),
       :rate_code_id     => resolve_rate_code_id(args[:rate_code_slug]),

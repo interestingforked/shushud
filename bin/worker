@@ -7,13 +7,13 @@ require "shushu"
 require "stalker"
 include Stalker
 
-$logger.info("starting worker")
+Log.info("starting worker")
 
 job("payment.process") do |args|
   recid, pmid = args["recid"], args["pmid"]
-  $logger.info("#payment_service_process receivable=#{recid} payment_method=#{pmid}")
+  Log.info("#payment_service_process receivable=#{recid} payment_method=#{pmid}")
   PaymentService.process(recid, pmid)
-  $logger.info("#payment_service_process_complete receivable=#{recid} payment_method=#{pmid}")
+  Log.info("#payment_service_process_complete receivable=#{recid} payment_method=#{pmid}")
 end
 
 Stalker.work

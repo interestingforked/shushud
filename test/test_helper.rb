@@ -11,7 +11,7 @@ require 'minitest/autorun'
 require 'shushu'
 require 'shushu_helpers'
 
-$logger.level = Logger::WARN
+Log.level = Logger::WARN
 
 class ShushuTest < MiniTest::Unit::TestCase
   include Rack::Test::Methods

@@ -18,7 +18,7 @@ module PaymentService
 
   def process(recid, pmid, skip_retry=false)
     rec, pm = resolve_rec(recid), resolve_pm(pmid)
-    $logger.info("#payment_process receivable=#{rec.id} card_token=#{pm.card_token} amount=#{rec.amount}")
+    Log.info("#payment_process receivable=#{rec.id} card_token=#{pm.card_token} amount=#{rec.amount}")
     state, resp = gateway.charge(pm.card_token, rec.id, rec.amount)
     handle_transition!(state, skip_retry)
     [determine_status(state), create_record(state, recid, pmid, nil, resp).to_h]

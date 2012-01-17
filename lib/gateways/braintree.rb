@@ -14,10 +14,10 @@ class BraintreeGateway
   def process
     if transaction.success?
       txn_id = transaction.transaction.id #braintree gem :(
-      $logger.info("#payment_process_success")
+      Log.info("#payment_process_success")
       [PaymentService::SUCCESS, transaction.response]
     else
-      $logger.info("#payment_process_failed")
+      Log.info("#payment_process_failed")
       [PaymentService::FAILED_NOACT, transaction.response]
     end
   end

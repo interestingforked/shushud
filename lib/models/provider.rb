@@ -16,7 +16,7 @@ class Provider < Sequel::Model
     token ||= SecureRandom.hex(128)
     enc_token = self.class.enc(token)
     update(:token => enc_token)
-    shulog("#provider_token_reset provider=#{self[:id]}")
+    Log.info("#provider_token_reset provider=#{self[:id]}")
   end
 
   def disabled?
@@ -25,16 +25,16 @@ class Provider < Sequel::Model
 
   def disable!
     update(:disabled => true)
-    shulog("#provider_disabled provider=#{self[:id]}")
+    Log.info("#provider_disabled provider=#{self[:id]}")
     #TODO everyone pays the price for a misbehaving provider.
     # Perhaps we can only delete the session of the disabled provider...
     Dalli::Client.new.flush_all
-    shulog("#memcached_flush_all")
+    Log.info("#memcached_flush_all")
   end
 
   def enable
     update(:disabled => false)
-    shulog("#provider_enabled provider=#{self[:id]}")
+    Log.info("#provider_enabled provider=#{self[:id]}")
   end
 
   def root?
