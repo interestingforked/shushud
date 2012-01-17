@@ -18,13 +18,12 @@ module Api
 
     def authenticate_provider
       if authenticated?
-        shulog("#session_found provider=#{params[:provider_id]}")
+        shulog("#session_found provider=#{session[:provider_id]}")
       else
-        shulog("#session_begin provider=#{params[:provider_id]}")
         if auth.provided? && auth.basic?
-          pass?(*auth.credentials) || unauthenticated!
-        elsif (params[:provider_id] && params[:provider_token])
-          pass?(params[:provider_id], params[:provider_token]) || unauthenticated!
+          id, token = *auth.credentials
+          shulog("#session_begin provider=#{id}")
+          pass?(id, token) || unauthenticated!
         else
           bad_request!
         end

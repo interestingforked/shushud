@@ -1,7 +1,6 @@
 module Api
   class Http < Sinatra::Base
     enable :logging
-    enable :sessions
     include Authentication
     include Helpers
 
