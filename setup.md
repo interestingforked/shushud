@@ -4,6 +4,7 @@ Shushu is a heroku application. Components include:
 
 * Thin web server
 * Postgresql Database
+* Memcahed
 
 ## Running Locally
 
