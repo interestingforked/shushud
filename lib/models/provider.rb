@@ -26,6 +26,8 @@ class Provider < Sequel::Model
   def disable!
     update(:disabled => true)
     shulog("#provider_disabled provider=#{self[:id]}")
+    Dalli::Client.new.flush_all
+    shulog("#memcached_flush_all")
   end
 
   def enable
