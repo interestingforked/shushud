@@ -12,6 +12,7 @@ module Api
     end
 
     def unauthenticated!(realm="shushu.heroku.com")
+      shulog("#unauthenticated credentials=#{auth.credentials.join("/")} ip=#{request.env["REMOTE_ADDR"]} agent=#{request.env["HTTP_USER_AGENT"]}")
       response['WWW-Authenticate'] = %(Basic realm="Restricted Area")
       throw(:halt, [401, enc_json("Not authorized")])
     end

@@ -13,9 +13,20 @@ class Provider < Sequel::Model
   end
 
   def reset_token!(token=nil)
-    token ||= SecureRandom.hex(32)
+    token ||= SecureRandom.hex(128)
     enc_token = self.class.enc(token)
     update(:token => enc_token)
+    shulog("#provider_token_reset provider=#{self[:id]}")
+  end
+
+  def disable!
+    update(:disabled => true)
+    shulog("#provider_disabled provider=#{self[:id]}")
+  end
+
+  def enable
+    update(:disabled => false)
+    shulog("#provider_enabled provider=#{self[:id]}")
   end
 
   def root?

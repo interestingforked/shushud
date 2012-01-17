@@ -85,6 +85,7 @@ Sequel.migration do
     end
     add_column :providers, :created_at,   "timestamptz"
     add_column :providers, :root,         "boolean DEFAULT 'false'"
+    add_column :providers, :disabled,     "boolean DEFAULT 'false'"
     add_column :providers, :name,         "varchar(255)"
     add_column :providers, :token,        "varchar(255)"
 

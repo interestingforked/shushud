@@ -12,5 +12,4 @@ class RateCodeTest < ShushuTest
     assert_equal "OHHAI", rate_code.slug
   end
 
-
 end
