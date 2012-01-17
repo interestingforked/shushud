@@ -17,16 +17,19 @@ module PaymentService
   end
 
   def process(recid, pmid, skip_retry=false)
-    rec, pm = resolve_rec(recid), resolve_pm(pmid)
-    Log.info("#payment_process receivable=#{rec.id} card_token=#{pm.card_token} amount=#{rec.amount}")
-    # We place process jobs in the queue based upon results from #ready_process.
-    # However, someone might use this method directly.
-    if ReceivablesService.collected?(rec.id)
-      raise(Shushu::DataConflict, "#attempt_double_charge receivable=#{rec.id} card_token=#{pm.card_token} amount=#{rec.amount}")
-    else
-      state, resp = gateway.charge(pm.card_token, rec.id, rec.amount)
-      handle_transition!(state, skip_retry)
-      [determine_status(state), create_record(state, recid, pmid, nil, resp).to_h]
+    Shushu::DB.transaction do
+      rec, pm = resolve_rec(recid), resolve_pm(pmid)
+      Log.info("#payment_process receivable=#{rec.id} card_token=#{pm.card_token} amount=#{rec.amount}")
+      # We place process jobs in the queue based upon results from #ready_process.
+      # However, someone might use this method directly.
+      if ReceivablesService.collected?(rec.id)
+        raise(Shushu::DataConflict, "#attempt_double_charge receivable=#{rec.id} card_token=#{pm.card_token} amount=#{rec.amount}")
+      else
+        state, resp = gateway.charge(pm.card_token, rec.id, rec.amount)
+        attempt = create_record(state, recid, pmid, nil, resp)
+        handle_transition!(state, rec, pm, skip_retry)
+        [determine_status(state), attempt.to_h]
+      end
     end
   end
 
@@ -90,11 +93,15 @@ module PaymentService
   # We also make use of our ability to bind variables to blocks. Each transition
   # definition defined in the conf file should can use the block's bind vars to
   # vary the strategy at runtime.
-  def handle_transition!(state, skip_retry)
+  def handle_transition!(state, rec, pm, skip_retry)
     assert_can_handle_state!(state)
     Log.info("#payment_state_transition state=#{state}")
     if blk = TRANSITION_CALLBACK[state]
-      blk.call({:skip_retry => skip_retry})
+      blk.call({
+        :skip_retry => skip_retry,
+        :recid      => rec[:id],
+        :pmid       => pm[:id]
+      })
     end
   end
 
