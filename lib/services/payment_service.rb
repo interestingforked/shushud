@@ -19,6 +19,8 @@ module PaymentService
   def process(recid, pmid, skip_retry=false)
     rec, pm = resolve_rec(recid), resolve_pm(pmid)
     Log.info("#payment_process receivable=#{rec.id} card_token=#{pm.card_token} amount=#{rec.amount}")
+    # We place process jobs in the queue based upon results from #ready_process.
+    # However, someone might use this method directly.
     if ReceivablesService.collected?(rec.id)
       raise(Shushu::DataConflict, "#attempt_double_charge receivable=#{rec.id} card_token=#{pm.card_token} amount=#{rec.amount}")
     else
