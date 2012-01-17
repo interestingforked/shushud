@@ -1,6 +1,13 @@
 module ReceivablesService
   extend self
 
+  def collected?(recid)
+    PaymentAttemptRecord.filter(
+      :state => PaymentService::SUCCESS,
+      :receivable_id => recid
+    ).count > 0
+  end
+
   def create(pmid, amount, from, to)
     if prev = Receivable.find_prev(pmid, from, to)
       [200, prev.to_h]
@@ -11,11 +18,11 @@ module ReceivablesService
 
   def create_record(pmid, amount, from, to)
     Receivable.create(
-        :init_payment_method_id => resolve_pmid(pmid),
-        :amount                 => amount,
-        :period_start           => from,
-        :period_end             => to
-      )
+      :init_payment_method_id => resolve_pmid(pmid),
+      :amount                 => amount,
+      :period_start           => from,
+      :period_end             => to
+    )
   end
 
   def resolve_pmid(i)

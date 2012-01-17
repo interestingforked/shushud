@@ -19,9 +19,13 @@ module PaymentService
   def process(recid, pmid, skip_retry=false)
     rec, pm = resolve_rec(recid), resolve_pm(pmid)
     Log.info("#payment_process receivable=#{rec.id} card_token=#{pm.card_token} amount=#{rec.amount}")
-    state, resp = gateway.charge(pm.card_token, rec.id, rec.amount)
-    handle_transition!(state, skip_retry)
-    [determine_status(state), create_record(state, recid, pmid, nil, resp).to_h]
+    if ReceivablesService.collected?(rec.id)
+      raise(Shushu::DataConflict, "#attempt_double_charge receivable=#{rec.id} card_token=#{pm.card_token} amount=#{rec.amount}")
+    else
+      state, resp = gateway.charge(pm.card_token, rec.id, rec.amount)
+      handle_transition!(state, skip_retry)
+      [determine_status(state), create_record(state, recid, pmid, nil, resp).to_h]
+    end
   end
 
   # Return a collection of [receivable_id, payment_method_id]
