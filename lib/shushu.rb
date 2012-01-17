@@ -32,7 +32,7 @@ module Shushu
     case ENV["RACK_ENV"].to_s
     when "production"
       shulog("connecting production database url=#{ENV["DATABASE_URL"]}")
-      Sequel.connect(ENV["DATABASE_URL"], :logger => Logger.new(STDOUT))
+      Sequel.connect(ENV["DATABASE_URL"], :logger => $logger
     when "test"
       Sequel.connect(ENV["TEST_DATABASE_URL"], :logger => Logger.new(File.new("./log/test.log","w")))
     else
