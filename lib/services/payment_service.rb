@@ -33,7 +33,7 @@ module PaymentService
   end
 
   # There is a file in this project's ./etc dir that should define what happens
-  # of transitions. The motivation for this aproach is that our strategy for changing how
+  # of transitions. The motivation for this approach is that our strategy for changing how
   # we handle failed payments will change often. Thus it should be simple and
   # easy to define new strategies.
   def setup_transitions
