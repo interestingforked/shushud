@@ -11,13 +11,14 @@ require "rack/session/dalli"
 require "sinatra/cookies"
 require "./lib/gateways/braintree"
 
-$stdout.sync = true
+$stderr = $stdout.sync = true
 $logger = Logger.new($stdout)
+$logger.level = Logger::INFO
 
-VERBOSE = ENV["VERBOSE"] == 'true'
+#TODO replace shulog with $logger
 module Kernel
   def shulog(msg)
-    $logger.info(msg) if VERBOSE
+    $logger.info(msg)
   end
 end
 
@@ -35,7 +36,7 @@ module Shushu
     case ENV["RACK_ENV"].to_s
     when "production"
       shulog("connecting production database url=#{ENV["DATABASE_URL"]}")
-      Sequel.connect(ENV["DATABASE_URL"], :logger => $logger)
+      Sequel.connect(ENV["DATABASE_URL"])
     when "test"
       Sequel.connect(ENV["TEST_DATABASE_URL"], :logger => Logger.new(File.new("./log/test.log","w")))
     else
@@ -43,6 +44,8 @@ module Shushu
     end
   )
 
+  DB.sql_log_level = :debug
+  DB.logger = $logger
   DB.execute("SET timezone TO 'UTC'")
   Sequel.default_timezone = :utc
 
