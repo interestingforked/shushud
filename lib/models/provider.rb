@@ -26,6 +26,8 @@ class Provider < Sequel::Model
   def disable!
     update(:disabled => true)
     shulog("#provider_disabled provider=#{self[:id]}")
+    #TODO everyone pays the price for a misbehaving provider.
+    # Perhaps we can only delete the session of the disabled provider...
     Dalli::Client.new.flush_all
     shulog("#memcached_flush_all")
   end
