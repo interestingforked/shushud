@@ -1,6 +1,7 @@
 require File.expand_path('../../test_helper', __FILE__)
 
 class PaymentServiceTest < ShushuTest
+
   def setup
     super
     Shushu::Conf[:gateway] = TestGateway
@@ -40,6 +41,15 @@ class PaymentServiceTest < ShushuTest
     receivable = build_receivable(payment_method.id, 1000, jan, feb)
     build_attempt(PaymentService::PREPARE, receivable.id, payment_method.id, (Time.utc(Time.now.year + 1)), nil)
     assert_equal(0, PaymentService.ready_process.length)
+  end
+
+  def test_find_ready_process_excludes_duplicate_receivables
+    assert_equal(0, PaymentService.ready_process.length)
+    payment_method = build_payment_method
+    receivable = build_receivable(payment_method.id, 1000, jan, feb)
+    build_attempt(PaymentService::PREPARE, receivable.id, payment_method.id, nil, nil)
+    build_attempt(PaymentService::PREPARE, receivable.id, payment_method.id, nil, nil)
+    assert_equal(1, PaymentService.ready_process.length)
   end
 
   def test_process_approved_charge

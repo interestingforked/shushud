@@ -15,7 +15,7 @@ Sequel.migration do
       );
 
       CREATE OR REPLACE VIEW payments_ready_for_process AS
-        SELECT
+        SELECT DISTINCT ON (a.receivable_id)
           a.payment_method_id,
           a.receivable_id
         FROM payment_attempt_records a

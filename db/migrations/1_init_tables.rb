@@ -39,8 +39,8 @@ Sequel.migration do
     # couldn't find a good way to do this in sequel.
     execute(<<-EOD)
       CREATE UNIQUE INDEX succeeded_receivable_attempt
-      ON payment_attempt_records
-      (receivable_id, (state = 'success'))
+      ON payment_attempt_records (receivable_id)
+      WHERE state = 'success'
     EOD
 
     #Account

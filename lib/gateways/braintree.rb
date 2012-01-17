@@ -12,6 +12,7 @@ class BraintreeGateway
   end
 
   def process
+    return [PaymentService::FAILED_NOACT, "FAIL"]
     if transaction.success?
       txn_id = transaction.transaction.id #braintree gem :(
       Log.info("#payment_process_success")

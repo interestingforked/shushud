@@ -92,6 +92,7 @@ module PaymentService
   # vary the strategy at runtime.
   def handle_transition!(state, skip_retry)
     assert_can_handle_state!(state)
+    Log.info("#payment_state_transition state=#{state}")
     if blk = TRANSITION_CALLBACK[state]
       blk.call({:skip_retry => skip_retry})
     end

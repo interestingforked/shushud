@@ -1,9 +1,9 @@
 PaymentService.setup_transitions do |transition|
 
   transition.to(:failed_no_action) do |opts|
-    five_days_from_now = Time.utc + (60*60*24*5)
+    five_min_from_now = Time.now + (60*5)
     unless opts[:skip_retry]
-      PaymentService.attempt(opts[:recid], opts[:pmid], five_days_from_now)
+      PaymentService.attempt(opts[:recid], opts[:pmid], five_min_from_now)
     end
   end
 
