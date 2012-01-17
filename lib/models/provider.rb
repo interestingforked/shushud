@@ -2,7 +2,7 @@ class Provider < Sequel::Model
 
   def self.auth?(id, token)
     if provider = Provider[id]
-      provider[:token] == enc(token)
+      provider[:token] == enc(token) and !provider.disabled?
     else
       false
     end
@@ -17,6 +17,10 @@ class Provider < Sequel::Model
     enc_token = self.class.enc(token)
     update(:token => enc_token)
     shulog("#provider_token_reset provider=#{self[:id]}")
+  end
+
+  def disabled?
+    self[:disabled] == true
   end
 
   def disable!

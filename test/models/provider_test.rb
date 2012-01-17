@@ -8,4 +8,10 @@ class ProviderTest < ShushuTest
     assert(Provider.auth?(provider.id, '123'), "Expected a successful auth")
   end
 
+  def test_auth_when_disabled
+    provider = build_provider(:disabled => true)
+    provider.reset_token!('123')
+    refute(Provider.auth?(provider.id, '123'), "Expected a failed auth")
+  end
+
 end
