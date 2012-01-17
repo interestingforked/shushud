@@ -33,16 +33,6 @@ class AuthenticationTest < ShushuTest
     @provider = build_provider(:token => "abc123")
   end
 
-  def test_authenticate_sets_params
-    @auth.pass?(@provider.id, "abc123")
-    assert_equal @provider.id, @auth.params[:provider_id]
-  end
-
-  def test_authenticate_sets_request_env
-    @auth.pass?(@provider.id, "abc123")
-    assert_equal @provider.id, @auth.request.env["PROVIDER_ID"]
-  end
-
   def test_authenticate_returns_false_when_not_valid_provider_token
     assert ! @auth.pass?(@provider.id, (@provider.token + "bad"))
   end

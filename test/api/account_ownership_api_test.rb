@@ -2,8 +2,13 @@ require File.expand_path('../../test_helper', __FILE__)
 
 class AccountOwnershipApiTest < ShushuTest
 
+  def setup
+    super
+    @provider = build_provider(:token => "abc123")
+  end
+
   def setup_auth
-    authorize('core', ENV["VAULT_PASSWORD"])
+    authorize(@provider.id, "abc123")
   end
 
   def account

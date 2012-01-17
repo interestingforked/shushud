@@ -1,2 +1,4 @@
 require './lib/shushu'
-Rack::Handler::Thin.run(Api::Http, :Port => ENV["PORT"])
+use Rack::Session::Dalli, :memcache_server => 'localhost:11211', :compression => true
+run Api::Http
+#Rack::Handler::Thin.run(Api::Http, :Port => ENV["PORT"])

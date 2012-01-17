@@ -1,6 +1,7 @@
 module Api
   class Http < Sinatra::Base
     enable :logging
+    enable :sessions
     include Authentication
     include Helpers
 
@@ -11,6 +12,11 @@ module Api
     not_found do
       status(404)
       body(enc_json("Not Found"))
+    end
+
+    delete "/sessions" do
+      authenticate_provider
+      session.clear
     end
 
     #
@@ -26,7 +32,7 @@ module Api
     # Accounts
     #
     post "/accounts" do
-      authenticate_trusted_consumer
+      authenticate_provider
       perform do
         [201, Account.create.to_h]
       end
@@ -36,7 +42,7 @@ module Api
     # Receivables
     #
     post "/receivables" do
-      authenticate_trusted_consumer
+      authenticate_provider
       perform do
         ReceivablesService.create(
           params[:init_payment_method_id],
@@ -51,7 +57,7 @@ module Api
     # PaymentAttempts
     #
     post "/receivables/:receivable_id/payment_attempts" do
-      authenticate_trusted_consumer
+      authenticate_provider
       perform do
         PaymentService.attempt(
           enc_int(params[:receivable_id]),
@@ -65,7 +71,7 @@ module Api
     # Reports
     #
     get "/accounts/:account_id/usage_reports" do
-      authenticate_trusted_consumer
+      authenticate_provider
       perform do
         ReportService.usage_report(params[:account_id], dec_time(params[:from]), dec_time(params[:to]))
       end
@@ -77,7 +83,7 @@ module Api
     get "/resources/:hid/billable_events" do
       authenticate_provider #sets params[:provider_id]
       perform do
-        BillableEventService.find({:hid => params[:hid], :provider_id => params[:provider_id]})
+        BillableEventService.find({:hid => params[:hid], :provider_id => session[:provider_id]})
       end
     end
 
@@ -85,7 +91,7 @@ module Api
       authenticate_provider #sets params[:provider_id]
       perform do
         BillableEventService.handle_new_event(
-          :provider_id    => params[:provider_id],
+          :provider_id    => session[:provider_id],
           :rate_code_slug => params[:rate_code],
           :product_name   => params[:product_name],
           :hid            => params[:hid],
@@ -101,7 +107,7 @@ module Api
     # AccountOwnership
     #
     post "/payment_methods/:payment_method_id/account_ownerships/:entity_id" do
-      authenticate_trusted_consumer
+      authenticate_provider
       perform do
         AccountOwnershipService.activate(
           dec_int(params[:payment_method_id]),
@@ -113,7 +119,7 @@ module Api
     end
 
     put "/payment_methods/:prev_payment_method_id/account_ownerships/:prev_entity_id" do
-      authenticate_trusted_consumer
+      authenticate_provider
       perform do
         AccountOwnershipService.transfer(
           dec_int(params[:prev_payment_method_id]),
@@ -130,21 +136,21 @@ module Api
     # ResourceOwnership
     #
     get "/accounts/:account_id/resource_ownerships" do
-      authenticate_trusted_consumer
+      authenticate_provider
       perform do
         ResourceOwnershipService.query(params[:account_id])
       end
     end
 
     post "/accounts/:account_id/resource_ownerships/:entity_id" do
-      authenticate_trusted_consumer
+      authenticate_provider
       perform do
         ResourceOwnershipService.activate(dec_int(params[:account_id]), params[:hid], dec_time(params[:time]), params[:entity_id])
       end
     end
 
     put "/accounts/:prev_account_id/resource_ownerships/:prev_entity_id" do
-      authenticate_trusted_consumer
+      authenticate_provider
       perform do
         ResourceOwnershipService.transfer(
           dec_int(params[:prev_account_id]),
@@ -158,7 +164,7 @@ module Api
     end
 
     delete "/accounts/:account_id/resource_ownerships/:entity_id" do
-      authenticate_trusted_consumer
+      authenticate_provider
       perform do
         ResourceOwnershipService.deactivate(dec_int(params[:account_id]), params[:hid], dec_time(params[:time]), params[:entity_id])
       end
@@ -171,7 +177,7 @@ module Api
       authenticate_provider
       perform do
         RateCodeService.create(
-          :provider_id        => params[:provider_id],
+          :provider_id        => session[:provider_id],
           :target_provider_id => params[:target_provider_id],
           :slug               => params[:slug],
           :rate               => params[:rate],
@@ -185,7 +191,7 @@ module Api
       authenticate_provider
       perform do
         RateCodeService.create(
-          :provider_id        => params[:provider_id],
+          :provider_id        => session[:provider_id],
           :slug               => params[:slug],
           :rate               => params[:rate],
           :product_group      => params[:group],
@@ -198,7 +204,7 @@ module Api
       authenticate_provider
       perform do
         RateCodeService.update(
-          :provider_id        => params[:provider_id],
+          :provider_id        => session[:provider_id],
           :target_provider_id => params[:target_provider_id],
           :slug               => params[:rate_code_slug],
           :rate               => params[:rate],
@@ -245,7 +251,7 @@ module Api
     end
 
     def log(msg)
-      shulog("account=#{params[:account_id]} provider=#{params[:provider_id]} hid=#{params[:hid]} #{msg}")
+      shulog("account=#{params[:account_id]} provider=#{session[:provider_id]} hid=#{params[:hid]} #{msg}")
     end
 
   end

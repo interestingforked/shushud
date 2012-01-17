@@ -69,6 +69,7 @@ class BillableEventsApiTest < ShushuTest
     }
     put("/resources/123/billable_events/1", body)
     assert_equal(201, last_response.status)
+    delete("/sessions")
     another_provider = build_provider(:token => "another_pasword")
     authorize(another_provider.id, "another_pasword")
     put("/resources/123/billable_events/1", body)
