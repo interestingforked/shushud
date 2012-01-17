@@ -11,12 +11,14 @@ GEM
     ansi (1.4.1)
     archive-tar-minitar (0.5.2)
     backports (2.3.0)
+    beanstalk-client (1.1.1)
     braintree (2.12.0)
       builder (>= 2.0.0)
     builder (3.0.0)
     columnize (0.3.6)
     daemons (1.1.5)
     eventmachine (0.12.10)
+    json_pure (1.6.5)
     linecache19 (0.5.12)
       ruby_core_source (>= 0.1.4)
     pg (0.12.2)
@@ -47,6 +49,9 @@ GEM
       rack-test
       sinatra (~> 1.3.0)
       tilt (~> 1.3)
+    stalker (0.9.0)
+      beanstalk-client
+      json_pure
     thin (1.3.1)
       daemons (>= 1.0.9)
       eventmachine (>= 0.12.6)
@@ -68,6 +73,7 @@ DEPENDENCIES
   sequel
   sinatra
   sinatra-contrib
+  stalker
   thin
   turn
   yajl-ruby

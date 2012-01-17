@@ -1,11 +1,11 @@
 class BraintreeGateway
 
-  def self.charge(amount, card_token, receivable_id)
+  def self.charge(card_token, receivable_id, amount)
     gw = new(amount, card_token, receivable_id)
     gw.process
   end
 
-  def initialize(amount, card_token, receivable_id)
+  def initialize(card_token, receivable_id, amount)
     @amount = amount
     @receivable_id = receivable_id
     @card_token = card_token
@@ -14,10 +14,10 @@ class BraintreeGateway
   def process
     if transaction.success?
       txn_id = transaction.transaction.id #braintree gem :(
-      shulog("#payment_process_success")
+      $logger.info("#payment_process_success")
       [PaymentService::SUCCESS, transaction.response]
     else
-      shulog("#payment_process_failed")
+      $logger.info("#payment_process_failed")
       [PaymentService::FAILED_NOACT, transaction.response]
     end
   end

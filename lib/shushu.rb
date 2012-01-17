@@ -11,7 +11,7 @@ require "rack/session/dalli"
 require "sinatra/cookies"
 require "./lib/gateways/braintree"
 
-$stderr = $stdout.sync = true
+$stderr.sync = $stdout.sync = true
 $logger = Logger.new($stdout)
 $logger.level = Logger::INFO
 
