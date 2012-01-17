@@ -11,10 +11,12 @@ require "rack/session/dalli"
 require "sinatra/cookies"
 
 $stdout.sync = true
+$logger = Logger.new($stdout)
+
 VERBOSE = ENV["VERBOSE"] == 'true'
 module Kernel
   def shulog(msg)
-    puts msg if VERBOSE
+    $logger.info(msg) if VERBOSE
   end
 end
 

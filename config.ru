@@ -1,5 +1,6 @@
 require './lib/shushu'
 
+use Rack::CommonLogger
 use Rack::Session::Dalli,
   :memcache_server => 'localhost:11211',
   :compression     => true,
