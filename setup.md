@@ -12,16 +12,12 @@ Shushu is a heroku application. Components include:
 
 ```bash
 $ memcached&; beanstalkd&
-$ export DATABASE_URL='postgres://username:password@localhost/shushu'
-$ export RACK_ENV='production'
-$ export PORT=8000
+$ export $(cat sample.env)
 $ bundle install
 $ bin/db
-$ bundle exec bin/console
-irb: p=Provider.create; p.reset_token!("secret")
+$ bundle exec bin/provider
 $ bundle exec thin start -e production -p $PORT
-$ curl -I http://1:secret@localhost:$PORT/heartbeat
-HTTP/1.1 200 OK
+$ curl -I http://provider_id:provider_token@localhost:$PORT/heartbeat
 ```
 Please see the [API Docs](https://github.com/heroku/shushu/tree/master/doc) for more detailed
 usage.
