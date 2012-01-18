@@ -52,6 +52,7 @@ require "./lib/api/helpers"
 require "./lib/api/authentication"
 require "./lib/api/http"
 
+require "./lib/models/model"
 require "./lib/models/billable_event"
 require "./lib/models/provider"
 require "./lib/models/rate_code"
