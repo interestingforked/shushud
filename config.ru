@@ -1,4 +1,5 @@
 require './lib/shushu'
+require "sinatra"
 
 use Rack::CommonLogger
 use Rack::Session::Dalli,

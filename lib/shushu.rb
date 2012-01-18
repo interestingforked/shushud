@@ -1,11 +1,11 @@
-require "rubygems"
 require "logger"
 require "cgi"
 require "securerandom"
 require "digest/sha1"
 
-Bundler.require
-
+require "braintree"
+require "yajl"
+require "sequel"
 require "dalli"
 require "rack/session/dalli"
 require "sinatra/cookies"

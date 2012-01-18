@@ -1,6 +1,9 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
 
+trap('INT')  {exit}
+trap('TERM') {exit}
+
 $: << File.expand_path("lib")
 
 require "shushu"

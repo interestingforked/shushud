@@ -1,15 +1,13 @@
 $:.unshift("lib")
 $:.unshift("test")
 
-ENV['RACK_ENV'] = 'test'
+ENV["RACK_ENV"] = "test"
 
-require 'rubygems'
-require 'bundler'
-Bundler.require(:default, :test)
-
-require 'minitest/autorun'
-require 'shushu'
-require 'shushu_helpers'
+require "minitest/autorun"
+require "shushu"
+require "shushu_helpers"
+require "ruby-debug"
+require "rack/test"
 
 Log.level = Logger::WARN
 
@@ -18,15 +16,19 @@ class ShushuTest < MiniTest::Unit::TestCase
   include ShushuHelpers
 
   def clean_tables
-    Shushu::DB.run("DELETE FROM billable_events CASCADE")
-    Shushu::DB.run("DELETE FROM rate_codes CASCADE")
-    Shushu::DB.run("DELETE FROM providers CASCADE")
-    Shushu::DB.run("DELETE FROM resource_ownership_records CASCADE")
-    Shushu::DB.run("DELETE FROM account_ownership_records CASCADE")
-    Shushu::DB.run("DELETE FROM accounts CASCADE")
-    Shushu::DB.run("DELETE FROM card_tokens CASCADE")
-    Shushu::DB.run("DELETE FROM payment_attempt_records CASCADE")
-    Shushu::DB.run("DELETE FROM receivables CASCADE")
+    Shushu::DB.transaction do
+      Shushu::DB.run(<<-EOD)
+        DELETE FROM billable_events CASCADE;
+        DELETE FROM rate_codes CASCADE;
+        DELETE FROM providers CASCADE;
+        DELETE FROM resource_ownership_records CASCADE;
+        DELETE FROM account_ownership_records CASCADE;
+        DELETE FROM accounts CASCADE;
+        DELETE FROM card_tokens CASCADE;
+        DELETE FROM payment_attempt_records CASCADE;
+        DELETE FROM receivables CASCADE;
+      EOD
+    end
   end
 
   def setup
