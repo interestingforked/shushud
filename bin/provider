@@ -11,8 +11,7 @@ usage = "heroku run bundle exec bin/provider name@heroku.com [new_token]"
 email = ARGV.shift or abort usage
 new_token = ARGV.shift || SecureRandom.hex(128)
 
-provider = Provider.filter(:name => email).first
-if provider
+if provider = Provider.filter(:name => email).first
   provider.reset_token!(new_token)
   puts("Token updated! \n \t id=#{provider[:id]} \n \t token=#{new_token}")
 else
