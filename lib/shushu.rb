@@ -9,7 +9,6 @@ require "sequel"
 require "dalli"
 require "rack/session/dalli"
 require "sinatra/cookies"
-require "./lib/gateways/braintree"
 
 $stderr.sync = $stdout.sync = true
 Log = Logger.new($stdout)
@@ -21,10 +20,7 @@ module Shushu
   DataConflict        = Class.new(ShushuError)
   AuthorizationError  = Class.new(ShushuError)
 
-  Conf = {
-    :gateway => BraintreeGateway
-  }
-
+  Conf = {}
   DB = (
     case ENV["RACK_ENV"].to_s
     when "production"
@@ -36,11 +32,6 @@ module Shushu
       raise(ArgumentError, "RACK_ENV must be production or test. RACK_ENV=#{ENV["RACK_ENV"]}")
     end
   )
-
-  DB.sql_log_level = :debug
-  DB.logger = Log
-  DB.execute("SET timezone TO 'UTC'")
-  Sequel.default_timezone = :utc
 
   def self.test?
     ENV["RACK_ENV"] == "test"
@@ -73,3 +64,11 @@ require "./lib/services/receivables_service"
 require "./lib/services/payment_service"
 
 require "./etc/payment_state_transitions"
+
+require "./lib/gateways/braintree"
+
+Shushu::Conf[:gateway] = BraintreeGateway
+Shushu::DB.sql_log_level = :debug
+Shushu::DB.logger = Log
+Shushu::DB.execute("SET timezone TO 'UTC'")
+Sequel.default_timezone = :utc
