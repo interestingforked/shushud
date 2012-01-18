@@ -3,20 +3,6 @@ module Api
     include Helpers
     include Sinatra::Cookies
 
-    def auth
-      @auth ||= Rack::Auth::Basic::Request.new(request.env)
-    end
-
-    def bad_request!
-      throw(:halt, [400, enc_json("Bad Request")])
-    end
-
-    def unauthenticated!(realm="shushu.heroku.com")
-      Log.info("#unauthenticated credentials=#{auth.credentials.join("/")} ip=#{request.env["REMOTE_ADDR"]} agent=#{request.env["HTTP_USER_AGENT"]}")
-      response['WWW-Authenticate'] = %(Basic realm="Restricted Area")
-      throw(:halt, [401, enc_json("Not authorized")])
-    end
-
     def authenticate_provider
       if authenticated?
         Log.info("#session_found provider=#{session[:provider_id]}")
@@ -42,6 +28,20 @@ module Api
       else
         false
       end
+    end
+
+    def auth
+      @auth ||= Rack::Auth::Basic::Request.new(request.env)
+    end
+
+    def bad_request!
+      throw(:halt, [400, enc_json("Bad Request")])
+    end
+
+    def unauthenticated!(realm="shushu.heroku.com")
+      Log.info("#unauthenticated credentials=#{auth.credentials.join("/")} ip=#{request.env["REMOTE_ADDR"]} agent=#{request.env["HTTP_USER_AGENT"]}")
+      response['WWW-Authenticate'] = %(Basic realm="Restricted Area")
+      throw(:halt, [401, enc_json("Not authorized")])
     end
 
   end
