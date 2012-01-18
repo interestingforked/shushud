@@ -39,7 +39,7 @@ module Api
     post "/receivables" do
       perform do
         ReceivablesService.create(
-          params[:init_payment_method_id],
+          enc_int(params[:init_payment_method_id]),
           enc_int(params[:amount]),
           enc_time(params[:from]),
           enc_time(params[:to])
@@ -74,7 +74,7 @@ module Api
     #
     get "/resources/:hid/billable_events" do
       perform do
-        BillableEventService.find({:hid => params[:hid], :provider_id => session[:provider_id]})
+        BillableEventService.find(session[:provider_id])
       end
     end
 

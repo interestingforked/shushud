@@ -1,11 +1,8 @@
 module BillableEventService
   extend self
 
-  def find(conditions)
-    events = BillableEvent.filter(
-      :provider_id => conditions[:provider_id],
-      :hid => conditions[:hid]
-    ).all
+  def find(provider_id)
+    events = BillableEvent.filter(:provider_id => provider_id).all
     [200, events.map(&:to_h)]
   end
 
