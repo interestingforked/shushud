@@ -1,7 +1,7 @@
 class Provider < Sequel::Model
 
   def self.auth?(id, token)
-    if provider = Provider[id]
+    if provider = Provider[id.to_i]
       provider[:token] == enc(token) and !provider.disabled?
     else
       false
