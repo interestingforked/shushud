@@ -18,6 +18,8 @@ GEM
     columnize (0.3.6)
     daemons (1.1.5)
     eventmachine (0.12.10)
+    exceptional (2.0.32)
+      rack
     json_pure (1.6.5)
     linecache19 (0.5.12)
       ruby_core_source (>= 0.1.4)
@@ -67,6 +69,7 @@ PLATFORMS
 DEPENDENCIES
   braintree
   dalli!
+  exceptional
   pg
   rack-test
   ruby-debug19

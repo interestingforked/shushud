@@ -9,6 +9,7 @@ gem 'dalli', :git => 'git://github.com/mperham/dalli.git', :ref => '46e4db8f0bb3
 gem 'yajl-ruby', :require => 'yajl'
 gem 'braintree'
 gem 'stalker'
+gem 'exceptional'
 
 group :test do
   gem 'ruby-debug19', :require => 'ruby-debug'
