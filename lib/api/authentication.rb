@@ -10,7 +10,7 @@ module Api
         if auth.provided? && auth.basic?
           id, token = *auth.credentials
           Log.info("#session_begin provider=#{id}")
-          pass?(id, token) ? session[:provider_id] = id : unauthenticated!
+          Provider.auth?(id, token) ? session[:provider_id] = id : unauthenticated!
         else
           bad_request!
         end
@@ -19,10 +19,6 @@ module Api
 
     def authenticated?
       session[:provider_id]
-    end
-
-    def pass?(id, token)
-      Provider.auth?(id, token)
     end
 
     def auth
