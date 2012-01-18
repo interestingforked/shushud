@@ -25,7 +25,6 @@ usage.
 ## Running Tests
 
 ```bash
-$ bundle
-$ bundle exec bin/db test
+$ bin/db test
 $ bundle exec turn test/
 ```
