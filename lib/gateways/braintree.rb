@@ -1,10 +1,10 @@
 class BraintreeGateway
 
   FAILMAP = {
-    "2004" => PaymentService::FAILED_ACT, #expired card
-    "2043" => PaymentService::FAILED_ACT, #error do not retry
-    "2044" => PaymentService::FAILED_ACT, #declined call issuer
-    "2047" => PaymentService::FAILED_ACT, #call issuer, pick up card
+    "2004" => PaymentService::FAILED_ACT,   #expired card
+    "2043" => PaymentService::FAILED_ACT,   #error do not retry
+    "2044" => PaymentService::FAILED_ACT,   #declined call issuer
+    "2047" => PaymentService::FAILED_ACT,   #call issuer, pick up card
     "2046" => PaymentService::FAILED_NOACT, #general decline
     "2001" => PaymentService::FAILED_NOACT, #insufficient funds
     "2011" => PaymentService::FAILED_NOACT, #voice auth required
