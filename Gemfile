@@ -2,6 +2,7 @@ source :rubygems
 
 gem 'pg'
 gem 'thin'
+gem 'rack', '1.3.5'
 gem 'sinatra'
 gem 'sinatra-contrib'
 gem 'sequel'

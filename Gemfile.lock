@@ -5,11 +5,11 @@ GEM
     archive-tar-minitar (0.5.2)
     backports (2.3.0)
     beanstalk-client (1.1.1)
-    braintree (2.12.0)
+    braintree (2.13.2)
       builder (>= 2.0.0)
     builder (3.0.0)
     columnize (0.3.6)
-    daemons (1.1.5)
+    daemons (1.1.6)
     eventmachine (0.12.10)
     exceptional (2.0.32)
       rack
@@ -17,7 +17,7 @@ GEM
     linecache19 (0.5.12)
       ruby_core_source (>= 0.1.4)
     pg (0.12.2)
-    rack (1.4.0)
+    rack (1.3.5)
     rack-protection (1.2.0)
       rack
     rack-test (0.6.1)
@@ -33,9 +33,9 @@ GEM
     ruby_core_source (0.1.5)
       archive-tar-minitar (>= 0.5.2)
     sequel (3.31.0)
-    sinatra (1.3.2)
-      rack (~> 1.3, >= 1.3.6)
-      rack-protection (~> 1.2)
+    sinatra (1.3.1)
+      rack (~> 1.3, >= 1.3.4)
+      rack-protection (~> 1.1, >= 1.1.2)
       tilt (~> 1.3, >= 1.3.3)
     sinatra-contrib (1.3.1)
       backports (>= 2.0)
@@ -63,6 +63,7 @@ DEPENDENCIES
   braintree
   exceptional
   pg
+  rack (= 1.3.5)
   rack-test
   ruby-debug19
   sequel
