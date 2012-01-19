@@ -3,7 +3,6 @@ require "sinatra"
 
 use Rack::CommonLogger
 use Rack::Session::Cookie,
-  :compression     => true,
   :key             => "shushu.session",
   :secret          => ENV["SESSION_SECRET"],
   :domain          => ENV["SESSION_DOMAIN"],
