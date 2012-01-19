@@ -203,9 +203,13 @@ module Api
 
     def perform
       begin
+        log("#api_begin_request")
         s, b = yield
+        log("#api_prepare_status")
         status(s)
+        log("#api_prepare_body")
         body(enc_json(b))
+        log("#api_finish_request")
       rescue RuntimeError, ArgumentError => e
         log("#http_api_runtime_error e=#{e.message} s=#{e.backtrace}")
         status(400)
