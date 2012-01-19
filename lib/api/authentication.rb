@@ -7,13 +7,27 @@ module Api
       if authenticated?
         Log.info("#session_found provider=#{session[:provider_id]}")
       else
-        if auth.provided? && auth.basic?
+        if proper_request?
           id, token = *auth.credentials
           Log.info("#session_begin provider=#{id}")
           Provider.auth?(id, token) ? session[:provider_id] = id : unauthenticated!
         else
-          bad_request!
+          unauthenticated!
         end
+      end
+    end
+
+    def proper_request?
+      if auth.provided?
+        if auth.basic?
+          true
+        else
+          Log.info("auth not basic")
+          false
+        end
+      else
+        Log.info("auth not provided")
+        false
       end
     end
 
@@ -30,7 +44,7 @@ module Api
     end
 
     def unauthenticated!(realm="shushu.heroku.com")
-      Log.info("#unauthenticated credentials=#{auth.credentials.join("/")} ip=#{request.env["REMOTE_ADDR"]} agent=#{request.env["HTTP_USER_AGENT"]}")
+      Log.info("#unauthenticated ip=#{request.env["REMOTE_ADDR"]} agent=#{request.env["HTTP_USER_AGENT"]}")
       response['WWW-Authenticate'] = %(Basic realm="Restricted Area")
       throw(:halt, [401, enc_json("Not authorized")])
     end

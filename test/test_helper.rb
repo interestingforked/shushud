@@ -11,10 +11,7 @@ require "rack/test"
 
 Log.level = Logger::WARN
 
-class ShushuTest < MiniTest::Unit::TestCase
-  include Rack::Test::Methods
-  include ShushuHelpers
-
+module TableCleaner
   def clean_tables
     Shushu::DB.transaction do
       Shushu::DB.run(<<-EOD)
@@ -30,6 +27,12 @@ class ShushuTest < MiniTest::Unit::TestCase
       EOD
     end
   end
+end
+
+class ShushuTest < MiniTest::Unit::TestCase
+  include Rack::Test::Methods
+  include ShushuHelpers
+  include TableCleaner
 
   def setup
     clean_tables

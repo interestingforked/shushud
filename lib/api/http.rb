@@ -20,8 +20,12 @@ module Api
     # Heartbeat
     #
     get "/heartbeat" do
-      status(200)
-      body({:alive => Time.now})
+      if r = params[:redirect_to]
+        redirect(r)
+      else
+        status(200)
+        body({:alive => Time.now})
+      end
     end
 
     #
@@ -72,7 +76,7 @@ module Api
     #
     # BillableEvents
     #
-    get "/resources/:hid/billable_events" do
+    get "/billable_events" do
       perform do
         BillableEventService.find(session[:provider_id])
       end
