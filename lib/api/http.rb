@@ -20,12 +20,8 @@ module Api
     # Heartbeat
     #
     get "/heartbeat" do
-      if r = params[:redirect_to]
-        redirect(r)
-      else
-        status(200)
-        body({:alive => Time.now})
-      end
+      status(200)
+      body(enc_json({:alive => Time.now}))
     end
 
     #
