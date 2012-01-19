@@ -1,10 +1,3 @@
-GIT
-  remote: git://github.com/mperham/dalli.git
-  revision: 46e4db8f0bb384485ca04c50cf78dfdac63ca634
-  ref: 46e4db8f0bb384485ca04c50cf78dfdac63ca634
-  specs:
-    dalli (1.1.4)
-
 GEM
   remote: http://rubygems.org/
   specs:
@@ -68,7 +61,6 @@ PLATFORMS
 
 DEPENDENCIES
   braintree
-  dalli!
   exceptional
   pg
   rack-test
