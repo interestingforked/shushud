@@ -78,7 +78,7 @@ module Api
     #
     get "/billable_events" do
       perform do
-        BillableEventService.find(session[:provider_id])
+        BillableEventService.find(enc_int(session[:provider_id]))
       end
     end
 
