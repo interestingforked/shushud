@@ -10,7 +10,7 @@ require "sinatra/cookies"
 
 $stderr.sync = $stdout.sync = true
 Log = Logger.new($stdout)
-Log.level = ENV["LOG_LEVEL"]
+Log.level = ENV["LOG_LEVEL"].to_i
 
 module Shushu
   ShushuError         = Class.new(Exception)
