@@ -8,8 +8,9 @@ module Api
     # Errors
     #
     not_found do
-      status(404)
-      body(enc_json("Not Found"))
+      perform do
+        [404, "Not Found"]
+      end
     end
 
     delete "/sessions" do
@@ -204,13 +205,13 @@ module Api
 
     def perform
       begin
-        log("#api_begin_request")
+        Log.debug("#api_begin_request")
         s, b = yield
-        log("#api_prepare_status")
+        Log.debug("#api_prepare_status")
         status(s)
-        log("#api_prepare_body")
+        Log.debug("#api_prepare_body")
         body(enc_json(b))
-        log("#api_finish_request")
+        Log.debug("#api_finish_request")
       rescue RuntimeError, ArgumentError => e
         log("#http_api_runtime_error e=#{e.message} s=#{e.backtrace}")
         status(400)
