@@ -6,8 +6,6 @@ require "digest/sha1"
 require "braintree"
 require "yajl"
 require "sequel"
-require "dalli"
-require "rack/session/dalli"
 require "sinatra/cookies"
 
 $stderr.sync = $stdout.sync = true

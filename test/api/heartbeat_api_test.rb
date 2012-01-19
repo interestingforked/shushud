@@ -13,7 +13,7 @@ class HeartbeatApiTest < ShushuTest
 
   def test_heartbeat_with_no_token
     get "/heartbeat"
-    assert_equal 400, last_response.status
+    assert_equal 401, last_response.status
   end
 
   def test_heartbeat

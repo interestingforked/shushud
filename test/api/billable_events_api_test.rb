@@ -161,7 +161,7 @@ class BillableEventsApiTest < ShushuTest
   def test_get_events
     setup_auth
     open_event("456")
-    get("/resources/123/billable_events")
+    get("/billable_events")
     assert_equal("456", JSON.parse(last_response.body).first["entity_id"])
   end
 
