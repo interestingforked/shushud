@@ -11,6 +11,7 @@ module Api
           id, token = *auth.credentials
           Log.info("#session_begin provider=#{id}")
           Provider.auth?(id, token) ? session[:provider_id] = id : unauthenticated!
+          Log.info("#session_created provider=#{id}")
         else
           unauthenticated!
         end
