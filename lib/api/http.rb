@@ -20,8 +20,9 @@ module Api
     # Heartbeat
     #
     get "/heartbeat" do
-      status(200)
-      body(enc_json({:alive => Time.now}))
+      perform do
+        [200, {:alive => Time.now}]
+      end
     end
 
     #
