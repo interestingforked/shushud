@@ -39,7 +39,8 @@ class ReportServiceTest < ShushuTest
       :time     => jan
     )
 
-    billable_units = ReportService.query_usage_report(account.id, jan, feb)
+    _, usage_report = ReportService.usage_report(account.id, jan, feb)
+    billable_units = usage_report[:billable_units]
     assert_equal(1, billable_units.length)
 
     billable_unit = billable_units.first
@@ -77,13 +78,15 @@ class ReportServiceTest < ShushuTest
       :time     => jan
     )
 
-    billable_units = ReportService.query_usage_report(account.id, jan, feb)
+    _, usage_report = ReportService.usage_report(account.id, jan, feb)
+    billable_units = usage_report[:billable_units]
     assert_equal(1, billable_units.length)
     billable_unit = billable_units.first
     assert_equal(jan, Time.parse(billable_unit["from"]))
     assert_equal((jan + 100), Time.parse(billable_unit["to"]))
 
-    billable_units = ReportService.query_usage_report(another_account.id, jan, feb)
+    _, usage_report = ReportService.usage_report(another_account.id, jan, feb)
+    billable_units = usage_report[:billable_units]
     assert_equal(1, billable_units.length)
     billable_unit = billable_units.last
     assert_equal((jan + 100), Time.parse(billable_unit["from"]))
@@ -107,7 +110,9 @@ class ReportServiceTest < ShushuTest
       :time         => jan,
       :rate_code_id => rate_code.id
     )
-    billable_unit = ReportService.query_usage_report(account.id, jan, feb).pop
+    _, usage_report = ReportService.usage_report(account.id, jan, feb)
+    billable_units = usage_report[:billable_units]
+    billable_unit = billable_units.pop
     assert_equal("a test product", billable_unit["product_name"])
     assert_equal("super dyno", billable_unit["product_group"])
     assert_equal("hour", billable_unit["rate_period"])
@@ -138,7 +143,8 @@ class ReportServiceTest < ShushuTest
       :time         => jan + (60 * 60 * 24 * 5), #5days
       :rate_code_id => rate_code.id
     )
-    billable_unit = ReportService.query_usage_report(account.id, jan, feb).pop
+    _, usage_report = ReportService.usage_report(account.id, jan, feb)
+    billable_unit = usage_report[:billable_units].pop
     assert_equal(120.0, billable_unit["qty"].to_i)
   end
 
@@ -159,7 +165,8 @@ class ReportServiceTest < ShushuTest
       :time         => Time.now - 3600,
       :rate_code_id => rate_code.id
     )
-    billable_unit = ReportService.query_usage_report(account.id, jan, Time.now).pop
+    _, usage_report = ReportService.usage_report(account.id, jan, Time.now)
+    billable_unit = usage_report[:billable_units].pop
     assert_in_delta(1.0, billable_unit["qty"].to_f, 0.001)
   end
 
@@ -235,7 +242,8 @@ class ReportServiceTest < ShushuTest
       :time         => Time.now - 3600,
       :rate_code_id => rate_code.id
     )
-    billable_unit = ReportService.query_usage_report(account.id, jan, Time.now).pop
+    _, usage_report = ReportService.usage_report(account.id, jan, Time.now)
+    billable_unit = usage_report[:billable_units].pop
     assert_equal("web", billable_unit["product_name"])
   end
 
@@ -257,7 +265,8 @@ class ReportServiceTest < ShushuTest
       :time         => Time.now - 3600,
       :rate_code_id => rate_code.id
     )
-    billable_unit = ReportService.query_usage_report(account.id, jan, Time.now).pop
+    _, usage_report = ReportService.usage_report(account.id, jan, Time.now)
+    billable_unit = usage_report[:billable_units].pop
     assert_equal("specialweb", billable_unit["product_name"])
   end
 
