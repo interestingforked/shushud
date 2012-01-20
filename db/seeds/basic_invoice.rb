@@ -44,10 +44,10 @@ SecureRandom.uuid.tap do |eid|
 end
 
 puts(<<-EOD)
-\n\n
+
 \t account: #{account.id}
 \t payment_method: #{payment_method.id}
-\n
+
 \t select * from invoice(#{payment_method.id}, '#{jan.iso8601}', '#{feb.iso8601}');
-\n
+
 EOD
