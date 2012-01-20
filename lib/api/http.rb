@@ -71,6 +71,12 @@ module Api
       end
     end
 
+    get "/rev_report" do
+      perform do
+        ReportService.rev_report(dec_time(params[:from]), dec_time(params[:to]))
+      end
+    end
+
     #
     # BillableEvents
     #
