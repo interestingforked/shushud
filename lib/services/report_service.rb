@@ -27,6 +27,11 @@ module ReportService
     [200, res]
   end
 
+  def rev_report(from, to)
+    total = exec_sql("SELECT * from rev_report($1, $2)", from, to).first["rev_report"]
+    [200, {:time => Time.now, :total => total}]
+  end
+
   def exec_sql(sql, *args)
     Shushu::DB.synchronize do |conn|
       conn.exec(sql, args).to_a

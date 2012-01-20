@@ -180,6 +180,33 @@ Sequel.migration do
       ;
 
 
+      CREATE TYPE group_bu_type AS (
+        qty numeric,
+        rate int
+      );
+
+      CREATE OR REPLACE FUNCTION grouped_billable_units(timestamptz, timestamptz) RETURNS SETOF group_bu_type
+        AS $$
+          SELECT
+            sum(
+              (extract('epoch' FROM
+                LEAST(billable_units.to, $2) - GREATEST(billable_units.from, $1)
+              )::numeric / (3600)) -- convert seconds into hours
+            ) as qty,
+            rate
+          FROM billable_units
+          WHERE (billable_units.from, billable_units.to) OVERLAPS ($1, $2)
+          GROUP BY rate
+        $$ LANGUAGE SQL
+      ;
+
+      CREATE OR REPLACE FUNCTION rev_report(timestamptz, timestamptz) RETURNS numeric
+        AS $$
+          SELECT sum(qty * rate) as total
+          FROM grouped_billable_units($1, $2)
+        $$ LANGUAGE SQL
+      ;
+
     EOD
   end
 end

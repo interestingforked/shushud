@@ -294,4 +294,16 @@ class ReportServiceTest < ShushuTest
     assert_equal(feb, Time.parse(billable_unit["to"]))
   end
 
+  def test_rev_report
+    rate = 100
+    rate_code = build_rate_code :rate => rate
+    eid1 = SecureRandom.uuid
+    eid2 = SecureRandom.uuid
+    build_billable_event("app123", eid1, BillableEvent::Open, jan, rate_code.id)
+    build_billable_event("app124", eid2, BillableEvent::Open, jan, rate_code.id)
+    _, report = ReportService.rev_report(jan, feb)
+    expected_total = (((feb - jan) / 60.0 / 60.0) * rate) * 2
+    assert_equal expected_total, report[:total].to_f
+  end
+
 end

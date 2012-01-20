@@ -51,12 +51,13 @@ module ShushuHelpers
     )
   end
 
-  def build_billable_event(hid, entity_id, state, time)
+  def build_billable_event(hid, entity_id, state, time, rate_code_id=nil)
     BillableEvent.create(
       :hid => hid,
       :entity_id => entity_id,
       :state => state,
-      :time => time
+      :time => time,
+      :rate_code_id => rate_code_id
     )
   end
 
