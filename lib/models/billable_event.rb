@@ -22,7 +22,7 @@ class BillableEvent < Sequel::Model
       :entity_id     => self[:entity_id],
       :hid           => self[:hid],
       :product_group => rate_code[:product_group],
-      :product_name  => rate_code[:product_name],
+      :product_name  => product_name,
       :rate          => rate_code[:rate],
       :rate_code     => rate_code[:slug],
       :qty           => self[:qty],
