@@ -219,23 +219,23 @@ module Api
         body(enc_json(b))
         Log.debug("#api_finish_request")
       rescue RuntimeError, ArgumentError => e
-        log("#http_api_runtime_error e=#{e.message} s=#{e.backtrace}")
+        log("#api_error_runtime_arg e=#{e.message} s=#{e.backtrace}")
         status(400)
         body(enc_json(e.message))
       rescue Shushu::AuthorizationError => e
-        log("#http_api_authorization_error e=#{e.message} s=#{e.backtrace}")
+        log("#api_error_authorization e=#{e.message} s=#{e.backtrace}")
         status(403)
         body(enc_json(e.message))
       rescue Shushu::NotFound => e
-        log("#http_api_find_error e=#{e.message} s=#{e.backtrace}")
+        log("#api_error_not_found e=#{e.message} s=#{e.backtrace}")
         status(404)
         body(enc_json(e.message))
       rescue Shushu::DataConflict => e
-        log("#http_api_data_error e=#{e.message} s=#{e.backtrace}")
+        log("#api_error_conflict e=#{e.message} s=#{e.backtrace}")
         status(409)
         body(enc_json(e.message))
       rescue Exception => e
-        log("#http_api_error e=#{e.message} s=#{e.backtrace}")
+        log("#api_error_unhandled e=#{e.message} s=#{e.backtrace}")
         status(500)
         body(enc_json(e.message))
         raise if Shushu.test?
