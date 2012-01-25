@@ -31,6 +31,10 @@ class BillableEvent < Sequel::Model
     }
   end
 
+  def product_name
+    rate_code[:product_name] || self[:product_name]
+  end
+
   def rate_code
     RateCode[self[:rate_code_id]]
   end
