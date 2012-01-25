@@ -6,4 +6,5 @@ class PaymentMethod < Sequel::Model
     order(:created_at).
     first
   end
+
 end
