@@ -12,11 +12,9 @@ the accounts can belong to the same payment_method by creating account_ownerhips
 records. See the [AccountOwnership API](https://github.com/heroku/shushud/blob/master/doc/account_ownership_api.md)
 for more details.
 
-## API
+## Create PaymentMethod
 
-### Create PaymentMethod
-
-#### Using a card token without id
+### Using a card token without id
 
 You can rely on Shushu creating an id for the payment_method. Use the POST
 endpoint to rely on the generated id.
@@ -28,7 +26,7 @@ $ curl -X POST https://123:secret@shushu.heroku.com/payment_methods \
 {"id": "0001", "token": "abc123"}
 ```
 
-#### Using a card token with id
+### Using a card token with id
 
 If you already have an id for the payment_method, you can use the PUT endpoint
 to create the payment_method. Of course this endpoint has idempotent attributes
@@ -43,7 +41,7 @@ $ curl -X PUT https://123:secret@shushu.heroku.com/payment_methods/id@yourdomain
 ```
 
 
-#### Using a encrypted credit card number with id
+### Using a encrypted credit card number with id
 
 **Deprecation Warning**
 
@@ -61,7 +59,7 @@ $ curl -X POST https://123:secret@shushu.heroku.com/payment_methods \
 {"id": "0001", "token": "abc123", "card_type": "visa", "card_last4": "4111"}
 ```
 
-#### Using a encrypted credit card number with id
+### Using a encrypted credit card number with id
 
 ```bash
 $ curl -X PUT https://123:secret@shushu.heroku.com/payment_methods/id@yourdomain.com \
@@ -73,9 +71,9 @@ $ curl -X PUT https://123:secret@shushu.heroku.com/payment_methods/id@yourdomain
 ```
 
 
-### Update PaymentMethod
+## Update PaymentMethod
 
-#### Non-receivable
+### Non-receivable
 
 Not all payment_methods will represent a receivable. For instance, you may want
 to allow the employees of an organization use the org's services without charge.
@@ -90,7 +88,7 @@ $ curl -X PUT https://123:secret@shushu.heroku.com/payment_methods/id@yourdomain
 {"id": "id@yourdomain.com", "token": "abc123", "non-receivable": true}
 ```
 
-#### New token
+### New token
 
 ```bash
 $ curl -X PUT https://123:secret@shushu.heroku.com/payment_methods/id@yourdomain.com \
@@ -99,7 +97,7 @@ $ curl -X PUT https://123:secret@shushu.heroku.com/payment_methods/id@yourdomain
 {"id": "id@yourdomain.com", "token": "abc124"}
 ```
 
-#### New credit card number
+### New credit card number
 
 ```bash
 $ curl -X PUT https://123:secret@shushu.heroku.com/payment_methods/id@yourdomain.com \
