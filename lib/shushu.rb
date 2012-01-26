@@ -11,6 +11,9 @@ require "sinatra/cookies"
 $stderr.sync = $stdout.sync = true
 Log = Logger.new($stdout)
 Log.level = ENV["LOG_LEVEL"].to_i
+Log.formatter = Proc.new do |severity, datetime, progname, msg|
+  "#{severity}: #{msg}\n"
+end
 
 module Shushu
   ShushuError         = Class.new(Exception)
