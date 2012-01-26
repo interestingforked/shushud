@@ -211,13 +211,13 @@ module Api
 
     def perform
       begin
-        Log.debug("#api_begin_request")
+        log("#api_begin_request")
         s, b = yield
-        Log.debug("#api_prepare_status")
+        log("#api_prepare_status")
         status(s)
-        Log.debug("#api_prepare_body")
+        log("#api_prepare_body")
         body(enc_json(b))
-        Log.debug("#api_finish_request")
+        log("#api_finish_request")
       rescue RuntimeError, ArgumentError => e
         log("#api_error_runtime_arg e=#{e.message} s=#{e.backtrace}")
         status(400)
@@ -243,7 +243,7 @@ module Api
     end
 
     def log(msg)
-      Log.info("account=#{params[:account_id]} provider=#{session[:provider_id]} hid=#{params[:hid]} #{msg}")
+      Log.info("#{msg} account=#{params[:account_id]} provider=#{session[:provider_id]} hid=#{params[:hid]}")
     end
 
   end
