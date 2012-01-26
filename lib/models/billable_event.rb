@@ -36,7 +36,7 @@ class BillableEvent < Sequel::Model
   end
 
   def rate_code
-    RateCode[self[:rate_code_id]]
+    @rate_code ||= RateCode[self[:rate_code_id]]
   end
 
 end
