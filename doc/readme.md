@@ -1,6 +1,6 @@
-# The Vault's HTTP API
+# Shushu's HTTP API
 
-All of The Vault's services are made available over an HTTP API.
+All of Shushu's services are made available over an HTTP API.
 
 ## Authentication
 
