@@ -1,16 +1,11 @@
 # PaymentMethod API
 
-While the [account](https://github.com/heroku/shushud/blob/master/doc/accounts_api.md)
-represents an aggregation of resources, the payment_method
+While the [account][account_api] represents an aggregation of resources, the payment_method
 represents an aggregation of accounts. Also, similar to the account's
-usage_report, the payment_method is required to produce an invoice. As noted in
-the reports documentation, the invoice represents a dollar amount that will
-eventually be represented by a receivable while the usage_report will have no
-relationship to a receivable. Thus, a payment_method is required for invoice
-generation and subsequently receivable generation. Also, it should be noted that
-the accounts can belong to the same payment_method by creating account_ownerhips
-records. See the [AccountOwnership API](https://github.com/heroku/shushud/blob/master/doc/account_ownership_api.md)
-for more details.
+usage_report, the payment_method can produce an invoice. Thus, a payment_method
+is required for invoice generation. Also, it should be noted that the many accounts
+can belong to a single payment_method by creating account_ownerhips records.
+See the [AccountOwnership API][act_own_api] for more details.
 
 ## Create PaymentMethod
 
@@ -107,3 +102,6 @@ $ curl -X PUT https://123:secret@shushu.heroku.com/payment_methods/id@yourdomain
 
 {"id": "id@yourdomain.com", "token": "abc124", "card_type": "amex", "card_last4": "3333"}
 ```
+
+[account_api]: https://github.com/heroku/shushud/blob/master/doc/accounts_api.md
+[act_own_api]: https://github.com/heroku/shushud/blob/master/doc/account_ownership_api.md
