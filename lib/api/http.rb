@@ -50,6 +50,35 @@ module Api
     end
 
     #
+    # PaymentMethod
+    #
+    post "/payment_methods" do
+      perform do
+        PaymentMethodService.new_payment_method(
+          :provider_id    => session[:provider_id],
+          :slug           => nil,
+          :card_token     => params[:card_token],
+          :card_num       => params[:card_num],
+          :card_exp_year  => params[:card_exp_year],
+          :card_exp_month => params[:card_exp_month]
+        )
+      end
+    end
+
+    put "/payment_methods/:slug" do
+      perform do
+        PaymentMethodService.new_payment_method(
+          :provider_id    => session[:provider_id],
+          :slug           => params[:slug],
+          :card_token     => params[:card_token],
+          :card_num       => params[:card_num],
+          :card_exp_year  => params[:card_exp_year],
+          :card_exp_month => params[:card_exp_month]
+        )
+      end
+    end
+
+    #
     # PaymentAttempts
     #
     post "/receivables/:receivable_id/payment_attempts" do

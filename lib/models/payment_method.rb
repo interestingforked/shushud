@@ -7,4 +7,8 @@ class PaymentMethod < Sequel::Model
     first
   end
 
+  def api_id
+    self[:slug] || self[:id]
+  end
+
 end

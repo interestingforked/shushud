@@ -63,6 +63,8 @@ require "./lib/services/rate_code_service"
 require "./lib/services/calculator"
 require "./lib/services/receivables_service"
 require "./lib/services/payment_service"
+require "./lib/services/authorizer"
+require "./lib/services/payment_method_service"
 
 require "./etc/payment_state_transitions"
 
