@@ -8,16 +8,17 @@ module ReceivablesService
     ).count > 0
   end
 
-  def create(pmid, amount, from, to)
+  def create(provider_id, pmid, amount, from, to)
     if prev = Receivable.find_prev(pmid, from, to)
       [200, prev.to_h]
     else
-      [201, create_record(pmid, amount, from, to).to_h]
+      [201, create_record(provider_id, pmid, amount, from, to).to_h]
     end
   end
 
-  def create_record(pmid, amount, from, to)
+  def create_record(provider_id, pmid, amount, from, to)
     Receivable.create(
+      :provider_id            => provider_id,
       :init_payment_method_id => resolve_pmid(pmid),
       :amount                 => amount,
       :period_start           => from,

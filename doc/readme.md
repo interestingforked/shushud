@@ -39,3 +39,11 @@ entity_id , I can now systematically deduce that I am in an erroneous state.
 
 Therefore, entity_ids help Shushu in preventing monetary actions on unreliable
 data.
+
+## Multi Tenant
+
+Each API call made to Shushu must be authenticated with a set of provider
+credentials. Furthermore, each provider maps to a row in the provider's table.
+In an effort to increase audit ability and to allow for locally unique entity
+ids, all of Shushu's data is mapped via foreign key to the provider who made the
+request for creation.

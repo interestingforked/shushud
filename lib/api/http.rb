@@ -31,7 +31,7 @@ module Api
     #
     post "/accounts" do
       perform do
-        [201, Account.create.to_h]
+        [201, Account.create(:provider_id => session[:provider_id]).to_h]
       end
     end
 
@@ -41,6 +41,7 @@ module Api
     post "/receivables" do
       perform do
         ReceivablesService.create(
+          session[:provider_id],
           enc_int(params[:init_payment_method_id]),
           enc_int(params[:amount]),
           enc_time(params[:from]),
@@ -84,6 +85,7 @@ module Api
     post "/receivables/:receivable_id/payment_attempts" do
       perform do
         PaymentService.attempt(
+          session[:provider_id],
           enc_int(params[:receivable_id]),
           enc_int(params[:payment_method_id]),
           enc_time(params[:wait_until])
@@ -136,6 +138,7 @@ module Api
     post "/payment_methods/:payment_method_id/account_ownerships/:entity_id" do
       perform do
         AccountOwnershipService.activate(
+          session[:provider_id],
           dec_int(params[:payment_method_id]),
           dec_int(params[:account_id]),
           dec_time(params[:time]),
@@ -147,6 +150,7 @@ module Api
     put "/payment_methods/:prev_payment_method_id/account_ownerships/:prev_entity_id" do
       perform do
         AccountOwnershipService.transfer(
+          session[:provider_id],
           dec_int(params[:prev_payment_method_id]),
           dec_int(params[:payment_method_id]),
           dec_int(params[:account_id]),
@@ -168,13 +172,20 @@ module Api
 
     post "/accounts/:account_id/resource_ownerships/:entity_id" do
       perform do
-        ResourceOwnershipService.activate(dec_int(params[:account_id]), params[:hid], dec_time(params[:time]), params[:entity_id])
+        ResourceOwnershipService.activate(
+          session[:provider_id],
+          dec_int(params[:account_id]),
+          params[:hid],
+          dec_time(params[:time]),
+          params[:entity_id]
+        )
       end
     end
 
     put "/accounts/:prev_account_id/resource_ownerships/:prev_entity_id" do
       perform do
         ResourceOwnershipService.transfer(
+          session[:provider_id],
           dec_int(params[:prev_account_id]),
           dec_int(params[:account_id]),
           params[:hid],
@@ -187,7 +198,13 @@ module Api
 
     delete "/accounts/:account_id/resource_ownerships/:entity_id" do
       perform do
-        ResourceOwnershipService.deactivate(dec_int(params[:account_id]), params[:hid], dec_time(params[:time]), params[:entity_id])
+        ResourceOwnershipService.deactivate(
+          session[:provider_id],
+          dec_int(params[:account_id]),
+          params[:hid],
+          dec_time(params[:time]),
+          params[:entity_id]
+        )
       end
     end
 
@@ -272,7 +289,7 @@ module Api
     end
 
     def log(msg)
-      Log.info("#{msg} account=#{params[:account_id]} provider=#{session[:provider_id]} hid=#{params[:hid]}")
+      Log.info("provider=#{session[:provider_id]} #{msg}")
     end
 
   end

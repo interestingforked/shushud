@@ -1,15 +1,31 @@
 Sequel.migration do
   change do
+    #Provider
+    create_table(:providers) do
+      primary_key :id
+    end
+    add_column :providers, :created_at,   "timestamptz"
+    add_column :providers, :root,         "boolean DEFAULT 'false'"
+    add_column :providers, :disabled,     "boolean DEFAULT 'false'"
+    add_column :providers, :name,         "varchar(255)"
+    add_column :providers, :token,        "varchar(255)"
+
     #PaymentMethod
     create_table(:payment_methods) do
       primary_key :id
+      foreign_key :provider_id, :providers
     end
     add_column :payment_methods, :created_at, "timestamptz"
+    add_column :payment_methods, :slug, "varchar(255)"
+    alter_table(:payment_methods) do
+      add_unique_constraint([:provider_id, :slug])
+    end
 
     #CardToken
     create_table(:card_tokens) do
       primary_key :id
       foreign_key :payment_method_id, :payment_methods
+      foreign_key :provider_id, :providers
     end
     add_column :card_tokens, :created_at, "timestamptz"
     add_column :card_tokens, :token,      "varchar(255)"
@@ -18,6 +34,7 @@ Sequel.migration do
     create_table(:receivables) do
       primary_key :id
       foreign_key :init_payment_method_id, :payment_methods
+      foreign_key :provider_id, :providers
     end
     add_column :receivables, :amount,       "int"
     add_column :receivables, :period_start, "timestamptz"
@@ -29,6 +46,7 @@ Sequel.migration do
       primary_key :id
       foreign_key :receivable_id, :receivables
       foreign_key :payment_method_id, :payment_methods
+      foreign_key :provider_id, :providers
     end
     add_column :payment_attempt_records, :retry,        "boolean"
     add_column :payment_attempt_records, :state,        "varchar(255)"
@@ -47,6 +65,7 @@ Sequel.migration do
     create_table(:accounts) do |t|
       primary_key :id
       foreign_key :payment_method_id, :payment_methods
+      foreign_key :provider_id, :providers
     end
     add_column :accounts, :created_at, "timestamptz"
 
@@ -55,6 +74,7 @@ Sequel.migration do
       primary_key :id
       foreign_key :payment_method_id, :payment_methods
       foreign_key :account_id, :accounts
+      foreign_key :provider_id, :providers
     end
     add_column :account_ownership_records, :created_at, "timestamptz"
     add_column :account_ownership_records, :entity_id,  "varchar(255)"
@@ -68,6 +88,7 @@ Sequel.migration do
     create_table(:resource_ownership_records) do |t|
       primary_key :id
       foreign_key :account_id, :accounts
+      foreign_key :provider_id, :providers
     end
     add_column :resource_ownership_records, :created_at,  "timestamptz"
     add_column :resource_ownership_records, :time,        "timestamptz"
@@ -77,17 +98,6 @@ Sequel.migration do
     alter_table(:resource_ownership_records) do
       add_unique_constraint([:entity_id, :state])
     end
-
-
-    #Provider
-    create_table(:providers) do
-      primary_key :id
-    end
-    add_column :providers, :created_at,   "timestamptz"
-    add_column :providers, :root,         "boolean DEFAULT 'false'"
-    add_column :providers, :disabled,     "boolean DEFAULT 'false'"
-    add_column :providers, :name,         "varchar(255)"
-    add_column :providers, :token,        "varchar(255)"
 
     #RateCode
     create_table(:rate_codes) do

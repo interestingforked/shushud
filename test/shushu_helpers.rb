@@ -70,8 +70,9 @@ module ShushuHelpers
     )
   end
 
-  def build_attempt(state, recid, pmid, wait_until, rtry)
+  def build_attempt(state, provider_id, recid, pmid, wait_until, rtry)
     PaymentAttemptRecord.create(
+      :provider_id       => provider_id,
       :payment_method_id => pmid,
       :receivable_id     => recid,
       :wait_until        => wait_until,

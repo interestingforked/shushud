@@ -12,11 +12,11 @@ module PaymentService
   }
   TRANSITION_CALLBACK = {}
 
-  def attempt(recid, pmid, wait_until)
-    [201, create_record(PREPARE, recid, pmid, wait_until, nil).to_h]
+  def attempt(provider_id, recid, pmid, wait_until)
+    [201, create_record(PREPARE, provider_id, recid, pmid, wait_until, nil).to_h]
   end
 
-  def process(recid, pmid, skip_retry=false)
+  def process(provider_id, recid, pmid, skip_retry=false)
     Shushu::DB.transaction do
       rec, pm = resolve_rec(recid), resolve_pm(pmid)
       Log.info("#payment_process receivable=#{rec.id} card_token=#{pm.card_token} amount=#{rec.amount}")
@@ -26,7 +26,7 @@ module PaymentService
         raise(Shushu::DataConflict, "#attempt_double_charge receivable=#{rec.id} card_token=#{pm.card_token} amount=#{rec.amount}")
       else
         state, resp = gateway.charge(pm.card_token, rec.id, rec.amount)
-        attempt = create_record(state, recid, pmid, nil, resp)
+        attempt = create_record(state, provider_id, recid, pmid, nil, resp)
         handle_transition!(state, rec, pm, skip_retry)
         [determine_status(state), attempt.to_h]
       end
@@ -62,8 +62,9 @@ module PaymentService
     Shushu::Conf[:gateway]
   end
 
-  def create_record(state, recid, pmid, wait_until, desc)
+  def create_record(state, provider_id, recid, pmid, wait_until, desc)
     PaymentAttemptRecord.create(
+      :provider_id => provider_id,
       :payment_method_id => pmid,
       :receivable_id => recid,
       :wait_until => wait_until,
