@@ -18,7 +18,7 @@ endpoint to rely on the generated id.
 $ curl -X POST https://123:secret@shushu.heroku.com/payment_methods \
   -d "card_token=abc123"
 
-{"id": "0001", "token": "abc123"}
+{"id": "0001", "card_token": "abc123"}
 ```
 
 ### Using a card token with id
@@ -32,7 +32,7 @@ uniqueness will be scoped to the provider who submitted the request.
 $ curl -X PUT https://123:secret@shushu.heroku.com/payment_methods/id@yourdomain.com \
   -d "card_token=abc123"
 
-{"id": "id@yourdomain.com", "token": "abc123"}
+{"id": "id@yourdomain.com", "card_token": "abc123"}
 ```
 
 
@@ -51,7 +51,7 @@ $ curl -X POST https://123:secret@shushu.heroku.com/payment_methods \
   -d "card_exp_year=2012"                                           \
   -d "card_exp_month=02"
 
-{"id": "0001", "token": "abc123", "card_type": "visa", "card_last4": "4111"}
+{"id": "0001", "card_token": "abc123", "card_type": "visa", "card_last4": "4111"}
 ```
 
 ### Using a encrypted credit card number with id
@@ -62,7 +62,7 @@ $ curl -X PUT https://123:secret@shushu.heroku.com/payment_methods/id@yourdomain
   -d "card_exp_year=2012"                                                            \
   -d "card_exp_month=02"
 
-{"id": "id@yourdomain.com", "token": "abc123", "card_type": "visa", "card_last4": "4111"}
+{"id": "id@yourdomain.com", "card_token": "abc123", "card_type": "visa", "card_last4": "4111"}
 ```
 
 
@@ -80,7 +80,7 @@ revenue number will not be impacted.
 $ curl -X PUT https://123:secret@shushu.heroku.com/payment_methods/id@yourdomain.com \
   -d "non-receivable=true"
 
-{"id": "id@yourdomain.com", "token": "abc123", "non-receivable": true}
+{"id": "id@yourdomain.com", "card_token": "abc123", "non-receivable": true}
 ```
 
 ### New token
@@ -89,7 +89,7 @@ $ curl -X PUT https://123:secret@shushu.heroku.com/payment_methods/id@yourdomain
 $ curl -X PUT https://123:secret@shushu.heroku.com/payment_methods/id@yourdomain.com \
   -d "card_token=abc124"
 
-{"id": "id@yourdomain.com", "token": "abc124"}
+{"id": "id@yourdomain.com", "card_token": "abc124"}
 ```
 
 ### New credit card number
@@ -100,7 +100,7 @@ $ curl -X PUT https://123:secret@shushu.heroku.com/payment_methods/id@yourdomain
   -d "card_exp_year=2012"                                                            \
   -d "card_exp_month=02"
 
-{"id": "id@yourdomain.com", "token": "abc124", "card_type": "amex", "card_last4": "3333"}
+{"id": "id@yourdomain.com", "card_token": "abc124", "card_type": "amex", "card_last4": "3333"}
 ```
 
 [account_api]: https://github.com/heroku/shushud/blob/master/doc/accounts_api.md
