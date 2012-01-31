@@ -15,6 +15,6 @@ to usage & billing.
 
 ## Links
 
-* [API Documentation](https://github.com/heroku/shushu/tree/master/doc)
+* [API Documentation](https://github.com/heroku/shushud/tree/master/doc)
 * [Setup](https://github.com/heroku/shushu/blob/master/setup.md)
 * [The Vault](https://github.com/heroku/vault_docs)
