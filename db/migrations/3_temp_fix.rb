@@ -17,10 +17,6 @@ Sequel.migration do
       add_foreign_key :provider_id, :providers
     end
 
-    alter_table(:payment_methods) do
-      add_foreign_key :provider_id, :providers
-    end
-
     alter_table(:payment_attempt_records) do
       add_foreign_key :provider_id, :providers
     end
