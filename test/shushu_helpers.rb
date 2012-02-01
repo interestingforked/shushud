@@ -35,7 +35,7 @@ module ShushuHelpers
     AccountOwnershipRecord.create(
       :account_id        => account_id,
       :payment_method_id => payment_method_id,
-      :entity_id          => entity_id,
+      :entity_id         => entity_id,
       :state             => state,
       :time              => time
     )
@@ -45,7 +45,7 @@ module ShushuHelpers
     ResourceOwnershipRecord.create(
       :account_id => account_id,
       :hid        => hid,
-      :entity_id   => entity_id,
+      :entity_id  => entity_id,
       :state      => state,
       :time       => time
     )

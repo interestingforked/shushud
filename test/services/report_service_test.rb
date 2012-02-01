@@ -3,7 +3,7 @@ require File.expand_path('../../test_helper', __FILE__)
 class ReportServiceTest < ShushuTest
 
   def test_report_returns_hash
-    account = build_account
+    account = build_account(:provider_id => provider.id)
     rate_code = build_rate_code
     ResourceOwnershipRecord.create(
       :account_id => account.id,
@@ -24,7 +24,7 @@ class ReportServiceTest < ShushuTest
   end
 
   def test_one_owner_one_event
-    account = build_account
+    account = build_account(:provider_id => provider.id)
     ResourceOwnershipRecord.create(
       :account_id => account.id,
       :hid        => "app123",
@@ -48,8 +48,8 @@ class ReportServiceTest < ShushuTest
   end
 
   def test_two_owners_one_event
-    account = build_account
-    another_account = build_account
+    account = build_account(:provider_id => provider.id)
+    another_account = build_account(:provider_id => provider.id)
     ResourceOwnershipRecord.create(
       :account_id => account.id,
       :hid        => "app123",
@@ -95,7 +95,7 @@ class ReportServiceTest < ShushuTest
 
   def test_billable_units_include_rate_code_information
     rate_code = build_rate_code(:product_name => "a test product", :product_group => "super dyno", :rate => 1000, :rate_period => "hour")
-    account = build_account
+    account = build_account(:provider_id => provider.id)
     ResourceOwnershipRecord.create(
       :account_id => account.id,
       :hid        => "app123",
@@ -120,7 +120,7 @@ class ReportServiceTest < ShushuTest
   end
 
   def test_billable_units_qty_computation_on_closed_event
-    account = build_account
+    account = build_account(:provider_id => provider.id)
     rate_code = build_rate_code
     ResourceOwnershipRecord.create(
       :account_id => account.id,
@@ -149,7 +149,7 @@ class ReportServiceTest < ShushuTest
   end
 
   def test_billable_units_qty_computation_on_open_event
-    account = build_account
+    account = build_account(:provider_id => provider.id)
     rate_code = build_rate_code
     ResourceOwnershipRecord.create(
       :account_id => account.id,
@@ -172,8 +172,8 @@ class ReportServiceTest < ShushuTest
 
   def test_invoice_two_accounts_one_event
     payment_method = build_payment_method
-    account = build_account(:payment_method_id => payment_method.id)
-    another_account = build_account(:payment_method_id => payment_method.id)
+    account = build_account(:provider_id => provider.id, :payment_method_id => payment_method.id)
+    another_account = build_account(:provider_id => provider.id, :payment_method_id => payment_method.id)
 
     build_act_own(account.id, payment_method.id, 1, AccountOwnershipRecord::Active, jan)
     build_act_own(another_account.id, payment_method.id, 2, AccountOwnershipRecord::Active, jan)
@@ -225,7 +225,7 @@ class ReportServiceTest < ShushuTest
   end
 
   def test_inv_uses_prod_name_on_events_when_not_present_on_rate_code
-    account = build_account
+    account = build_account(:provider_id => provider.id)
     rate_code = build_rate_code(:product_name => nil)
     ResourceOwnershipRecord.create(
       :account_id => account.id,
@@ -248,7 +248,7 @@ class ReportServiceTest < ShushuTest
   end
 
   def test_invoice_uses_product_name_on_rate_codes_when_present
-    account = build_account
+    account = build_account(:provider_id => provider.id)
     rate_code = build_rate_code(:product_name => "specialweb")
     ResourceOwnershipRecord.create(
       :account_id => account.id,
@@ -273,8 +273,8 @@ class ReportServiceTest < ShushuTest
   def test_inv_doesnt_care_about_res_own
     payment_method = build_payment_method
 
-    account = build_account(:payment_method_id => payment_method.id)
-    another_account = build_account(:payment_method_id => payment_method.id)
+    account = build_account(:provider_id => provider.id, :payment_method_id => payment_method.id)
+    another_account = build_account(:provider_id => provider.id, :payment_method_id => payment_method.id)
 
     build_act_own(account.id, payment_method.id, 1, AccountOwnershipRecord::Active, jan)
     build_act_own(another_account.id, payment_method.id, 2, AccountOwnershipRecord::Active, jan)
@@ -304,6 +304,10 @@ class ReportServiceTest < ShushuTest
     _, report = ReportService.rev_report(jan, feb)
     expected_total = (((feb - jan) / 60.0 / 60.0) * rate) * 2
     assert_equal expected_total, report[:total].to_f
+  end
+
+  def provider
+    @provider ||= build_provider
   end
 
 end

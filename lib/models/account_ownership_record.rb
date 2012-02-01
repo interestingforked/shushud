@@ -2,6 +2,13 @@ class AccountOwnershipRecord < Sequel::Model
   Active = "active"
   Inactive = "inactive"
 
+  include Resolvable
+
+  def before_validation
+    super
+    resolve(PaymentMethod, :payment_method_id, :slug)
+  end
+
   def self.active
     Active
   end
@@ -18,7 +25,7 @@ class AccountOwnershipRecord < Sequel::Model
 
   def to_h
     {
-      :entity_id          => self[:entity_id],
+      :entity_id         => self[:entity_id],
       :payment_method_id => self[:payment_method_id],
       :account_id        => self[:account_id],
       :from              => self[:from],

@@ -40,6 +40,8 @@ module Shushu
 
 end
 
+require "./lib/plugins/resolvable"
+
 require "./lib/api/helpers"
 require "./lib/api/authentication"
 require "./lib/api/http"
@@ -69,6 +71,7 @@ require "./lib/services/payment_method_service"
 require "./etc/payment_state_transitions"
 
 require "./lib/gateways/braintree"
+
 
 Shushu::Conf[:gateway] = BraintreeGateway
 Shushu::DB.sql_log_level = :debug
