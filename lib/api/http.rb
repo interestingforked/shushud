@@ -281,7 +281,7 @@ module Api
         status(409)
         body(enc_json(e.message))
       rescue Exception => e
-        log("#api_error_unhandled e=#{e.message} s=#{e.backtrace}")
+        log("#api_error_unhandled e=#{e.message} s=#{e.backtrace} p=#{params}")
         status(500)
         body(enc_json(e.message))
         raise if Shushu.test?
