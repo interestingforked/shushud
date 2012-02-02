@@ -42,8 +42,7 @@ module BillableEventService
       :qty              => args[:qty],
       :product_name     => args[:product_name],
       :time             => args[:time],
-      :state            => BillableEvent::Open,
-      :created_at       => Time.now
+      :state            => BillableEvent::Open
     )
   end
 
@@ -57,8 +56,7 @@ module BillableEventService
       :qty              => args[:qty],
       :product_name     => args[:product_name],
       :time             => args[:time],
-      :state            => BillableEvent::Close,
-      :created_at       => Time.now
+      :state            => BillableEvent::Close
     )
   end
 
