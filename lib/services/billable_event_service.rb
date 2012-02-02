@@ -36,7 +36,7 @@ module BillableEventService
     Log.info("#event_creation #{args}")
     BillableEvent.create(
       :provider_id      => resolve_provider_id(args[:provider_id]),
-      :rate_code_id     => resolve_rate_code_id(args[:rate_code_slug]),
+      :rate_code_id     => resolve_rc(args[:rate_code_slug])[:id],
       :entity_id        => args[:entity_id],
       :hid              => args[:hid],
       :qty              => args[:qty],
@@ -51,7 +51,7 @@ module BillableEventService
     Log.info("#event_creation #{args}")
     BillableEvent.create(
       :provider_id      => resolve_provider_id(args[:provider_id]),
-      :rate_code_id     => resolve_rate_code_id(args[:rate_code_slug]),
+      :rate_code_id     => resolve_rc(args[:rate_code_slug])[:id],
       :entity_id        => args[:entity_id],
       :hid              => args[:hid],
       :qty              => args[:qty],
@@ -82,12 +82,8 @@ module BillableEventService
     end
   end
 
-  def resolve_rate_code_id(slug)
-    if rc = RateCode[:slug => slug]
-      rc[:id]
-    else
-      raise(Shushu::NotFound, "Could not find rate_code with slug=#{slug}")
-    end
+  def resolve_rc(slug)
+    RateCode[:slug => slug] || raise(Shushu::NotFound, "Could not find rate_code with slug=#{slug}")
   end
 
   def resolve_provider_id(provider_id)
