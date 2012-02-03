@@ -34,14 +34,14 @@ class OpenCloseOrderingTest < ShushuTest
       :qty       => 1,
       :rate_code => @rate_code.slug,
       :state     => BillableEvent::Close,
-      :time      => "2012-01-01 00:00:01 UTC"
+      :time      => jan
     })
     assert_equal(last_response.status, 201)
 
     account = build_account(:provider_id => @provider.id)
     post("/accounts/#{account.id}/resource_ownerships/entity1", {
       :hid => "123",
-      :time => "2012-01-01 00:00:00 UTC"
+      :time => jan
     })
     assert_equal 201, last_response.status
 
