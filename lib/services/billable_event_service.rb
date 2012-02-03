@@ -27,7 +27,7 @@ module BillableEventService
       Log.info("#event_close")
       close(args)
     else
-      Log.info("#unhandled_state args=#{args}")
+      Log.error("#unhandled_state args=#{args}")
       raise(ArgumentError, "Unable to create new event with args=#{args}")
     end
   end
