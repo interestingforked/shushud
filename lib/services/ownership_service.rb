@@ -36,7 +36,7 @@ module AccountOwnershipService
       :account_id        => secondary_id,
       :state             => state,
       :time              => time,
-      :entity_id          => entity_id
+      :entity_id         => entity_id
     }).to_h
   end
 end
@@ -51,12 +51,12 @@ module ResourceOwnershipService
 
   def create_record(provider_id, primary_id, secondary_id, state, time, entity_id)
     model.create({
-      :provider_id => provider_id,
-      :account_id => primary_id,
-      :hid        => secondary_id,
-      :state      => state,
-      :time       => time,
-      :entity_id  => entity_id
+      :provider_id  => provider_id,
+      :account_id   => primary_id,
+      :hid          => secondary_id,
+      :state        => state,
+      :time         => time,
+      :entity_id    => entity_id
     }).to_h
   end
 end
