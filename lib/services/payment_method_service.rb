@@ -29,6 +29,7 @@ module PaymentMethodService
   def resolve_card(params, pm)
     status, result = run_auth(params)
     CardToken.create(
+      :provider_id => params[:provider_id],
       :payment_method_id => pm.id,
       :token => result[:card_token]
     )
