@@ -1,5 +1,4 @@
 class BillableEvent < Sequel::Model
-
   Open = "open"
   Close = "close"
 
@@ -33,6 +32,14 @@ class BillableEvent < Sequel::Model
 
   def product_name
     rate_code[:product_name] || self[:product_name]
+  end
+
+  def rate_code_id=(slug)
+    self[:rate_code_id] = begin
+      RateCode.first(:slug => slug.to_s) ||
+      RateCode.first(:id => slug.to_i)   ||
+      raise(ArgumentError, "Unable to resolve rate_code with rate_code_id=#{slug}")
+    end[:id]
   end
 
   def rate_code

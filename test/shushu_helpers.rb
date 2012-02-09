@@ -57,7 +57,7 @@ module ShushuHelpers
       :entity_id => entity_id,
       :state => state,
       :time => time,
-      :rate_code_id => rate_code_id
+      :rate_code_id => rate_code_id || build_rate_code.id
     )
   end
 

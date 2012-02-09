@@ -2,19 +2,20 @@ class AccountOwnershipRecord < Sequel::Model
   Active = "active"
   Inactive = "inactive"
 
-  include Resolvable
-
-  def before_validation
-    super
-    resolve(PaymentMethod, :payment_method_id, :slug)
-  end
-
   def self.active
     Active
   end
 
   def self.inactive
     Inactive
+  end
+
+  def payment_method_id=(slug)
+    self[:payment_method_id] = begin
+      PaymentMethod.first(:slug => slug.to_s) ||
+      PaymentMethod.first(:id => slug.to_i)   ||
+      raise(ArgumentError, "Unable to resolve rate_code with rate_code_id=#{slug}")
+    end[:id]
   end
 
   def self.collapse(payment_method_id)

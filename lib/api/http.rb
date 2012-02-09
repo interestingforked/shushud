@@ -121,7 +121,7 @@ module Api
       perform do
         BillableEventService.handle_new_event(
           :provider_id    => session[:provider_id],
-          :rate_code_slug => params[:rate_code],
+          :rate_code_id   => params[:rate_code],
           :product_name   => params[:product_name],
           :hid            => params[:hid],
           :entity_id      => params[:entity_id],
