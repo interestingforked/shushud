@@ -76,7 +76,7 @@ module BillableEventService
     when "open"
       [:provider_id, :rate_code_id, :entity_id, :hid, :qty, :time, :state]
     when "close"
-      [:provider_id, :entity_id, :state]
+      [:provider_id, :entity_id, :state, :time]
     end
   end
 
