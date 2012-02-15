@@ -257,11 +257,11 @@ module Api
 
     def perform
       begin
-        Log.debug({:action => "begin_api_request", :provider_id => session[:provider_id]}.merge(params))
+        Log.info({:action => "begin_api_request", :provider_id => session[:provider_id]}.merge(params))
         s, b = yield
         status(s)
         body(enc_json(b))
-        Log.debug({:action => "finish_api_request", :provider_id => session[:provider_id]}.merge(params))
+        Log.info({:action => "finish_api_request", :provider_id => session[:provider_id]}.merge(params))
       rescue RuntimeError, ArgumentError => e
         Log.error({:error => "argument", :exception => e.message, :backtrace => e.backtrace}.merge(params))
         status(400)
