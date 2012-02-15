@@ -8,13 +8,6 @@ require "yajl"
 require "sequel"
 require "sinatra/cookies"
 
-$stderr.sync = $stdout.sync = true
-Log = Logger.new($stdout)
-Log.level = ENV["LOG_LEVEL"].to_i
-Log.formatter = Proc.new do |severity, datetime, progname, msg|
-  "#{severity}: #{msg}\n"
-end
-
 module Shushu
   ShushuError         = Class.new(Exception)
   NotFound            = Class.new(ShushuError)
@@ -25,7 +18,7 @@ module Shushu
   DB = (
     case ENV["RACK_ENV"].to_s
     when "production"
-      Log.info("connecting production database url=#{ENV["DATABASE_URL"]}")
+      #Log.info("connecting production database url=#{ENV["DATABASE_URL"]}")
       Sequel.connect(ENV["DATABASE_URL"])
     when "test"
       Sequel.connect(ENV["TEST_DATABASE_URL"], :logger => Logger.new(File.new("./log/test.log","w")))
@@ -42,6 +35,7 @@ end
 
 require "./lib/plugins/created_at_setter"
 require "./lib/plugins/model"
+require "./lib/plugins/log"
 
 require "./lib/api/helpers"
 require "./lib/api/authentication"
@@ -71,6 +65,14 @@ require "./lib/services/payment_method_service"
 require "./etc/payment_state_transitions"
 
 require "./lib/gateways/braintree"
+
+$stderr.sync = $stdout.sync = true
+Log = ShuLog.new($stdout)
+Log.level = ENV["LOG_LEVEL"].to_i
+Log.formatter = Proc.new do |severity, datetime, progname, msg|
+  "#{severity}: #{msg}\n"
+end
+
 
 Shushu::Conf[:gateway] = BraintreeGateway
 Shushu::DB.sql_log_level = :debug
