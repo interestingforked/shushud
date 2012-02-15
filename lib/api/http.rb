@@ -257,39 +257,33 @@ module Api
 
     def perform
       begin
-        log("#api_begin_request")
+        Log.debug({:action => "begin_api_request", :provider_id => session[:provider_id]}.merge(params))
         s, b = yield
-        log("#api_prepare_status")
         status(s)
-        log("#api_prepare_body")
         body(enc_json(b))
-        log("#api_finish_request")
+        Log.debug({:action => "finish_api_request", :provider_id => session[:provider_id]}.merge(params))
       rescue RuntimeError, ArgumentError => e
-        log("#api_error_runtime_arg e=#{e.message} s=#{e.backtrace}")
+        Log.error({:error => "argument", :exception => e.message, :backtrace => e.backtrace}.merge(params))
         status(400)
         body(enc_json(e.message))
       rescue Shushu::AuthorizationError => e
-        log("#api_error_authorization e=#{e.message} s=#{e.backtrace}")
+        Log.error({:error => "authorization", :exception => e.message, :backtrace => e.backtrace}.merge(params))
         status(403)
         body(enc_json(e.message))
       rescue Shushu::NotFound => e
-        log("#api_error_not_found e=#{e.message} s=#{e.backtrace}")
+        Log.error({:error => "not-found", :exception => e.message, :backtrace => e.backtrace}.merge(params))
         status(404)
         body(enc_json(e.message))
       rescue Shushu::DataConflict => e
-        log("#api_error_conflict e=#{e.message} s=#{e.backtrace}")
+        Log.error({:error => "conflict", :exception => e.message, :backtrace => e.backtrace}.merge(params))
         status(409)
         body(enc_json(e.message))
       rescue Exception => e
-        log("#api_error_unhandled e=#{e.message} s=#{e.backtrace} p=#{params}")
+        Log.error({:error => true, :exception => e.message, :backtrace => e.backtrace}.merge(params))
         status(500)
         body(enc_json(e.message))
         raise if Shushu.test?
       end
-    end
-
-    def log(msg)
-      Log.info("provider=#{session[:provider_id]} #{msg}")
     end
 
   end
