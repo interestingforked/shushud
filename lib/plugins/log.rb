@@ -8,6 +8,15 @@ class ShuLog < Logger
     super(unparse(*args))
   end
 
+  def info_t(hash)
+    t0 = Time.now
+    res = yield
+    t1 = Time.now
+    el = t1 - t0
+    info(hash.merge({:elapsed_time => el}))
+    res
+  end
+
   def debug(*args)
     super(unparse(*args))
   end
