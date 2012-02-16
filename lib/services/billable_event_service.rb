@@ -31,7 +31,7 @@ module BillableEventService
   end
 
   def open(args)
-    Log.info_t({:action => "open"}.merge(args)) do
+    Log.info_t({:action => "open_event"}.merge(args)) do
       BillableEvent.create(
         :provider_id      => args[:provider_id],
         :rate_code_id     => args[:rate_code_id],
@@ -46,7 +46,7 @@ module BillableEventService
   end
 
   def close(args)
-    Log.info_t({:action => "close"}.merge(args)) do
+    Log.info_t({:action => "close_event"}.merge(args)) do
       BillableEvent.create(
         :provider_id      => args[:provider_id],
         :rate_code_id     => args[:rate_code_id],
