@@ -4,16 +4,18 @@ module Api
     include Sinatra::Cookies
 
     def authenticate_provider
-      if authenticated?
-        Log.info("#session_found provider=#{session[:provider_id]}")
-      else
-        if proper_request?
-          id, token = *auth.credentials
-          Log.info("#session_begin provider=#{id}")
-          Provider.auth?(id, token) ? session[:provider_id] = id : unauthenticated!
-          Log.info("#session_created provider=#{id}")
+      Log.info_t(:action => "authenticate_provider") do
+        if authenticated?
+          Log.info("#session_found provider=#{session[:provider_id]}")
         else
-          unauthenticated!
+          if proper_request?
+            id, token = *auth.credentials
+            Log.info("#session_begin provider=#{id}")
+            Provider.auth?(id, token) ? session[:provider_id] = id : unauthenticated!
+            Log.info("#session_created provider=#{id}")
+          else
+            unauthenticated!
+          end
         end
       end
     end
