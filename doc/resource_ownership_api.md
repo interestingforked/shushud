@@ -1,71 +1,50 @@
-# Resource Ownership API
+# Resource Ownership Events API
 
 ## Purpose
 
-Providers will be submitting billable events that are related to a resource in
-the cloud. (A resource will primarily be a heroku app but we should not limit
-ourselves to an app, hence we use resource as the noun.) When we build an
-invoice for an account, we will need to determine which billable events will
-be associated with the invoice. We will also need to take into consideration
-that one resource may have many owners within a period. We should only invoice
-the owners for the period of time that they owned the resource.
+In order to associate accounts with resources, providers (e.g. Core) will need
+to send events to shushu when resources are created, activated and moved between
+accounts. Assuming Shushu has billable_events, accounts & resource ownership
+events, usage reports can be generated for accounts.
 
 ## API
+
+This API is idempotent. Furthermore, it does not care about the order in which
+it receives events. For instance, you can send the inactive state prior to
+sending the active state. In such a case, shushu will neglect all related
+records for reporting until the active arrives.
+
+It is recomended to follow the [event buffering](https://github.com/heroku/engineering-docs/blob/master/event-buffering.md)
+approach when implementing a client for this library.
+
+### Possible Responses
+
+* 200 - Event accepted.
+* 404 - Account not found.
 
 ### Activate
 
 ```bash
-$ curl -i -X POST https://shushu.heroku.com/accounts/:account_id/resource_ownerships/:entity_id \
-  -d "hid=987"
+$ curl -i -X PUT https://shushu.heroku.com/accounts/:account_id/resource_ownerships/:entity_id \
+  -d "state=active"                 \
+  -d "resource_id=987"              \
   -d "time=1999-12-31 00:00:00 UTC"
+
+{"account_id": "123", "resource_id": "987", "entity_id": "456", "state": "active"}
 ```
-
-**Responses**
-
-* 201 - Resource ownership record was created.
-* 404 - Account not found.
-* 409 - There is already an activation resource_ownership_record with the submitted entity_id.
-
-```
-{"account_id": "123", "hid": "987", "entity_id": "456", "state": "active"}
-```
-
-### Transfer
-
-```bash
-$ curl -i -X PUT https://shushu.heroku.com/accounts/:prev_account_id/resource_ownerships/:prev_entity_id \
-  -d "hid=987" \
-  -d "account_id=123" \
-  -d "entity_id=456" \
-  -d "time=1999-12-31 00:00:00 UTC"
-```
-**Responses**
-
-* 200 - Resource ownership record was transfered.
-* 404 - Account not found.
-* 409 - There is already an activation resource_ownership_record with the submitted entity_id.
-
-```
-{"account_id": "456", "hid": "987", "entity_id": "789", "state": "active"}
-```
-
 ### Deactivate
 
 ```bash
-$ curl -i -X DELETE https://shushu.heroku.com/accounts/:account_id/resource_ownerships/:entity_id \
-  -d "hid=789" \
+$ curl -i -X PUT https://shushu.heroku.com/accounts/:account_id/resource_ownerships/:entity_id \
+  -d "resource_id=789"              \
+  -d "state=inactive"               \
   -d "time=1999-12-31 00:00:00 UTC"
+
+{"account_id": "123", "resource_id": "789", "entity_id": "456", "state": "inactive"}
 ```
 
 ### Query
 
-The motivation behind this endpoint is to provide a debugging interface.
-
 ```bash
 $ curl -X GET https://shushu.heroku.com/accounts/:account_id/resource_ownerships
 ```
-
-### Issues
-
-It is not clear what would happen if a transfer call was issued with the
-identical account_ids. Likewise for transferes with identical entity_ids.
