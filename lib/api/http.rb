@@ -147,61 +147,16 @@ module Api
       end
     end
 
-    put "/payment_methods/:prev_payment_method_id/account_ownerships/:prev_entity_id" do
-      perform do
-        AccountOwnershipService.transfer(
-          session[:provider_id],
-          dec_int(params[:prev_payment_method_id]),
-          dec_int(params[:payment_method_id]),
-          dec_int(params[:account_id]),
-          dec_time(params[:time]),
-          params[:prev_entity_id],
-          params[:entity_id]
-        )
-      end
-    end
-
     #
     # ResourceOwnership
     #
-    get "/accounts/:account_id/resource_ownerships" do
+    put "/accounts/:account_id/resource_ownerships/:entity_id" do
       perform do
-        ResourceOwnershipService.query(params[:account_id])
-      end
-    end
-
-    post "/accounts/:account_id/resource_ownerships/:entity_id" do
-      perform do
-        ResourceOwnershipService.activate(
+        ResourceOwnershipService.handle_new_event(
+          params[:state],
           session[:provider_id],
-          dec_int(params[:account_id]),
-          params[:hid],
-          dec_time(params[:time]),
-          params[:entity_id]
-        )
-      end
-    end
-
-    put "/accounts/:prev_account_id/resource_ownerships/:prev_entity_id" do
-      perform do
-        ResourceOwnershipService.transfer(
-          session[:provider_id],
-          dec_int(params[:prev_account_id]),
-          dec_int(params[:account_id]),
-          params[:hid],
-          dec_time(params[:time]),
-          params[:prev_entity_id],
-          params[:entity_id]
-        )
-      end
-    end
-
-    delete "/accounts/:account_id/resource_ownerships/:entity_id" do
-      perform do
-        ResourceOwnershipService.deactivate(
-          session[:provider_id],
-          dec_int(params[:account_id]),
-          params[:hid],
+          enc_int(params[:account_id]),
+          params[:resource_id],
           dec_time(params[:time]),
           params[:entity_id]
         )

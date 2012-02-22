@@ -1,23 +1,23 @@
 module OwnershipService
   def query(primary_id)
-    [200, model.collapse(primary_id)]
+    [200, model.collapse(primary_id).map(&:to_h)]
+  end
+
+  def handle_new_event(state, provider_id, primary_id, secondary_id, time, entity_id)
+    case state
+    when "active"
+      activate(provider_id, primary_id, secondary_id, time, entity_id)
+    when "inactive"
+      deactivate(provider_id, primary_id, secondary_id, time, entity_id)
+    end
   end
 
   def activate(provider_id, primary_id, secondary_id, time, entity_id)
-    [201, create_record(provider_id, primary_id, secondary_id, model.active, time, entity_id)]
+    [200, create_record(provider_id, primary_id, secondary_id, model.active, time, entity_id)]
   end
 
   def deactivate(provider_id, primary_id, secondary_id, time, entity_id)
-    [201, create_record(provider_id, primary_id, secondary_id, model.inactive, time, entity_id)]
-  end
-
-  def transfer(provider_id, previos_primary_id, new_primary_id, secondary_id, time, prev_entity_id, new_entity_id)
-    if new_primary_id.nil?
-      deactivate(provider_id, previos_primary_id, secondary_id, time, prev_entity_id)
-    else
-      deactivate(provider_id, previos_primary_id, secondary_id, time, prev_entity_id)
-      [201, create_record(provider_id, new_primary_id, secondary_id, model.active, time, new_entity_id)]
-    end
+    [200, create_record(provider_id, primary_id, secondary_id, model.inactive, time, entity_id)]
   end
 end
 

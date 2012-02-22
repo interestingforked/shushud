@@ -39,11 +39,12 @@ class OpenCloseOrderingTest < ShushuTest
     assert_equal(last_response.status, 201)
 
     account = build_account(:provider_id => @provider.id)
-    post("/accounts/#{account.id}/resource_ownerships/entity1", {
-      :hid => "123",
+    put("/accounts/#{account.id}/resource_ownerships/entity1", {
+      :state => ResourceOwnershipRecord::Active,
+      :resource_id => "123",
       :time => jan
     })
-    assert_equal 201, last_response.status
+    assert_equal(200, last_response.status)
 
     _, report = ReportService.usage_report(account.id, jan, feb)
     billable_units = report[:billable_units]
