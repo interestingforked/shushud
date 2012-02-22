@@ -135,9 +135,10 @@ module Api
     #
     # AccountOwnership
     #
-    post "/payment_methods/:payment_method_id/account_ownerships/:entity_id" do
+    put "/payment_methods/:payment_method_id/account_ownerships/:entity_id" do
       perform do
-        AccountOwnershipService.activate(
+        AccountOwnershipService.handle_new_event(
+          params[:state],
           session[:provider_id],
           dec_int(params[:payment_method_id]),
           dec_int(params[:account_id]),

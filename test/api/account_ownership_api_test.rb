@@ -17,7 +17,11 @@ class AccountOwnershipApiTest < ShushuTest
   end
 
   def test_activate_record
-    post "/payment_methods/#{payment_method.id}/account_ownerships/event1", {:account_id => account.id, :time => Time.now.utc.to_s}
+    put("/payment_methods/#{payment_method.id}/account_ownerships/event1", {
+      :state => AccountOwnershipRecord::Active,
+      :account_id => account.id,
+      :time => Time.now.utc.to_s
+    })
     assert_equal(200, last_response.status)
     created_record = JSON.parse(last_response.body)
     assert_equal(payment_method.id, created_record["payment_method_id"])

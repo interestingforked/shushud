@@ -1,4 +1,4 @@
-# Account Ownership API
+# Account Ownership Events API
 
 ## Purpose
 
@@ -17,49 +17,35 @@ cards in their invoice.
 
 ## API
 
+### Possible Responses
+
+* 200 - Event accepted.
+* 404 - Account not found.
+
 ### Activate
 
 In order to build an invoice for a payment method, the payment method must be associated with one or
 more accounts. This API endpoint will allow you to activate the association.
 
 ```bash
-$ curl -i -X POST https://shushu.heroku.com/payment_methods/:payment_method_id/account_ownerships/:entity_id \
-  -d "account_id=987"
+$ curl -X POST https://shushu.heroku.com/payment_methods/:payment_method_id/account_ownerships/:entity_id \
+  -d "state=active"                 \
+  -d "account_id=987"               \
   -d "time=1999-12-31 00:00:00 UTC"
-```
 
-**Responses**
-
-* 201 - The payment method is now associated with the given account.
-* 404 - Account not found.
-* 409 - This association already exists.
-
-```
 {"payment_method_id": "123", "account_id": "987", "entity_id": "456", "state": "active"}
 ```
 
-### Transfer
+### Deactivate
 
-This endpoint facilitates the changing of a payment method for an account. This
-is useful when you want to change the payment method for a Heorku team for
-instance.
-
-When an account is transfered to another payment_method, the invoice will
-reflect the change by accruing charges for both payment_methods during their
-respective ownership periods. However, usage reports will remain unchanged.
+When an account no longer belongs to a payment method, or if an account is to be
+moved to another payment method, the prior relationship must be deactivated.
 
 ```bash
-$ curl -i -X POST https://shushu.heroku.com/payment_methods/:prev_payment_method_id/account_ownerships/:prev_entity_id \
-  -d "account_id=654"
-  -d "time=2000-01-01 00:00:00 UTC"
-```
+$ curl -X POST https://shushu.heroku.com/payment_methods/:payment_method_id/account_ownerships/:entity_id \
+  -d "state=inactive"               \
+  -d "account_id=987"               \
+  -d "time=1999-12-31 00:00:00 UTC"
 
-**Responses**
-
-* 201 - The payment method is now associated with the given account.
-* 404 - Account not found.
-* 409 - This association already exists.
-
-```
-{"payment_method_id": "123", "account_id": "654", "entity_id": "333", "state": "active"}
+{"payment_method_id": "123", "account_id": "987", "entity_id": "456", "state": "active"}
 ```
