@@ -1,3 +1,6 @@
+$: << File.expand_path('lib')
+require 'shushu'
+
 Sequel.migration do
   up do
     execute(<<-EOD)
@@ -66,11 +69,11 @@ Sequel.migration do
             rate_codes.id = a.rate_code_id
           LEFT OUTER JOIN billable_events b
           ON
-                a.entity_id    = b.entity_id
-            AND a.state       = 'open'
-            AND b.state       = 'close'
+                a.entity_id   = b.entity_id
+            AND a.state       = '#{BillableEvent::Open}'
+            AND b.state       = '#{BillableEvent::Close}'
           WHERE
-                a.state       = 'open'
+                a.state       = '#{BillableEvent::Open}'
       ;
 
       CREATE OR REPLACE VIEW resource_ownerships AS
