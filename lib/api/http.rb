@@ -123,6 +123,7 @@ module Api
           :provider_id    => session[:provider_id],
           :rate_code_id   => params[:rate_code],
           :product_name   => params[:product_name],
+          :description    => params[:description],
           :hid            => params[:hid],
           :entity_id      => params[:entity_id],
           :qty            => params[:qty],

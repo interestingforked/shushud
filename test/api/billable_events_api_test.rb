@@ -25,10 +25,11 @@ class BillableEventsApiTest < ShushuTest
   def test_open_event
     setup_auth
     body = {
-      :qty        => 1,
-      :rate_code  => @rate_code.slug,
-      :time       => '2011-01-01 00:00:00',
-      :state      => 'open'
+      :qty         => 1,
+      :rate_code   => @rate_code.slug,
+      :time        => '2011-01-01 00:00:00',
+      :description => "perhaps a command name?",
+      :state       => 'open'
     }
     put("/resources/123/billable_events/1", body)
     assert_equal(201, last_response.status)
