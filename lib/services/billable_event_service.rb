@@ -42,7 +42,7 @@ module BillableEventService
         :product_name     => args[:product_name],
         :description      => args[:description],
         :time             => args[:time],
-        :state            => BillableEvent.dec_state(state)
+        :state            => BillableEvent.enc_state(state)
       )
     end
   end
