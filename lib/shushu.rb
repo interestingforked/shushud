@@ -70,7 +70,7 @@ $stderr.sync = $stdout.sync = true
 Log = ShuLog.new($stdout)
 Log.level = ENV["LOG_LEVEL"].to_i
 Log.formatter = Proc.new do |severity, datetime, progname, msg|
-  "#{severity}: #{msg}\n"
+  "#{severity.to_s.downcase}=true #{msg}\n"
 end
 
 
