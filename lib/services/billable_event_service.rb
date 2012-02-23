@@ -43,7 +43,7 @@ module BillableEventService
         :description      => args[:description],
         :time             => args[:time],
         :state            => state,
-        :state_int        => BillableEvent::STATEAMP[state]
+        :state_int        => BillableEvent.enc_state(state)
       )
     end
   end
