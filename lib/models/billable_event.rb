@@ -1,6 +1,6 @@
 class BillableEvent < Sequel::Model
-  Open = "open"
-  Close = "close"
+  Open = 1
+  Close = 0
 
   STATEAMP = {
     Close => 0,
