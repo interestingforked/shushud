@@ -2,6 +2,11 @@ class BillableEvent < Sequel::Model
   Open = "open"
   Close = "close"
 
+  STATEAMP = {
+    Close => 0,
+    Open => 1
+  }
+
   def self.prev_recorded(state, entity_id, provider_id)
     events = filter("provider_id = ? AND entity_id = ? AND state = ?", provider_id, entity_id, state).all
     if events.length == 0
