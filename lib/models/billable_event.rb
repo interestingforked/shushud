@@ -8,7 +8,7 @@ class BillableEvent < Sequel::Model
   }
 
   def self.enc_state(string)
-    STATEAMP.fetch(string)
+    STATEAMP[string]
   end
 
   def self.dec_state(int)

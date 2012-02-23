@@ -20,9 +20,9 @@ module BillableEventService
 
   def open_or_close(args)
     case args[:state]
-    when BillableEvent::Open
+    when "open"
       create_record("open", args)
-    when BillableEvent::Close
+    when "close"
       create_record("close", args)
     else
       Log.error({:error => true, :action => "open_or_close"}.merge(args))
