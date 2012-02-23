@@ -21,18 +21,7 @@ module Api
     end
 
     def proper_request?
-      if auth.provided?
-        if auth.basic?
-          Log.info("basic auth used")
-          true
-        else
-          Log.info("auth not basic")
-          false
-        end
-      else
-        Log.info("auth not provided")
-        false
-      end
+      auth.provided? && auth.basic?
     end
 
     def authenticated?
