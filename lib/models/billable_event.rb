@@ -16,7 +16,7 @@ class BillableEvent < Sequel::Model
   end
 
   def self.prev_recorded(state, entity_id, provider_id)
-    events = filter("provider_id = ? AND entity_id = ? AND state_int = ?", provider_id, entity_id, enc_state(state)).all
+    events = filter("provider_id = ? AND entity_id = ? AND state = ?", provider_id, entity_id, enc_state(state)).all
     if events.length == 0
       nil
     elsif events.length == 1
@@ -39,7 +39,7 @@ class BillableEvent < Sequel::Model
       :rate_code     => rate_code[:slug],
       :qty           => self[:qty],
       :time          => self[:time],
-      :state         => self.class.dec_state(self[:state_int])
+      :state         => self.class.dec_state(self[:state])
     }
   end
 
