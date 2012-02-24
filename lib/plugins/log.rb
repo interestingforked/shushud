@@ -28,7 +28,7 @@ class ShuLog < Logger
           k.to_s
         elsif (v == false)
           "#{k}=false"
-        elsif b.length.zero? || v.nil?
+        elsif v.nil?
           ""
         elsif (v.is_a?(String) && v.include?("\""))
           "#{k}='#{v}'"
