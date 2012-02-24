@@ -39,7 +39,7 @@ class ShuLog < Logger
         elsif v.is_a?(Numeric) || v.is_a?(Class) || v.is_a?(Module)
           "#{k}=#{v}"
         elsif v.nil?
-          "#{k}=''"
+          ""
         end
       end.compact.join(" ")
     else
