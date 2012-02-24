@@ -33,13 +33,12 @@ class ShuLog < Logger
         elsif (v.is_a?(String) && (v !~ /^[a-zA-Z0-9\:\.\-\_]+$/))
           "#{k}=\"#{v}\""
         elsif (v.is_a?(String) || v.is_a?(Symbol))
-          "#{k}=#{v}"
+          "#{k}=#{CGI.escape(v)}"
         elsif v.is_a?(Float)
           "#{k}=#{format("%.3f", v)}"
         elsif v.is_a?(Numeric) || v.is_a?(Class) || v.is_a?(Module)
           "#{k}=#{v}"
         elsif v.nil?
-          "#{k}=''"
         end
       end.compact.join(" ")
     else
