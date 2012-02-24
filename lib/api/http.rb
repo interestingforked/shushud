@@ -157,7 +157,7 @@ module Api
         ResourceOwnershipService.handle_new_event(
           params[:state],
           session[:provider_id],
-          enc_int(params[:account_id]),
+          params[:account_id],
           params[:resource_id],
           dec_time(params[:time]),
           params[:entity_id]

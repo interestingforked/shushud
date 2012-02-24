@@ -5,7 +5,11 @@ class Account < Sequel::Model
   end
 
   def to_h
-    {:id => self[:id]}
+    {:id => api_id}
+  end
+
+  def api_id
+    self[:slug] || self[:id]
   end
 
 end

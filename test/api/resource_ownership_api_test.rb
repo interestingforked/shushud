@@ -17,13 +17,15 @@ class ResourceOwnershipApiTest < ShushuTest
     assert_equal(200, last_response.status)
   end
 
-  def test_activate_record_with_invalid_account_id
-    put("/accounts/INVALID_ID/resource_ownerships/event1", {
+  def test_activate_record_with_new_account_id_
+    put("/accounts/new_slug/resource_ownerships/event1", {
       :state => ResourceOwnershipRecord::Active,
       :resource_id => "123",
       :time => Time.now.utc.to_s
     })
-    assert_equal(404, last_response.status)
+    assert_equal(200, last_response.status)
+    updated_record = JSON.parse(last_response.body)
+    assert_equal("new_slug", updated_record["account_id"])
   end
 
   def test_deactivate_record

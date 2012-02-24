@@ -68,6 +68,7 @@ Sequel.migration do
       foreign_key :provider_id, :providers
     end
     add_column :accounts, :created_at, "timestamptz"
+    add_column :accounts, :slug,       "varchar(255)"
 
     #AccountOwnershipRecord
     create_table(:account_ownership_records) do
