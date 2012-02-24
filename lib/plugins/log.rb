@@ -31,7 +31,7 @@ class ShuLog < Logger
         elsif v.nil?
           ""
         elsif (v.is_a?(String) && v.include?("\""))
-          "#{k}='#{v.gsub("\"",""}'"
+          "#{k}='#{v.gsub("\"","")}'"
         elsif (v.is_a?(String) && (v !~ /^[a-zA-Z0-9\:\.\-\_]+$/))
           "#{k}=\"#{v}\""
         elsif (v.is_a?(String) || v.is_a?(Symbol))
