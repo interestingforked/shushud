@@ -13,10 +13,18 @@ class ResourceOwnershipRecord < Sequel::Model
 
   def account_id=(slug)
     self[:account_id] = begin
-      Account.first(:slug => slug.to_s) ||
-      Account.first(:id => slug.to_i)   ||
-      Account.create(:slug => slug.to_s)||
-      raise(ArgumentError, "Unable to resolve or create account with account_id=#{slug}")
+      if a = Account.first(:slug => slug.to_s)
+        Log.info(:provider => self[:provider_id], :action => "resolve_account_id", :method => "slug", :slug => slug)
+        a
+      elsif a = Account.first(:id => slug.to_i)
+        Log.info(:provider => self[:provider_id], :action => "resolve_account_id", :method => "id", :id => slug)
+        a
+      elsif a = Account.create(:slug => slug.to_s, :provider_id => self[:provider_id])
+        Log.info(:provider => self[:provider_id], :action => "resolve_account_id", :method => "create", :id => a[:id], :slug => a[:slug])
+        a
+      else
+        raise(ArgumentError, "Unable to resolve or create account with account_id=#{slug}")
+      end
     end[:id]
   end
 
