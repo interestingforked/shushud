@@ -28,17 +28,12 @@ class ShuLog < Logger
           k.to_s
         elsif (v == false)
           "#{k}=false"
-        elsif (v.is_a?(String) && v.include?("\""))
-          "#{k}='#{v}'"
-        elsif (v.is_a?(String) && (v !~ /^[a-zA-Z0-9\:\.\-\_]+$/))
-          "#{k}=\"#{v}\""
         elsif (v.is_a?(String) || v.is_a?(Symbol))
           "#{k}=#{CGI.escape(v)}"
         elsif v.is_a?(Float)
           "#{k}=#{format("%.3f", v)}"
         elsif v.is_a?(Numeric) || v.is_a?(Class) || v.is_a?(Module)
           "#{k}=#{v}"
-        elsif v.nil?
         end
       end.compact.join(" ")
     else
