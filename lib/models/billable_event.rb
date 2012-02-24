@@ -1,10 +1,10 @@
 class BillableEvent < Sequel::Model
-  Open = 1
-  Close = 0
+  Open = "open"
+  Close = "close"
 
   STATEAMP = {
-    "close" => 0,
-    "open" => 1
+    Open => 1,
+    Close => 0
   }
 
   def self.enc_state(string)

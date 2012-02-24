@@ -23,7 +23,7 @@ class OpenCloseOrderingTest < ShushuTest
     put("resources/123/billable_events/1", {
       :qty       => 1,
       :rate_code => @rate_code.slug,
-      :state     => BillableEvent::Close,
+      :state     => 'close',
       :time      => "2012-01-01 00:00:01 UTC"
     })
     assert_equal(last_response.status, 201)
@@ -33,7 +33,7 @@ class OpenCloseOrderingTest < ShushuTest
     put("resources/123/billable_events/1", {
       :qty       => 1,
       :rate_code => @rate_code.slug,
-      :state     => BillableEvent::Close,
+      :state     => 'close',
       :time      => jan
     })
     assert_equal(last_response.status, 201)

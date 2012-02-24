@@ -19,20 +19,16 @@ module BillableEventService
   private
 
   def open_or_close(args)
-    case args[:state]
-    when "open"
-      create_record("open", args)
-    when "close"
-      create_record("close", args)
-    else
+    if !["open", "close"].include?(args[:state])
       Log.error({:error => true, :action => "open_or_close"}.merge(args))
       raise(ArgumentError, "Unable to create new event with args=#{args}")
+    else
+      create_record(args[:state], args)
     end
   end
 
   def create_record(state, args)
-    action = state == BillableEvent::Open ? "open_event" : "close_event"
-    Log.info_t({:action => action}.merge(args)) do
+    Log.info_t({:action => "#{state}_event"}.merge(args)) do
       BillableEvent.create(
         :provider_id      => args[:provider_id],
         :rate_code_id     => args[:rate_code_id],

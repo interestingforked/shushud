@@ -16,7 +16,7 @@ class ReportServiceTest < ShushuTest
       :hid          => "app123",
       :rate_code_id => rate_code.id,
       :entity_id    => 1,
-      :state        => BillableEvent::Open,
+      :state        => 1,
       :time         => jan
     )
     _, report = ReportService.usage_report(account.id, jan, feb)
@@ -36,7 +36,7 @@ class ReportServiceTest < ShushuTest
       :hid          => "app123",
       :rate_code_id => build_rate_code.id,
       :entity_id    => 1,
-      :state        => BillableEvent::Open,
+      :state        => 1,
       :time         => jan
     )
 
@@ -76,7 +76,7 @@ class ReportServiceTest < ShushuTest
       :hid      => "app123",
       :rate_code_id => build_rate_code.id,
       :entity_id => 1,
-      :state    => BillableEvent::Open,
+      :state    => 1,
       :time     => jan
     )
 
@@ -109,7 +109,7 @@ class ReportServiceTest < ShushuTest
       :hid          => "app123",
       :rate_code_id => build_rate_code.id,
       :entity_id    => 1,
-      :state        => BillableEvent::Open,
+      :state        => 1,
       :time         => jan,
       :rate_code_id => rate_code.id
     )
@@ -135,14 +135,14 @@ class ReportServiceTest < ShushuTest
     BillableEvent.create(
       :hid          => "app123",
       :entity_id     => 1,
-      :state        => BillableEvent::Open,
+      :state        => 1,
       :time         => jan,
       :rate_code_id => rate_code.id
     )
     BillableEvent.create(
       :hid          => "app123",
-      :entity_id     => 1,
-      :state        => BillableEvent::Close,
+      :entity_id    => 1,
+      :state        => 0,
       :time         => jan + (60 * 60 * 24 * 5), #5days
       :rate_code_id => rate_code.id
     )
@@ -164,7 +164,7 @@ class ReportServiceTest < ShushuTest
     BillableEvent.create(
       :hid          => "app123",
       :entity_id     => 1,
-      :state        => BillableEvent::Open,
+      :state        => 1,
       :time         => Time.now - 3600,
       :rate_code_id => rate_code.id
     )
@@ -185,7 +185,7 @@ class ReportServiceTest < ShushuTest
     build_res_own(account.id, "app123", 1, ResourceOwnershipRecord::Inactive, (jan + 100))
     build_res_own(another_account.id, "app123", 2, ResourceOwnershipRecord::Active, (jan + 100))
 
-    build_billable_event("app123", 1, BillableEvent::Open, jan)
+    build_billable_event("app123", 1, 1, jan)
 
     _, invoice = ReportService.invoice(payment_method.id, jan, feb)
     billable_units = invoice[:billable_units]
@@ -209,8 +209,8 @@ class ReportServiceTest < ShushuTest
     build_res_own(account.id, "app123", 1, ResourceOwnershipRecord::Inactive, jan + 100)
     build_res_own(another_account.id, "app123", 2, ResourceOwnershipRecord::Active, jan + 101)
 
-    build_billable_event("app123", 1, BillableEvent::Open, jan)
-    build_billable_event("app124", 2, BillableEvent::Open, jan)
+    build_billable_event("app123", 1, 1, jan)
+    build_billable_event("app124", 2, 1, jan)
 
     _, invoice = ReportService.invoice(payment_method.id, jan, feb)
     billable_units = invoice[:billable_units]
@@ -241,7 +241,7 @@ class ReportServiceTest < ShushuTest
       :hid          => "app123",
       :product_name => "web",
       :entity_id    => 1,
-      :state        => BillableEvent::Open,
+      :state        => 1,
       :time         => Time.now - 3600,
       :rate_code_id => rate_code.id
     )
@@ -264,7 +264,7 @@ class ReportServiceTest < ShushuTest
       :hid          => "app123",
       :product_name => "web",
       :entity_id    => 1,
-      :state        => BillableEvent::Open,
+      :state        => 1,
       :time         => Time.now - 3600,
       :rate_code_id => rate_code.id
     )
@@ -286,8 +286,8 @@ class ReportServiceTest < ShushuTest
     build_res_own(account.id, "app123", 1, ResourceOwnershipRecord::Inactive, jan + 100)
     build_res_own(another_account.id, "app123", 2, ResourceOwnershipRecord::Active, jan + 101)
 
-    build_billable_event("app123", 1, BillableEvent::Open, jan)
-    build_billable_event("app124", 2, BillableEvent::Open, jan)
+    build_billable_event("app123", 1, 1, jan)
+    build_billable_event("app124", 2, 1, jan)
 
     _, invoice = ReportService.invoice(payment_method.id, jan, feb)
     billable_units = invoice[:billable_units]
@@ -302,8 +302,8 @@ class ReportServiceTest < ShushuTest
     rate_code = build_rate_code :rate => rate
     eid1 = SecureRandom.uuid
     eid2 = SecureRandom.uuid
-    build_billable_event("app123", eid1, BillableEvent::Open, jan, rate_code.id)
-    build_billable_event("app124", eid2, BillableEvent::Open, jan, rate_code.id)
+    build_billable_event("app123", eid1, 1, jan, rate_code.id)
+    build_billable_event("app124", eid2, 1, jan, rate_code.id)
     _, report = ReportService.rev_report(jan, feb)
     expected_total = (((feb - jan) / 60.0 / 60.0) * rate) * 2
     assert_equal expected_total, report[:total].to_f

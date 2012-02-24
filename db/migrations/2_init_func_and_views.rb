@@ -70,10 +70,10 @@ Sequel.migration do
           LEFT OUTER JOIN billable_events b
           ON
                 a.entity_id   = b.entity_id
-            AND a.state       = '#{BillableEvent::Open}'
-            AND b.state       = '#{BillableEvent::Close}'
+            AND a.state       = 1
+            AND b.state       = 0
           WHERE
-                a.state       = '#{BillableEvent::Open}'
+                a.state       = 1
       ;
 
       CREATE OR REPLACE VIEW resource_ownerships AS
