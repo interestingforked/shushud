@@ -1,9 +1,9 @@
 $: << File.expand_path('lib')
 require 'shushu'
-
 Sequel.migration do
   up do
     execute(<<-EOD)
+      CREATE EXTENSION hstore;
 
       CREATE TYPE report_type AS (
         account_id int,
@@ -50,13 +50,16 @@ Sequel.migration do
                 a.state       = 'active'
       ;
 
-
       CREATE OR REPLACE VIEW billable_units AS
         SELECT
           a.hid,
           a.entity_id,
           a.time as from,
           COALESCE(b.time, now()) as to,
+          (
+            extract('epoch' FROM COALESCE(b.time, now()) - a.time)::numeric
+            / 3600
+          ) as qty,
           a.rate_code_id,
           rate_codes.product_group,
           COALESCE(rate_codes.product_name, a.product_name) as product_name,
@@ -74,6 +77,16 @@ Sequel.migration do
             AND b.state       = 0
           WHERE
                 a.state       = 1
+      ;
+
+      CREATE OR REPLACE VIEW inv AS
+        SELECT
+          a.hid,
+          array_agg(hstore(a.*)) as billable_units,
+          sum(a.qty) as dyno_hours,
+          (sum(a.qty) - LEAST(sum(a.qty), 750)) as adjusted_dyno_hours
+        FROM billable_units a
+        GROUP BY a.hid
       ;
 
       CREATE OR REPLACE VIEW resource_ownerships AS
@@ -148,40 +161,6 @@ Sequel.migration do
             AND ($2, $3) OVERLAPS (compacted_act_own.from, compacted_act_own.to)
         $$ LANGUAGE SQL
       ;
-
-      CREATE OR REPLACE FUNCTION usage_report(int, timestamptz, timestamptz) RETURNS SETOF report_type
-        AS $$
-          SELECT
-            resource_ownerships.account_id,
-            billable_units.hid,
-            GREATEST(billable_units.from, resource_ownerships.from, $2) as from,
-            LEAST(billable_units.to, resource_ownerships.to, $3) as to,
-            (
-              (extract('epoch' FROM
-                LEAST(billable_units.to, resource_ownerships.to, $3) - GREATEST(billable_units.from, resource_ownerships.from, $2)
-              )::numeric / (3600)) -- convert seconds into hours
-            ) as qty,
-            billable_units.product_name,
-            billable_units.product_group,
-            billable_units.rate,
-            billable_units.rate_period
-
-            FROM billable_units
-            LEFT OUTER JOIN rate_codes
-              ON
-                rate_codes.id = billable_units.rate_code_id
-            INNER JOIN resource_ownerships
-              ON
-                billable_units.hid = resource_ownerships.hid
-            WHERE
-              resource_ownerships.account_id = $1
-              AND
-                (billable_units.from, billable_units.to)
-                OVERLAPS
-                (resource_ownerships.from, resource_ownerships.to)
-        $$ LANGUAGE SQL
-      ;
-
 
       CREATE TYPE group_bu_type AS (
         qty numeric,
