@@ -9,10 +9,10 @@ payment_method = PaymentMethod.create
 account = Account.create :payment_method_id => payment_method.id
 
 res_own_entity_id = SecureRandom.uuid
-ResourceOwnershipService.activate(account.id, hid, jan, res_own_entity_id)
+ResourceOwnershipService.activate(provider.id, account.id, hid, jan, res_own_entity_id)
 
 act_own_entity_id = SecureRandom.uuid
-AccountOwnershipService.activate(payment_method.id, account.id, jan, act_own_entity_id)
+AccountOwnershipService.activate(provider.id, payment_method.id, account.id, jan, act_own_entity_id)
 
 RateCodeService.create(
   :provider_id        => provider.id,
@@ -25,7 +25,7 @@ RateCodeService.create(
 SecureRandom.uuid.tap do |eid|
   BillableEventService.handle_new_event(
     :provider_id    => provider.id,
-    :rate_code_slug => "RT01",
+    :rate_code_id   => "RT01",
     :hid            => hid,
     :entity_id      => eid,
     :qty            => 1,
@@ -34,14 +34,36 @@ SecureRandom.uuid.tap do |eid|
   )
   BillableEventService.handle_new_event(
     :provider_id    => provider.id,
-    :rate_code_slug => "RT01",
+    :rate_code_id   => "RT01",
     :hid            => hid,
     :entity_id      => eid,
     :qty            => 1,
-    :time           => feb,
+    :time           => jan + 40_000 * 60,
     :state          => BillableEvent::Close
   )
 end
+
+SecureRandom.uuid.tap do |eid|
+  BillableEventService.handle_new_event(
+    :provider_id    => provider.id,
+    :rate_code_id   => "RT01",
+    :hid            => hid,
+    :entity_id      => eid,
+    :qty            => 1,
+    :time           => jan,
+    :state          => BillableEvent::Open
+  )
+  BillableEventService.handle_new_event(
+    :provider_id    => provider.id,
+    :rate_code_id   => "RT01",
+    :hid            => hid,
+    :entity_id      => eid,
+    :qty            => 1,
+    :time           => jan + 43_000 * 60,
+    :state          => BillableEvent::Close
+  )
+end
+
 
 puts(<<-EOD)
 
