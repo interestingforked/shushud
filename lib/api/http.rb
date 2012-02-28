@@ -168,47 +168,26 @@ module Api
     #
     # RateCode
     #
-    post "/providers/:target_provider_id/rate_codes" do
-      perform do
-        RateCodeService.create(
-          :provider_id        => session[:provider_id],
-          :target_provider_id => params[:target_provider_id],
-          :slug               => params[:slug],
-          :rate               => params[:rate],
-          :product_group      => params[:group],
-          :product_name       => params[:name]
-        )
-      end
-    end
-
     post "/rate_codes" do
       perform do
-        RateCodeService.create(
-          :provider_id        => session[:provider_id],
-          :slug               => params[:slug],
-          :rate               => params[:rate],
-          :product_group      => params[:group],
-          :product_name       => params[:name]
+        RateCodeService.handle_in(
+          :provider_id   => session[:provider_id],
+          :rate          => params[:rate],
+          :product_group => params[:group],
+          :product_name  => params[:name]
         )
       end
     end
 
-    put "/rate_codes/:rate_code_slug" do
+    put "/rate_codes/:slug" do
       perform do
-        RateCodeService.update(
-          :provider_id        => session[:provider_id],
-          :target_provider_id => params[:target_provider_id],
-          :slug               => params[:rate_code_slug],
-          :rate               => params[:rate],
-          :product_group      => params[:group],
-          :product_name       => params[:name]
+        RateCodeService.handle_in(
+          :provider_id   => session[:provider_id],
+          :slug          => params[:slug],
+          :rate          => params[:rate],
+          :product_group => params[:group],
+          :product_name  => params[:name]
         )
-      end
-    end
-
-    get "/rate_codes/:rate_code_slug" do
-      perform do
-        RateCodeService.find(params[:rate_code_slug])
       end
     end
 

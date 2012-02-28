@@ -2,90 +2,36 @@
 
 ## Purpose
 
-The rate code provides an abstraction between events and costs associated with events.
-Rate codes also reduce the burdon of the Shushu client in that the client does not
-have to repeat rate codes when sending events. Finally, rate codes prevent providers
-from submitting events willy-nilly.
+Before a provider can submit billable events to Shushu, a rate code must be established. The rate_code's slug should be passed along with the billable event. The rate code will contain information like the rate in cents, the period in which the rate code should be applied, the product group and product name, etc...
 
 ## API
 
-### Authentication
+### Create Rate Code
 
-**HTTP Basic**
+Rate codes will be identified by the slug. You can provide a slug or Shushu will generate a slug on the provider's behalf. The generated slug will be in a UUID form and any provided slug should be in UUID form as well.
 
-This API uses authentication similar to the rest of Shushu's API: provider_id:provider_token.
-However, there is authorization on this API. A special bit is required to write rate codes.
-This mechanism will allow the Add-ons Team to properly filter who is creating rate_codes.
-
-### Create Rate Code (POST)
-
-Before you can create billable_events, you must create a rate code for the event.
-Depending on your provider credentials, you may have to wait for rate_code approval.
+**Shushu Generated Slug**
 
 ```bash
-$ curl -X POST https://provider_id:provider_token@shushu.heroku.com/rate_codes \
-  -d "rate=5" \
-  -d "description=dyno-hour"
-{
-  'slug': 'RT01',
-  'status': 'active',
-  'rate': '5',
-  'description': 'dyno-hour'
-  'billable_events': '0'
-}
+$ curl -X POST https://shushu.heroku.com/rate_codes \
+  -d "rate=5"     \
+  -d "group=dyno" \
+  -d "name=web"
+
+{"slug": "13f9b848-d636-475f-b47b-42783f5fc9f9", "rate": "5", "group": "dyno" "name": "web"}
 ```
 
-It is possible for a provider to create a rate code on behalf of another provider. This is
-particularly useful for the add-ons team. This features requires a special bit on the provider.
+**Provider Generated Slug**
 
 ```bash
-$ curl -X POST https://provider_id:provider_token@shushu.heroku.com/providers/:target_provier_id/rate_codes \
-  -d "rate=5" \
-  -d "description=dyno-hour"
+$ curl -X PUT https://shushu.heroku.com/rate_codes/13f9b848-d636-475f-b47b-42783f5fc9f9 \
+  -d "rate=5"     \
+  -d "group=dyno" \
+  -d "name=web"
+
+{"slug": "13f9b848-d636-475f-b47b-42783f5fc9f9", "rate": "5", "group": "dyno" "name": "web"}
 ```
 
-### View Rate Code (GET)
+## Issues
 
-This endpoint provides general information about the rate code.
-
-**slug**: <String> ID that provider & Shushu know about
-
-**status**: <String> State of the rate code. Possible values: active, inactive.
-
-**rate**: <Integer> The number of pennies this event should costs per hour.
-
-**description**: <String> How the event will be described in the Invoice.
-
-**billable_events**: <Integer> How many events are keyed to this rate_code.
-
-
-```bash
-$ curl https://provider_id:provider_token@shushu.heroku.com/rate_codes/:rate_code_slug
-
-{
-  'slug': 'RT01',
-  'status': 'active',
-  'rate': '5',
-  'description': 'dyno-hour'
-  'billable_events': 'number of billable events with this rate code'
-}
-```
-
-### Update the Rate Code (PUT)
-
-Lets say that you created a rate code and then started created billable_events for the rate code.
-Moments later you realize that you have entered an incorrect rate for the rate code.
-Instead of modifying the billable_events, you can simply update the rate on the rate_code.
-
-```bash
-$ curl -X PUT https://provider_id:provider_token@shushu.heroku.com/rate_codes/:rate_code_slug \
-  -d "rate=10"
-
-{
-  'slug': 'RT01',
-  'status': 'active',
-  'rate': '10',
-  'description': 'dyno-hour'
-  'billable_events': 'number of billable events with this rate code'
-}
-```
+Currently this API does not support the updating of rate_codes. An argument can be made for supporting updates in the caes of a rate changing. Currently if a provider wanted to change the rates of billable events, a new rate_code would have to be created and all of the billable_events associated with the old rate would have to be closed and new ones opened with the new rate code.
