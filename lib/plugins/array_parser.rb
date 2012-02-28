@@ -1,3 +1,6 @@
+# (C) 2008 Erik Hollensbe <erik@hollensbe.org>. All rights reserved.
+# Shamelessly copied from ruby-dbi
+
 class ArrayParser
 
     attr_reader :base_type
