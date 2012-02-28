@@ -18,7 +18,7 @@ RateCodeService.create(
 )
 
 SecureRandom.uuid.tap do |eid|
-  BillableEventService.handle_new_event(
+  BillableEventService.handle_in(
     :provider_id    => provider.id,
     :rate_code_slug => "RT01",
     :hid            => hid,
@@ -27,7 +27,7 @@ SecureRandom.uuid.tap do |eid|
     :time           => jan,
     :state          => BillableEvent::Open
   )
-  BillableEventService.handle_new_event(
+  BillableEventService.handle_in(
     :provider_id    => provider.id,
     :rate_code_slug => "RT01",
     :hid            => hid,

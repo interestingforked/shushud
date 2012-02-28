@@ -6,7 +6,7 @@ module BillableEventService
     [200, events.map(&:to_h)]
   end
 
-  def handle_new_event(args)
+  def handle_in(args)
     check_args!(args)
     if event = BillableEvent.prev_recorded(args[:state], args[:entity_id], args[:provider_id])
       Log.info(:action => "event_found", :provider => event[:provider_id], :entity => event[:entity_id])

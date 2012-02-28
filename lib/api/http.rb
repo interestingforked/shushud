@@ -119,7 +119,7 @@ module Api
 
     put "/resources/:hid/billable_events/:entity_id" do
       perform do
-        BillableEventService.handle_new_event(
+        BillableEventService.handle_in(
           :provider_id    => session[:provider_id],
           :rate_code_id   => params[:rate_code],
           :product_name   => params[:product_name],
@@ -138,7 +138,7 @@ module Api
     #
     put "/payment_methods/:payment_method_id/account_ownerships/:entity_id" do
       perform do
-        AccountOwnershipService.handle_new_event(
+        AccountOwnershipService.handle_in(
           params[:state],
           session[:provider_id],
           dec_int(params[:payment_method_id]),
@@ -154,7 +154,7 @@ module Api
     #
     put "/accounts/:account_id/resource_ownerships/:entity_id" do
       perform do
-        ResourceOwnershipService.handle_new_event(
+        ResourceOwnershipService.handle_in(
           params[:state],
           session[:provider_id],
           params[:account_id],

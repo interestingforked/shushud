@@ -3,7 +3,7 @@ module OwnershipService
     [200, model.collapse(primary_id).map(&:to_h)]
   end
 
-  def handle_new_event(state, provider_id, primary_id, secondary_id, time, entity_id)
+  def handle_in(state, provider_id, primary_id, secondary_id, time, entity_id)
     case state
     when "active"
       activate(provider_id, primary_id, secondary_id, time, entity_id)
