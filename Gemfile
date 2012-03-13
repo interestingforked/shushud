@@ -9,6 +9,7 @@ gem "sequel"
 gem "yajl-ruby", :require => "yajl"
 gem "braintree"
 gem "stalker"
+gem "newrelic_rpm"
 
 group :test do
   gem "ruby-debug19", :require => "ruby-debug"

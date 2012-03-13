@@ -7,6 +7,7 @@ require "braintree"
 require "yajl"
 require "sequel"
 require "sinatra/cookies"
+require "newrelic_rpm"
 
 module Shushu
   ShushuError         = Class.new(Exception)
