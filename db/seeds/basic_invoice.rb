@@ -14,7 +14,7 @@ ResourceOwnershipService.activate(provider.id, account.id, hid, jan, res_own_ent
 act_own_entity_id = SecureRandom.uuid
 AccountOwnershipService.activate(provider.id, payment_method.id, account.id, jan, act_own_entity_id)
 
-RateCodeService.create(
+RateCodeService.handle_in(
   :provider_id        => provider.id,
   :slug               => "RT01",
   :rate               => 5,
