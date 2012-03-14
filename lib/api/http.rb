@@ -108,6 +108,16 @@ module Api
       end
     end
 
+    get "/rate_codes/:rate_code_id/report" do
+      perform do
+        ReportService.rate_code_report(
+          params[:rate_code_id],
+          dec_time(params[:from]),
+          dec_time(params[:to])
+        )
+      end
+    end
+
     #
     # BillableEvents
     #
