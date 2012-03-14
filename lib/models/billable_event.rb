@@ -16,13 +16,15 @@ class BillableEvent < Sequel::Model
   end
 
   def self.prev_recorded(state, entity_id, provider_id)
-    events = filter("provider_id = ? AND entity_id = ? AND state = ?", provider_id, entity_id, enc_state(state)).all
-    if events.length == 0
-      nil
-    elsif events.length == 1
-      events.pop
-    else
-      raise(ShushuError, "Found #{events.length} events with state=#{state} AND entity_id=#{entity_id}")
+    Log.info_t({:action => "find_prev_rec", :provider => provider_id, :entity => entity_id, :state => state}) do
+      events = filter("provider_id = ? AND entity_id = ? AND state = ?", provider_id, entity_id, enc_state(state)).all
+      if events.length == 0
+        nil
+      elsif events.length == 1
+        events.pop
+      else
+        raise(ShushuError, "Found #{events.length} events with state=#{state} AND entity_id=#{entity_id}")
+      end
     end
   end
 
