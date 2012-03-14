@@ -1,6 +1,25 @@
 module ReportService
   extend self
 
+  def rate_code_report(rate_code_id, from, to)
+    Log.info_t(
+      :action    => "rate_code_report",
+      :rate_code => rate_code_id,
+      :from      => from,
+      :to        => to
+    ) do
+      s = "SELECT * FROM rate_code_report($1, $2, $3)"
+      billable_units = exec_sql(s, rate_code_id, from, to)
+      [200, {
+        :rate_code      => rate_code_id,
+        :from           => from,
+        :to             => to,
+        :billable_units => billable_units,
+        :total          => Calculator.total(billable_units)
+      }]
+    end
+  end
+
   def usage_report(account_id, from, to)
     Log.info_t(
       :action     => "usage_report",

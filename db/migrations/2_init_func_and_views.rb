@@ -1,5 +1,6 @@
 $: << File.expand_path('lib')
 require 'shushu'
+
 Sequel.migration do
   up do
     execute(<<-EOD)
@@ -107,7 +108,6 @@ Sequel.migration do
                 a.state       = 'active'
       ;
 
-
       CREATE OR REPLACE VIEW compacted_res_own AS
         SELECT
           hid,
@@ -132,6 +132,74 @@ Sequel.migration do
         FROM account_ownerships
         INNER JOIN compacted_res_own
           ON account_ownerships.payment_method_id = compacted_res_own.payment_method_id
+      ;
+
+      CREATE TYPE rate_code_report_type AS (
+        hid text,
+        "from" timestamptz,
+        "to" timestamptz,
+        qty numeric,
+        rate int,
+        rate_period text,
+        product_name text,
+        product_group text
+      );
+
+      CREATE OR REPLACE FUNCTION rate_code_report(integer, timestamptz, timestamptz)
+      RETURNS SETOF rate_code_report_type AS $$
+        SELECT
+          billable_units.hid,
+          GREATEST(billable_units.from, $2) as from,
+          LEAST(billable_units.to, $3) as to,
+          (
+            (extract('epoch' FROM
+              LEAST(billable_units.to, $3) - GREATEST(billable_units.from, $2)
+            )::numeric / (3600)) -- convert seconds into hours
+          ) as qty,
+          billable_units.rate,
+          billable_units.rate_period,
+          billable_units.product_name,
+          billable_units.product_group
+        FROM
+          billable_units
+        WHERE
+          (billable_units.from, billable_units.to) OVERLAPS ($2, $3)
+          AND
+          billable_units.rate_code_id = $1
+      $$ LANGUAGE SQL
+      ;
+
+      CREATE OR REPLACE FUNCTION usage_report(int, timestamptz, timestamptz) RETURNS SETOF report_type
+        AS $$
+          SELECT
+            resource_ownerships.account_id,
+            billable_units.hid,
+            GREATEST(billable_units.from, resource_ownerships.from, $2) as from,
+            LEAST(billable_units.to, resource_ownerships.to, $3) as to,
+            (
+              (extract('epoch' FROM
+                LEAST(billable_units.to, resource_ownerships.to, $3) - GREATEST(billable_units.from, resource_ownerships.from, $2)
+              )::numeric / (3600)) -- convert seconds into hours
+            ) as qty,
+            billable_units.product_name,
+            billable_units.product_group,
+            billable_units.rate,
+            billable_units.rate_period
+
+            FROM billable_units
+            LEFT OUTER JOIN rate_codes
+              ON
+                rate_codes.id = billable_units.rate_code_id
+            INNER JOIN resource_ownerships
+              ON
+                billable_units.hid = resource_ownerships.hid
+            WHERE
+              resource_ownerships.account_id = $1
+              AND
+                (billable_units.from, billable_units.to)
+                OVERLAPS
+                (resource_ownerships.from, resource_ownerships.to)
+        $$ LANGUAGE SQL
       ;
 
       CREATE OR REPLACE FUNCTION invoice(int, timestamptz, timestamptz) RETURNS SETOF report_type

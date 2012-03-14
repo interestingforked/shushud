@@ -54,7 +54,7 @@ module ShushuHelpers
   def build_billable_event(hid, entity_id, state, time, rate_code_id=nil)
     BillableEvent.create(
       :hid => hid,
-      :entity_id => entity_id,
+      :entity_id => entity_id || SecureRandom.uuid,
       :state => state,
       :time => time,
       :rate_code_id => rate_code_id || build_rate_code.id

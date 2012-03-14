@@ -2,6 +2,10 @@ require File.expand_path('../../test_helper', __FILE__)
 
 class ReportServiceTest < ShushuTest
 
+  def provider
+    @provider ||= build_provider
+  end
+
   def test_report_returns_hash
     account = build_account(:provider_id => provider.id)
     rate_code = build_rate_code
@@ -309,8 +313,42 @@ class ReportServiceTest < ShushuTest
     assert_equal expected_total, report[:total].to_f
   end
 
-  def provider
-    @provider ||= build_provider
+  def test_rate_code_report
+    rate_code = build_rate_code
+    build_billable_event("app123", nil, 1, jan, rate_code.id)
+    build_billable_event("app124", nil, 1, jan, rate_code.id)
+    _, report = ReportService.rate_code_report(rate_code.id, jan, feb)
+    expected_total = (((feb - jan) / 60.0 / 60.0) * rate_code.rate) * 2
+    assert_equal expected_total, report[:total].to_f
+    billable_units = report[:billable_units]
+    assert_equal(2, billable_units.length)
+  end
+
+  def test_rate_code_report_when_res_own_change
+    rate_code = build_rate_code
+    payment_method = build_payment_method
+
+    account = build_account(:provider_id => provider.id, :payment_method_id => payment_method.id)
+    another_account = build_account(:provider_id => provider.id, :payment_method_id => payment_method.id)
+
+    build_res_own(account.id, "app123", 1, ResourceOwnershipRecord::Active, jan)
+    build_res_own(account.id, "app123", 1, ResourceOwnershipRecord::Inactive, jan + 100)
+    build_res_own(another_account.id, "app123", 2, ResourceOwnershipRecord::Active, jan + 101)
+
+    #many people have owned app123
+    build_billable_event("app123", 1, 1, jan, rate_code.id)
+    #no one owns app124, but it still uses the rate code
+    build_billable_event("app124", 2, 1, jan, rate_code.id)
+
+    _, report = ReportService.rate_code_report(rate_code.id, jan, feb)
+    expected_total = (((feb - jan) / 60.0 / 60.0) * rate_code.rate) * 2
+    assert_equal(expected_total, report[:total].to_f)
+
+    billable_units = report[:billable_units]
+    assert_equal(2, billable_units.length)
+    billable_unit = billable_units.first
+    assert_equal(jan, Time.parse(billable_unit["from"]))
+    assert_equal(feb, Time.parse(billable_unit["to"]))
   end
 
 end
