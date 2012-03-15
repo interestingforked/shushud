@@ -1,3 +1,9 @@
+GIT
+  remote: git://github.com/jeremyevans/sequel.git
+  revision: b82dad30c3ec052697b4885c19b934711101eafa
+  specs:
+    sequel (3.33.0)
+
 GEM
   remote: http://rubygems.org/
   specs:
@@ -31,7 +37,6 @@ GEM
       ruby-debug-base19 (>= 0.11.19)
     ruby_core_source (0.1.5)
       archive-tar-minitar (>= 0.5.2)
-    sequel (3.31.0)
     sinatra (1.3.1)
       rack (~> 1.3, >= 1.3.4)
       rack-protection (~> 1.1, >= 1.1.2)
@@ -65,7 +70,7 @@ DEPENDENCIES
   rack (= 1.3.5)
   rack-test
   ruby-debug19
-  sequel
+  sequel!
   sinatra
   sinatra-contrib
   stalker
