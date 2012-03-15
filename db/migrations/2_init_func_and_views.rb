@@ -4,19 +4,23 @@ require 'shushu'
 Sequel.migration do
   up do
     execute(<<-EOD)
+
       CREATE EXTENSION hstore;
 
-      CREATE TYPE report_type AS (
-        account_id int,
-        hid varchar(255),
-        "from" timestamptz,
-        "to" timestamptz,
-        qty numeric,
-        product_name varchar(255),
-        product_group varchar(255),
-        rate int,
-        rate_period varchar(255)
-      );
+      CREATE OR REPLACE FUNCTION bn_month(timestamptz)
+      RETURNS timestamptz AS $$
+        SELECT (date_trunc('month', $1) + '1 month'::interval);
+      $$ LANGUAGE 'sql' IMMUTABLE STRICT;
+
+      CREATE OR REPLACE FUNCTION b_month(timestamptz)
+      RETURNS timestamptz AS $$
+        SELECT date_trunc('MONTH', $1);
+      $$ LANGUAGE 'sql' IMMUTABLE STRICT;
+
+      CREATE OR REPLACE FUNCTION sec_in_month(timestamptz)
+      RETURNS integer AS $$
+        SELECT extract('epoch' from (bn_month($1) - b_month($1)))::integer
+      $$ LANGUAGE 'sql' IMMUTABLE STRICT;
 
       CREATE OR REPLACE VIEW payments_ready_for_process AS
         SELECT DISTINCT ON (a.receivable_id)
@@ -49,45 +53,6 @@ Sequel.migration do
             AND b.state       = 'inactive'
           WHERE
                 a.state       = 'active'
-      ;
-
-      CREATE OR REPLACE VIEW billable_units AS
-        SELECT
-          a.hid,
-          a.entity_id,
-          a.time as from,
-          COALESCE(b.time, now()) as to,
-          (
-            extract('epoch' FROM COALESCE(b.time, now()) - a.time)::numeric
-            / 3600
-          ) as qty,
-          a.rate_code_id,
-          rate_codes.product_group,
-          COALESCE(rate_codes.product_name, a.product_name) as product_name,
-          rate_codes.rate,
-          rate_codes.rate_period
-
-          FROM billable_events a
-          LEFT OUTER JOIN rate_codes
-          ON
-            rate_codes.id = a.rate_code_id
-          LEFT OUTER JOIN billable_events b
-          ON
-                a.entity_id   = b.entity_id
-            AND a.state       = 1
-            AND b.state       = 0
-          WHERE
-                a.state       = 1
-      ;
-
-      CREATE OR REPLACE VIEW inv AS
-        SELECT
-          a.hid,
-          array_agg(hstore(a.*)) as billable_units,
-          sum(a.qty) as dyno_hours,
-          (sum(a.qty) - LEAST(sum(a.qty), 750)) as adjusted_dyno_hours
-        FROM billable_units a
-        GROUP BY a.hid
       ;
 
       CREATE OR REPLACE VIEW resource_ownerships AS
@@ -134,27 +99,103 @@ Sequel.migration do
           ON account_ownerships.payment_method_id = compacted_res_own.payment_method_id
       ;
 
-      CREATE TYPE rate_code_report_type AS (
+      CREATE OR REPLACE VIEW billable_units AS
+        SELECT
+          a.hid,
+          a.entity_id,
+          a.time as from,
+          b.time as to,
+          a.rate_code_id,
+          rate_codes.product_group,
+          COALESCE(rate_codes.product_name, a.product_name) as product_name,
+          rate_codes.rate,
+          rate_codes.rate_period
+
+          FROM billable_events a
+          LEFT OUTER JOIN rate_codes
+          ON rate_codes.id = a.rate_code_id
+          LEFT OUTER JOIN billable_events b
+          ON
+            a.entity_id = b.entity_id
+            AND a.state = 1
+            AND b.state = 0
+          WHERE
+            a.state = 1
+      ;
+
+      -- add a condition for resource_ownerships.account_id
+      -- -- i.e. selelct * from res_bu where resource_ownerships.account_id = X
+      CREATE OR REPLACE VIEW res_bu AS
+        SELECT
+          resource_ownerships.account_id,
+          billable_units.hid,
+          GREATEST(billable_units.from, resource_ownerships.from) as from,
+          LEAST(billable_units.to, resource_ownerships.to) as to,
+          billable_units.product_name,
+          billable_units.product_group,
+          billable_units.rate,
+          billable_units.rate_period
+        FROM billable_units
+        INNER JOIN resource_ownerships
+          ON billable_units.hid = resource_ownerships.hid
+        WHERE
+          (billable_units.from, COALESCE(billable_units.to, now()))
+          OVERLAPS
+          (resource_ownerships.from, resource_ownerships.to)
+      ;
+
+      -- add a condition for payment_method_id
+      -- -- i.e. selelct * from act_bu where payment_method_id = X
+      CREATE OR REPLACE VIEW act_bu AS
+        SELECT
+          compacted_act_own.payment_method_id,
+          billable_units.hid,
+          GREATEST(billable_units.from, compacted_act_own.from) as from,
+          LEAST(billable_units.to, compacted_act_own.to) as to,
+          billable_units.product_name,
+          billable_units.product_group,
+          billable_units.rate,
+          billable_units.rate_period
+        FROM
+          compacted_act_own
+        INNER JOIN billable_units
+          ON billable_units.hid = compacted_act_own.hid
+        WHERE
+          (billable_units.from, COALESCE(billable_units.to, now()))
+          OVERLAPS
+          (compacted_act_own.from, compacted_act_own.to)
+      ;
+
+      CREATE OR REPLACE FUNCTION rate_code_report(integer, timestamptz, timestamptz)
+      RETURNS TABLE(
         hid text,
         "from" timestamptz,
         "to" timestamptz,
         qty numeric,
-        rate int,
+        rate integer,
         rate_period text,
         product_name text,
         product_group text
-      );
-
-      CREATE OR REPLACE FUNCTION rate_code_report(integer, timestamptz, timestamptz)
-      RETURNS SETOF rate_code_report_type AS $$
+      ) AS $$
         SELECT
           billable_units.hid,
           GREATEST(billable_units.from, $2) as from,
-          LEAST(billable_units.to, $3) as to,
+          LEAST(COALESCE(billable_units.to, now()), $3) as to,
           (
-            (extract('epoch' FROM
-              LEAST(billable_units.to, $3) - GREATEST(billable_units.from, $2)
-            )::numeric / (3600)) -- convert seconds into hours
+            CASE
+            WHEN billable_units.rate_period = 'month' THEN
+              (extract('epoch' FROM
+                LEAST(COALESCE(billable_units.to, now()), $3)
+                -
+                GREATEST(billable_units.from, $2)
+              )::numeric / (3600) / sec_in_month($3)) -- convert seconds into hours
+            ELSE
+              (extract('epoch' FROM
+                LEAST(COALESCE(billable_units.to, now()), $3)
+                -
+                GREATEST(billable_units.from, $2)
+              )::numeric / (3600)) -- convert seconds into hours
+            END
           ) as qty,
           billable_units.rate,
           billable_units.rate_period,
@@ -163,99 +204,149 @@ Sequel.migration do
         FROM
           billable_units
         WHERE
-          (billable_units.from, billable_units.to) OVERLAPS ($2, $3)
+          (billable_units.from, COALESCE(billable_units.to, now()))
+          OVERLAPS
+          ($2, $3)
           AND
           billable_units.rate_code_id = $1
       $$ LANGUAGE SQL
       ;
 
-      CREATE OR REPLACE FUNCTION usage_report(int, timestamptz, timestamptz) RETURNS SETOF report_type
-        AS $$
-          SELECT
-            resource_ownerships.account_id,
-            billable_units.hid,
-            GREATEST(billable_units.from, resource_ownerships.from, $2) as from,
-            LEAST(billable_units.to, resource_ownerships.to, $3) as to,
-            (
+      CREATE OR REPLACE FUNCTION usage_report(int, timestamptz, timestamptz)
+      RETURNS TABLE(
+        account_id int,
+        hid text,
+        product_name text,
+        product_group text,
+        rate_period text,
+        rate int,
+        "from" timestamptz,
+        "to" timestamptz,
+        qty numeric
+      ) AS $$
+        SELECT
+          res_bu.account_id,
+          res_bu.hid,
+          res_bu.product_name,
+          res_bu.product_group,
+          res_bu.rate_period,
+          res_bu.rate,
+          GREATEST(res_bu.from, $2) as from,
+          LEAST(COALESCE(res_bu.to, now()), $3) as to,
+          (
+            CASE
+            WHEN res_bu.rate_period = 'month' THEN
               (extract('epoch' FROM
-                LEAST(billable_units.to, resource_ownerships.to, $3) - GREATEST(billable_units.from, resource_ownerships.from, $2)
+                LEAST(COALESCE(res_bu.to, now()), $3)
+                -
+                GREATEST(res_bu.from, $2)
+              )::numeric / (3600) / sec_in_month($3)) -- convert seconds into hours
+            ELSE
+              (extract('epoch' FROM
+                LEAST(COALESCE(res_bu.to, now()), $3)
+                -
+                GREATEST(res_bu.from, $2)
               )::numeric / (3600)) -- convert seconds into hours
-            ) as qty,
-            billable_units.product_name,
-            billable_units.product_group,
-            billable_units.rate,
-            billable_units.rate_period
-
-            FROM billable_units
-            LEFT OUTER JOIN rate_codes
-              ON
-                rate_codes.id = billable_units.rate_code_id
-            INNER JOIN resource_ownerships
-              ON
-                billable_units.hid = resource_ownerships.hid
-            WHERE
-              resource_ownerships.account_id = $1
-              AND
-                (billable_units.from, billable_units.to)
-                OVERLAPS
-                (resource_ownerships.from, resource_ownerships.to)
-        $$ LANGUAGE SQL
+            END
+          ) as qty
+        FROM res_bu
+        WHERE
+          res_bu.account_id = $1
+          AND
+          (res_bu.from, COALESCE(res_bu.to, now()))
+          OVERLAPS
+          ($2, $3)
+      $$ LANGUAGE SQL
       ;
 
-      CREATE OR REPLACE FUNCTION invoice(int, timestamptz, timestamptz) RETURNS SETOF report_type
-        AS $$
-          SELECT
-            compacted_act_own.payment_method_id,
-            billable_units.hid,
-            GREATEST(billable_units.from, compacted_act_own.from, $2) as from,
-            LEAST(billable_units.to, compacted_act_own.to, $3) as to,
-            (
+      CREATE OR REPLACE FUNCTION invoice(int, timestamptz, timestamptz)
+      RETURNS TABLE(
+        payment_method_id int,
+        hid text,
+        product_name text,
+        product_group text,
+        rate_period text,
+        rate int,
+        "from" timestamptz,
+        "to" timestamptz,
+        qty numeric
+      ) AS $$
+        SELECT
+          act_bu.payment_method_id,
+          act_bu.hid,
+          act_bu.product_name,
+          act_bu.product_group,
+          act_bu.rate_period,
+          act_bu.rate,
+          GREATEST(act_bu.from, $2) as from,
+          LEAST(COALESCE(act_bu.to, now()), $3) as to,
+          (
+            CASE
+            WHEN act_bu.rate_period = 'month' THEN
               (extract('epoch' FROM
-                LEAST(billable_units.to, compacted_act_own.to, $3) - GREATEST(billable_units.from, compacted_act_own.from, $2)
+                LEAST(COALESCE(act_bu.to, now()), $3)
+                -
+                GREATEST(act_bu.from, $2)
+              )::numeric / (3600) / sec_in_month($3)) -- convert seconds into hours
+            ELSE
+              (extract('epoch' FROM
+                LEAST(COALESCE(act_bu.to, now()), $3)
+                -
+                GREATEST(act_bu.from, $2)
               )::numeric / (3600)) -- convert seconds into hours
-            ) as qty,
-            billable_units.product_name,
-            billable_units.product_group,
-            billable_units.rate,
-            billable_units.rate_period
-          FROM
-            compacted_act_own
-          INNER JOIN billable_units
-            ON billable_units.hid = compacted_act_own.hid
-          LEFT OUTER JOIN rate_codes
-            ON billable_units.rate_code_id = rate_codes.id
-          WHERE
-                compacted_act_own.payment_method_id = $1
-            AND ($2, $3) OVERLAPS (compacted_act_own.from, compacted_act_own.to)
-        $$ LANGUAGE SQL
+            END
+          ) as qty
+        FROM act_bu
+        WHERE
+          act_bu.payment_method_id = $1
+          AND
+          (act_bu.from, COALESCE(act_bu.to, now()))
+          OVERLAPS
+          ($2, $3)
+      $$ LANGUAGE SQL
       ;
 
-      CREATE TYPE group_bu_type AS (
+      CREATE OR REPLACE FUNCTION grouped_billable_units(timestamptz, timestamptz)
+      RETURNS TABLE(
         qty numeric,
         rate int
-      );
+      ) AS $$
+        SELECT
+          sum(
+            (extract('epoch' FROM
+              LEAST(COALESCE(billable_units.to, now()), $2) - GREATEST(billable_units.from, $1)
+            )::numeric / (3600)) -- convert seconds into hours
+          ) as qty,
+          rate
+        FROM billable_units
+        WHERE
+          (billable_units.from, COALESCE(billable_units.to, now()))
+          OVERLAPS
+          ($1, $2)
+        GROUP BY rate
+      $$ LANGUAGE SQL
+      ;
 
-      CREATE OR REPLACE FUNCTION grouped_billable_units(timestamptz, timestamptz) RETURNS SETOF group_bu_type
-        AS $$
-          SELECT
-            sum(
-              (extract('epoch' FROM
-                LEAST(billable_units.to, $2) - GREATEST(billable_units.from, $1)
-              )::numeric / (3600)) -- convert seconds into hours
-            ) as qty,
-            rate
-          FROM billable_units
-          WHERE (billable_units.from, billable_units.to) OVERLAPS ($1, $2)
-          GROUP BY rate
+      CREATE OR REPLACE FUNCTION rev_report(timestamptz, timestamptz)
+      RETURNS numeric AS $$
+        SELECT
+          sum(qty * rate) as total
+        FROM
+          grouped_billable_units($1, $2)
         $$ LANGUAGE SQL
       ;
 
-      CREATE OR REPLACE FUNCTION rev_report(timestamptz, timestamptz) RETURNS numeric
-        AS $$
-          SELECT sum(qty * rate) as total
-          FROM grouped_billable_units($1, $2)
-        $$ LANGUAGE SQL
+      /*
+      CREATE OR REPLACE VIEW inv AS
+        SELECT
+          a.hid,
+          array_agg(hstore(a.*)) as billable_units,
+          sum(a.qty) as dyno_hours,
+          (sum(a.qty) - LEAST(sum(a.qty), 750)) as adjusted_dyno_hours
+        FROM billable_units a
+        GROUP BY a.hid
       ;
+      */
 
     EOD
   end
