@@ -2,7 +2,12 @@
 
 ## Purpose
 
-Before a provider can submit billable events to Shushu, a rate code must be established. The rate_code's slug should be passed along with the billable event. The rate code will contain information like the rate in cents, the period in which the rate code should be applied, the product group and product name, etc...
+Before a provider can submit billable events to Shushu,
+a rate code must be established. The rate_code's slug
+should be passed along with the billable event. The rate
+code will contain information like the rate in cents,
+the period in which the rate code should be applied,
+the product group and product name.
 
 ## API
 

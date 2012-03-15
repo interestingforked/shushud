@@ -10,6 +10,7 @@ require "sinatra/cookies"
 require "newrelic_rpm"
 
 module Shushu
+  Root = File.expand_path("..", File.dirname(__FILE__))
   ShushuError         = Class.new(Exception)
   NotFound            = Class.new(ShushuError)
   DataConflict        = Class.new(ShushuError)
