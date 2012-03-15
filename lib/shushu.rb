@@ -38,8 +38,6 @@ end
 require "./lib/plugins/created_at_setter"
 require "./lib/plugins/model"
 require "./lib/plugins/log"
-require "./lib/plugins/hstore_parser"
-require "./lib/plugins/array_parser"
 
 require "./lib/api/helpers"
 require "./lib/api/authentication"
