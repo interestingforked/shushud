@@ -23,12 +23,14 @@ module ShushuHelpers
     PaymentMethod.create(opts)
   end
 
-  def build_resource_ownership_record(opts={})
+  def build_resource_ownership_record(account_id, hid, entity_id, state, time)
     ResourceOwnershipRecord.create({
-      :hid => "12345",
-      :time => Time.now,
-      :state => ResourceOwnershipRecord::Active
-    }.merge(opts))
+      :account_id => account_id,
+      :entity_id => entity_id || SecureRandom.uuid,
+      :hid => hid,
+      :time => time,
+      :state => state
+    })
   end
 
   def build_act_own(account_id, payment_method_id, entity_id, state, time)

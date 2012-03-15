@@ -55,34 +55,13 @@ class ReportServiceTest < ShushuTest
   def test_two_owners_one_event
     account = build_account(:provider_id => provider.id)
     another_account = build_account(:provider_id => provider.id)
-    ResourceOwnershipRecord.create(
-      :account_id => account.id,
-      :hid        => "app123",
-      :entity_id   => 1,
-      :state      => ResourceOwnershipRecord::Active,
-      :time       => jan
-    )
-    ResourceOwnershipRecord.create(
-      :account_id => account.id,
-      :hid        => "app123",
-      :entity_id   => 1,
-      :state      => ResourceOwnershipRecord::Inactive,
-      :time       => jan + 100
-    )
-    ResourceOwnershipRecord.create(
-      :account_id => another_account.id,
-      :hid        => "app123",
-      :entity_id   => 2,
-      :state      => ResourceOwnershipRecord::Active,
-      :time       => jan + 100
-    )
-    BillableEvent.create(
-      :hid      => "app123",
-      :rate_code_id => build_rate_code.id,
-      :entity_id => 1,
-      :state    => 1,
-      :time     => jan
-    )
+
+    eid1 = SecureRandom.uuid
+    build_resource_ownership_record(account.id, "app123", eid1, "active", jan)
+    build_resource_ownership_record(account.id, "app123", eid1, "inactive", jan + 100)
+    build_resource_ownership_record(another_account.id, "app123", nil, "active", jan + 100)
+
+    build_billable_event("app123", nil, 1, jan)
 
     _, usage_report = ReportService.usage_report(account.id, jan, feb)
     billable_units = usage_report[:billable_units]
@@ -350,5 +329,18 @@ class ReportServiceTest < ShushuTest
     assert_equal(jan, Time.parse(billable_unit["from"]))
     assert_equal(feb, Time.parse(billable_unit["to"]))
   end
+
+=begin
+  def test_rate_code_report_perc_month
+    rate_code = build_rate_code(:rate => 100, :rate_period => "month")
+    build_billable_event("app123", nil, 1, jan, rate_code.id)
+    build_billable_event("app124", nil, 1, jan, rate_code.id)
+    _, report = ReportService.rate_code_report(rate_code.id, jan, feb)
+    expected_total = (((feb - jan) / 60.0 / 60.0) * rate_code.rate) * 2
+    assert_equal(expected_total, report[:total].to_f)
+    billable_units = report[:billable_units]
+    assert_equal(2, billable_units.last["qty"])
+  end
+=end
 
 end
