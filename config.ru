@@ -8,4 +8,5 @@ use Rack::Session::Cookie,
   :secret          => ENV["SESSION_SECRET"],
   :expire_after    => 120
 
+run Api::HeartBeat
 run Api::Http
