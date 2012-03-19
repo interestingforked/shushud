@@ -18,6 +18,7 @@ RateCodeService.handle_in(
   :provider_id        => provider.id,
   :slug               => "RT01",
   :rate               => 5,
+  :period             => "hour",
   :product_group      => "dyno",
   :product_name       => "web"
 )
@@ -70,6 +71,6 @@ puts(<<-EOD)
 \t account: #{account.id}
 \t payment_method: #{payment_method.id}
 
-\t select * from invoice(#{payment_method.id}, '#{jan.iso8601}', '#{feb.iso8601}');
+\t select invoice(#{payment_method.id}, '#{jan.iso8601}', '#{feb.iso8601}');
 
 EOD

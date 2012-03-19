@@ -4,7 +4,7 @@ require File.expand_path('../../../lib/shushu', __FILE__)
 
 provider = Provider.create :name => "shushu@heroku.com", :token => "secret"
 
-RateCodeService.create(
+RateCodeService.handle_in(
   :provider_id        => provider.id,
   :slug               => "RT01",
   :rate               => 5,
@@ -15,7 +15,7 @@ RateCodeService.create(
 SecureRandom.uuid.tap do |eid|
   BillableEventService.handle_in(
     :provider_id    => provider.id,
-    :rate_code_slug => "RT01",
+    :rate_code_id   => "RT01",
     :hid            => "app123@heorku.com",
     :entity_id      => eid,
     :qty            => 1,
@@ -24,7 +24,7 @@ SecureRandom.uuid.tap do |eid|
   )
   BillableEventService.handle_in(
     :provider_id    => provider.id,
-    :rate_code_slug => "RT01",
+    :rate_code_id   => "RT01",
     :hid            => "app123@heorku.com",
     :entity_id      => eid,
     :qty            => 1,

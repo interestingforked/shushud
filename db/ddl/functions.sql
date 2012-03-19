@@ -144,7 +144,7 @@ CREATE OR REPLACE VIEW act_bu AS
     compacted_act_own.payment_method_id,
     billable_units.hid,
     GREATEST(billable_units.from, compacted_act_own.from) as from,
-    LEAST(billable_units.to, compacted_act_own.to) as to,
+    LEAST(COALESCE(billable_units.to, now()), compacted_act_own.to) as to,
     billable_units.product_name,
     billable_units.product_group,
     billable_units.rate,
@@ -252,85 +252,133 @@ RETURNS TABLE(
 $$ LANGUAGE SQL
 ;
 
-CREATE OR REPLACE FUNCTION invoice(int, timestamptz, timestamptz)
+/*
+  invoice()
+
+  $1 payment_method_id
+  $2 start of invoice period
+  $3 end of invoice period
+  $4 number of free dyno hours
+
+*/
+
+CREATE OR REPLACE FUNCTION invoice(timestamptz, timestamptz, int)
 RETURNS TABLE(
   payment_method_id int,
   hid text,
-  product_name text,
-  product_group text,
-  rate_period text,
-  rate int,
-  "from" timestamptz,
-  "to" timestamptz,
-  qty numeric
+  billable_units hstore[],
+  dyno_hours numeric,
+  adjusted_dyno_hours numeric
 ) AS $$
   SELECT
     act_bu.payment_method_id,
     act_bu.hid,
-    act_bu.product_name,
-    act_bu.product_group,
-    act_bu.rate_period,
-    act_bu.rate,
-    GREATEST(act_bu.from, $2) as from,
-    LEAST(COALESCE(act_bu.to, now()), $3) as to,
-    (
-      CASE
-      WHEN act_bu.rate_period = 'month' THEN
+    array_agg(hstore(
+      ROW(
+        act_bu.payment_method_id,
+        act_bu.hid,
+        act_bu.from,
+        LEAST(act_bu.to, $2),
+        act_bu.product_name,
+        act_bu.product_group,
+        act_bu.rate,
+        act_bu.rate_period
+      )::act_bu
+    )) as billable_units,
+    -- compute the total number of dyno hours for the invoice
+    sum(
+      (
         (extract('epoch' FROM
-          LEAST(COALESCE(act_bu.to, now()), $3)
+          LEAST(act_bu.to, $2)
           -
-          GREATEST(act_bu.from, $2)
-        )::numeric / (3600) / sec_in_month($3)) -- convert seconds into hours
-      ELSE
-        (extract('epoch' FROM
-          LEAST(COALESCE(act_bu.to, now()), $3)
-          -
-          GREATEST(act_bu.from, $2)
+          GREATEST(act_bu.from, $1)
         )::numeric / (3600)) -- convert seconds into hours
-      END
-    ) as qty
+      )
+    ) as dyno_hours,
+    -- compute the adjusted dyno hours for the dyno-hour credit
+    (
+      (
+        (extract('epoch' FROM
+          LEAST(act_bu.to, $2)
+          -
+          GREATEST(act_bu.from, $1)
+        )::numeric / (3600)) -- convert seconds into hours
+      )
+      -
+      LEAST(
+        (
+          (extract('epoch' FROM
+            LEAST(act_bu.to, $2)
+            -
+            GREATEST(act_bu.from, $1)
+          )::numeric / (3600)) -- convert seconds into hours
+        ), $3 -- number of free dyno-hours
+      )
+    ) as adjusted_dyno_hours
   FROM act_bu
   WHERE
-    act_bu.payment_method_id = $1
-    AND
-    (act_bu.from, COALESCE(act_bu.to, now()))
-    OVERLAPS
-    ($2, $3)
-$$ LANGUAGE SQL
-;
-
-CREATE OR REPLACE FUNCTION grouped_billable_units(timestamptz, timestamptz)
-RETURNS TABLE(
-  qty numeric,
-  rate int
-) AS $$
-  SELECT
-    sum(
-      (extract('epoch' FROM
-        LEAST(COALESCE(billable_units.to, now()), $2) - GREATEST(billable_units.from, $1)
-      )::numeric / (3600)) -- convert seconds into hours
-    ) as qty,
-    rate
-  FROM billable_units
-  WHERE
-    (billable_units.from, COALESCE(billable_units.to, now()))
+    (act_bu.from, act_bu.to)
     OVERLAPS
     ($1, $2)
-  GROUP BY rate
+    AND
+    act_bu.rate_period = 'hour'
+  GROUP BY
+    act_bu.hid, act_bu.payment_method_id, act_bu.from, act_bu.to
 $$ LANGUAGE SQL
 ;
 
-CREATE OR REPLACE FUNCTION rev_report(timestamptz, timestamptz)
+CREATE OR REPLACE FUNCTION grouped_billable_units(timestamptz, timestamptz, int)
+RETURNS TABLE(
+  hid varchar,
+  rate int,
+  adjusted_dyno_hours numeric
+) AS $$
+  SELECT
+    bu.hid,
+    bu.rate,
+    -- compute the adjusted dyno hours for the dyno-hour credit
+    (
+      (
+        (extract('epoch' FROM
+          LEAST(COALESCE(bu.to, now()), $2)
+          -
+          GREATEST(bu.from, $1)
+        )::numeric / (3600)) -- convert seconds into hours
+      )
+      -
+      LEAST(
+        (
+          (extract('epoch' FROM
+            LEAST(COALESCE(bu.to, now()), $2)
+            -
+            GREATEST(bu.from, $1)
+          )::numeric / (3600)) -- convert seconds into hours
+        ), $3 -- number of free dyno-hours
+      )
+    ) as adjusted_dyno_hours
+  FROM billable_units bu
+  WHERE
+    (bu.from, COALESCE(bu.to, now()))
+    OVERLAPS
+    ($1, $2)
+    AND
+    bu.rate_period = 'hour'
+  GROUP BY
+    bu.hid, bu.rate, bu.from, bu.to
+$$ LANGUAGE SQL
+;
+
+CREATE OR REPLACE FUNCTION rev_report(timestamptz, timestamptz, int)
 RETURNS numeric AS $$
   SELECT
-    sum(qty * rate) as total
+    sum(adjusted_dyno_hours * rate) as total
   FROM
-    grouped_billable_units($1, $2)
+    grouped_billable_units($1, $2, $3)
   $$ LANGUAGE SQL
 ;
 
 /*
-CREATE OR REPLACE VIEW inv AS
+CREATE OR REPLACE VIEW platform_inv AS
   SELECT
     a.hid,
     array_agg(hstore(a.*)) as billable_units,
@@ -338,5 +386,21 @@ CREATE OR REPLACE VIEW inv AS
     (sum(a.qty) - LEAST(sum(a.qty), 750)) as adjusted_dyno_hours
   FROM billable_units a
   GROUP BY a.hid
+;
+
+CREATE OR REPLACE VIEW add_ons_inv AS
+  SELECT
+    a.hid,
+    array_agg(hstore(a.*)) as billable_units,
+    sum(a.qty) as dyno_hours,
+    (sum(a.qty) - LEAST(sum(a.qty), 750)) as adjusted_dyno_hours
+  FROM billable_units a
+  GROUP BY a.hid
+;
+
+CREATE OR REPLACE VIEW inv AS
+  SELECT * FROM platform_inv
+  UNION ALL
+  SELECT * FROM add_ons_inv
 ;
 */

@@ -1,3 +1,6 @@
+require "sequel/extensions/pg_array"
+require "sequel/extensions/pg_hstore"
+
 module ReportService
   extend self
 
@@ -47,21 +50,25 @@ module ReportService
         :to             => to
       ) do
       s = "SELECT * FROM invoice($1, $2, $3)"
-      billable_units = exec_sql(s, payment_method_id, from, to)
+      s << " WHERE payment_method_id = $4"
+      billable_units = {}
+      invoice = exec_sql(s, from, to, 0, payment_method_id).each do |li|
+        billable_units[li["hid"]] = p_a(li["billable_units"]).map {|h| p_h(h)}
+      end
       [200, {
         :payment_method_id => payment_method_id,
         :from              => from,
         :to                => to,
         :billable_units    => billable_units,
-        :total             => Calculator.total(billable_units)
+        :total             => invoice.map {|x| x["total"].to_f}.reduce(:+)
       }]
     end
   end
 
   def rev_report(from, to)
     Log.info_t(:action => "rev_report", :from => from, :to => to) do
-      s = "SELECT * from rev_report($1, $2)"
-      total = exec_sql(s, from, to).first["rev_report"]
+      s = "SELECT rev_report($1, $2, $3)"
+      total = exec_sql(s, from, to, 0).pop["rev_report"].to_f
       [200, {:time => Time.now, :total => total}]
     end
   end
@@ -70,6 +77,14 @@ module ReportService
     Shushu::DB.synchronize do |conn|
       conn.exec(sql, args).to_a
     end
+  end
+
+  def p_a(str)
+    Sequel::Postgres::PGArray.parse(str)
+  end
+
+  def p_h(str)
+    Sequel::Postgres::HStore.parse(str)
   end
 
 end

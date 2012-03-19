@@ -172,8 +172,10 @@ class ReportServiceTest < ShushuTest
 
     _, invoice = ReportService.invoice(payment_method.id, jan, feb)
     billable_units = invoice[:billable_units]
-    assert_equal(1, billable_units.length)
-    billable_unit = billable_units.first
+    assert_equal(["app123"], billable_units.keys)
+    sub_billable_units = billable_units["app123"]
+    assert_equal(1, sub_billable_units.length)
+    billable_unit = sub_billable_units.pop
     assert_equal(jan, Time.parse(billable_unit["from"]))
     assert_equal(feb, Time.parse(billable_unit["to"]))
   end
@@ -188,6 +190,7 @@ class ReportServiceTest < ShushuTest
     build_act_own(account.id, payment_method.id, 1, AccountOwnershipRecord::Active, jan)
     build_act_own(another_account.id, another_payment_method.id, 2, AccountOwnershipRecord::Active, jan)
 
+    build_res_own(account.id, "app124", nil, ResourceOwnershipRecord::Active, jan)
     build_res_own(account.id, "app123", 1, ResourceOwnershipRecord::Active, jan)
     build_res_own(account.id, "app123", 1, ResourceOwnershipRecord::Inactive, jan + 100)
     build_res_own(another_account.id, "app123", 2, ResourceOwnershipRecord::Active, jan + 101)
@@ -197,15 +200,21 @@ class ReportServiceTest < ShushuTest
 
     _, invoice = ReportService.invoice(payment_method.id, jan, feb)
     billable_units = invoice[:billable_units]
-    assert_equal(1, billable_units.length)
-    billable_unit = billable_units.first
+    assert_equal(2, billable_units.length)
+    assert_includes(billable_units.keys, "app123")
+    assert_includes(billable_units.keys, "app124")
+    sub_billable_units = billable_units["app123"]
+    assert_equal(1, sub_billable_units.length)
+    billable_unit = sub_billable_units.pop
     assert_equal(jan, Time.parse(billable_unit["from"]))
     assert_equal((jan + 100), Time.parse(billable_unit["to"]))
 
     _, invoice = ReportService.invoice(another_payment_method.id, jan, feb)
     billable_units = invoice[:billable_units]
-    assert_equal(1, billable_units.length)
-    billable_unit = billable_units.first
+    assert_equal(["app123"], billable_units.keys)
+    sub_billable_units = billable_units["app123"]
+    assert_equal(1, sub_billable_units.length)
+    billable_unit = sub_billable_units.pop
     assert_equal((jan + 101), Time.parse(billable_unit["from"]))
     assert_equal(feb, Time.parse(billable_unit["to"]))
   end
@@ -274,22 +283,27 @@ class ReportServiceTest < ShushuTest
 
     _, invoice = ReportService.invoice(payment_method.id, jan, feb)
     billable_units = invoice[:billable_units]
-    assert_equal(1, billable_units.length)
-    billable_unit = billable_units.first
+    assert_equal(["app123"], billable_units.keys)
+    sub_billable_units = billable_units["app123"]
+    assert_equal(1, sub_billable_units.length)
+    billable_unit = sub_billable_units.pop
     assert_equal(jan, Time.parse(billable_unit["from"]))
     assert_equal(feb, Time.parse(billable_unit["to"]))
   end
 
   def test_rev_report
-    rate = 100
-    rate_code = build_rate_code :rate => rate
-    eid1 = SecureRandom.uuid
-    eid2 = SecureRandom.uuid
-    build_billable_event("app123", eid1, 1, jan, rate_code.id)
-    build_billable_event("app124", eid2, 1, jan, rate_code.id)
-    _, report = ReportService.rev_report(jan, feb)
-    expected_total = (((feb - jan) / 60.0 / 60.0) * rate) * 2
-    assert_equal expected_total, report[:total].to_f
+    payment_method = build_payment_method
+    account = build_account(:provider_id => provider.id, :payment_method_id => payment_method.id)
+
+    build_act_own(account.id, payment_method.id, 1, AccountOwnershipRecord::Active, jan)
+
+    build_res_own(account.id, "app123", 1, ResourceOwnershipRecord::Active, jan)
+    build_res_own(account.id, "app123", 1, ResourceOwnershipRecord::Inactive, (jan + 100))
+
+    build_billable_event("app123", 1, 1, jan)
+
+    _, rev_report = ReportService.rev_report(jan, feb)
+    assert_equal(3720, rev_report[:total])
   end
 
   def test_rate_code_report

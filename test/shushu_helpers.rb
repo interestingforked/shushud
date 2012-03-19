@@ -12,6 +12,7 @@ module ShushuHelpers
     RateCode.create({
       :slug => "RT01",
       :rate => 5,
+      :rate_period => "hour"
     }.merge(opts))
   end
 
