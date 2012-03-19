@@ -18,6 +18,7 @@ module RateCodeService
     RateCode.create(
       :provider_id   => args[:provider_id],
       :rate          => args[:rate],
+      :rate_period   => args[:period],
       :slug          => args[:slug],
       :product_group => args[:product_group],
       :product_name  => args[:product_name]

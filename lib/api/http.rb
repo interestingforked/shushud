@@ -183,6 +183,7 @@ module Api
         RateCodeService.handle_in(
           :provider_id   => session[:provider_id],
           :rate          => params[:rate],
+          :period        => params[:period],
           :product_group => params[:group],
           :product_name  => params[:name]
         )
