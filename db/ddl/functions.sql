@@ -372,8 +372,8 @@ RETURNS TABLE(
     AND
     bu.rate_period = 'hour'
   GROUP BY
-    bu.hid, bu.rate, bu.from, bu.to
-$$ LANGUAGE SQL
+    bu.hid, bu.rate
+$$ LANGUAGE SQL STABLE
 ;
 
 CREATE OR REPLACE FUNCTION rev_report(timestamptz, timestamptz, int)
@@ -382,7 +382,7 @@ RETURNS numeric AS $$
     sum(adjusted_dyno_hours * rate) as total
   FROM
     grouped_billable_units($1, $2, $3)
-  $$ LANGUAGE SQL
+  $$ LANGUAGE SQL STABLE
 ;
 
 /*
