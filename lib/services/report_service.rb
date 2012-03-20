@@ -65,10 +65,10 @@ module ReportService
     end
   end
 
-  def rev_report(from, to)
+  def rev_report(from, to, credit=0)
     Log.info_t(:action => "rev_report", :from => from, :to => to) do
       s = "SELECT rev_report($1, $2, $3)"
-      total = exec_sql(s, from, to, 0).pop["rev_report"].to_f
+      total = exec_sql(s, from, to, credit).pop["rev_report"].to_f
       [200, {:time => Time.now, :total => total}]
     end
   end

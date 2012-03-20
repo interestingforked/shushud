@@ -331,14 +331,22 @@ CREATE OR REPLACE FUNCTION grouped_billable_units(timestamptz, timestamptz, int)
 RETURNS TABLE(
   hid varchar,
   rate int,
+  dyno_hours numeric,
   adjusted_dyno_hours numeric
 ) AS $$
   SELECT
     bu.hid,
     bu.rate,
+    sum (
+      (extract('epoch' FROM
+        LEAST(COALESCE(bu.to, now()), $2)
+        -
+        GREATEST(bu.from, $1)
+      )::numeric / (3600)) -- convert seconds into hours
+    ) as dyno_hours,
     -- compute the adjusted dyno hours for the dyno-hour credit
     (
-      (
+      sum (
         (extract('epoch' FROM
           LEAST(COALESCE(bu.to, now()), $2)
           -
@@ -348,7 +356,7 @@ RETURNS TABLE(
       -
       LEAST(
         (
-          (extract('epoch' FROM
+          sum (extract('epoch' FROM
             LEAST(COALESCE(bu.to, now()), $2)
             -
             GREATEST(bu.from, $1)

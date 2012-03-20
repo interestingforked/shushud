@@ -291,19 +291,18 @@ class ReportServiceTest < ShushuTest
     assert_equal(feb, Time.parse(billable_unit["to"]))
   end
 
-  def test_rev_report
-    payment_method = build_payment_method
-    account = build_account(:provider_id => provider.id, :payment_method_id => payment_method.id)
+  def test_rev_report_acks_credits
+    build_billable_event("app123", nil, 1, Time.mktime(2011,1))
+    build_billable_event("app123", nil, 1, Time.mktime(2011,1))
+    build_billable_event("app124", nil, 1, Time.mktime(2011,1))
 
-    build_act_own(account.id, payment_method.id, 1, AccountOwnershipRecord::Active, jan)
+    hours_in_month = ((Time.mktime(2012,2) - Time.mktime(2012,1))/60/60).to_i
 
-    build_res_own(account.id, "app123", 1, ResourceOwnershipRecord::Active, jan)
-    build_res_own(account.id, "app123", 1, ResourceOwnershipRecord::Inactive, (jan + 100))
+    _, rev_report = ReportService.rev_report(Time.mktime(2012,1), Time.mktime(2012,2))
+    assert_equal((hours_in_month * 15), rev_report[:total])
 
-    build_billable_event("app123", 1, 1, jan)
-
-    _, rev_report = ReportService.rev_report(jan, feb)
-    assert_equal(3720, rev_report[:total])
+    _, rev_report = ReportService.rev_report(jan, feb, hours_in_month)
+    assert_equal((hours_in_month * 5), rev_report[:total])
   end
 
   def test_rate_code_report
