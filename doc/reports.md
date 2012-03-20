@@ -65,6 +65,7 @@ $ curl -X GET https://shushu.heroku.com/accounts/123/usage_reports \
     }
   ]
 }
+```
 
 ## Rate Code Report
 
