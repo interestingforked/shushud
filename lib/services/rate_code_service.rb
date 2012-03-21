@@ -1,5 +1,6 @@
 module RateCodeService
   extend self
+  PERIODS = %w{month hour}
 
   def handle_in(args)
     if s = args[:slug]
@@ -15,6 +16,10 @@ module RateCodeService
   end
 
   def create_record(args)
+    if !PERIODS.include?(args[:period])
+      raise ArgumentError, "period must be one of #{PERIODS.join(',')}"
+    end
+    
     RateCode.create(
       :provider_id   => args[:provider_id],
       :rate          => args[:rate],

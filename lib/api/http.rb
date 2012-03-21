@@ -197,6 +197,7 @@ module Api
           :provider_id   => session[:provider_id],
           :slug          => params[:slug],
           :rate          => params[:rate],
+          :period        => params[:period],
           :product_group => params[:group],
           :product_name  => params[:name]
         )
