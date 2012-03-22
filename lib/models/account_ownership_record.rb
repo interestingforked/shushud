@@ -37,4 +37,5 @@ class AccountOwnershipRecord < Sequel::Model
   def payment_method
     @payment_method ||= PaymentMethod[self[:payment_method_id]]
   end
+
 end
