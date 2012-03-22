@@ -1,5 +1,3 @@
-CREATE OR REPLACE EXTENSION hstore;
-
 CREATE OR REPLACE FUNCTION bn_month(timestamptz)
 RETURNS timestamptz AS $$
   SELECT (date_trunc('month', $1) + '1 month'::interval);
