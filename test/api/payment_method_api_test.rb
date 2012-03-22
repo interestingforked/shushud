@@ -10,7 +10,7 @@ class PaymentMethodApiTest < ShushuTest
   end
 
   def test_create_payment_method_without_id_and_with_token
-    post "/payment_methods", {:card_token => "abc123"}
+    post("/payment_methods", {:card_token => "abc123"})
     assert_equal(201, last_response.status)
     body = JSON.parse(last_response.body)
     refute_nil body["id"]
@@ -18,7 +18,7 @@ class PaymentMethodApiTest < ShushuTest
   end
 
   def test_create_payment_method_with_id_and_with_token
-    put "/payment_methods/9999", {:card_token => "abc123"}
+    put("/payment_methods/9999", {:card_token => "abc123"})
     assert_equal(201, last_response.status)
     body = JSON.parse(last_response.body)
     assert_equal("9999", body["id"])
@@ -26,7 +26,11 @@ class PaymentMethodApiTest < ShushuTest
   end
 
   def test_create_payment_method_with_id_and_without_token_good_card
-    put "/payment_methods/9999", {:card_num => TestAuthorizer::GOOD_NUM, :card_exp_year => "2011", :card_exp_month => "01"}
+    put("/payment_methods/9999", {
+      :card_num => TestAuthorizer::GOOD_NUM,
+      :card_exp_year => "2011",
+      :card_exp_month => "01"
+    })
     assert_equal(201, last_response.status)
     body = JSON.parse(last_response.body)
     assert_equal("9999", body["id"])
@@ -34,7 +38,11 @@ class PaymentMethodApiTest < ShushuTest
   end
 
   def test_create_payment_method_with_id_and_without_token_bad_card
-    put "/payment_methods/9999", {:card_num => TestAuthorizer::BAD_NUM, :card_exp_year => "2011", :card_exp_month => "01"}
+    put("/payment_methods/9999", {
+      :card_num => TestAuthorizer::BAD_NUM,
+      :card_exp_year => "2011",
+      :card_exp_month => "01"
+    })
     assert_equal(422, last_response.status)
   end
 
