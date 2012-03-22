@@ -64,7 +64,6 @@ Sequel.migration do
     #Account
     create_table(:accounts) do |t|
       primary_key :id
-      foreign_key :payment_method_id, :payment_methods
       foreign_key :provider_id, :providers
     end
     add_column :accounts, :created_at, "timestamptz"

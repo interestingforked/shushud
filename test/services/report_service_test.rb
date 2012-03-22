@@ -158,8 +158,8 @@ class ReportServiceTest < ShushuTest
 
   def test_invoice_two_accounts_one_event
     payment_method = build_payment_method
-    account = build_account(:provider_id => provider.id, :payment_method_id => payment_method.id)
-    another_account = build_account(:provider_id => provider.id, :payment_method_id => payment_method.id)
+    account = build_account(:provider_id => provider.id)
+    another_account = build_account(:provider_id => provider.id)
 
     build_act_own(account.id, payment_method.id, 1, AccountOwnershipRecord::Active, jan)
     build_act_own(another_account.id, payment_method.id, 2, AccountOwnershipRecord::Active, jan)
@@ -184,8 +184,8 @@ class ReportServiceTest < ShushuTest
     payment_method = build_payment_method
     another_payment_method = build_payment_method
 
-    account = build_account(:payment_method_id => payment_method.id)
-    another_account = build_account(:payment_method_id => another_payment_method.id)
+    account = build_account
+    another_account = build_account
 
     build_act_own(account.id, payment_method.id, 1, AccountOwnershipRecord::Active, jan)
     build_act_own(another_account.id, another_payment_method.id, 2, AccountOwnershipRecord::Active, jan)
@@ -268,8 +268,8 @@ class ReportServiceTest < ShushuTest
   def test_inv_doesnt_care_about_res_own
     payment_method = build_payment_method
 
-    account = build_account(:provider_id => provider.id, :payment_method_id => payment_method.id)
-    another_account = build_account(:provider_id => provider.id, :payment_method_id => payment_method.id)
+    account = build_account(:provider_id => provider.id)
+    another_account = build_account(:provider_id => provider.id)
 
     build_act_own(account.id, payment_method.id, 1, AccountOwnershipRecord::Active, jan)
     build_act_own(another_account.id, payment_method.id, 2, AccountOwnershipRecord::Active, jan)
@@ -320,8 +320,8 @@ class ReportServiceTest < ShushuTest
     rate_code = build_rate_code
     payment_method = build_payment_method
 
-    account = build_account(:provider_id => provider.id, :payment_method_id => payment_method.id)
-    another_account = build_account(:provider_id => provider.id, :payment_method_id => payment_method.id)
+    account = build_account(:provider_id => provider.id)
+    another_account = build_account(:provider_id => provider.id)
 
     build_res_own(account.id, "app123", 1, ResourceOwnershipRecord::Active, jan)
     build_res_own(account.id, "app123", 1, ResourceOwnershipRecord::Inactive, jan + 100)
