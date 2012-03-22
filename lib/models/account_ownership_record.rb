@@ -14,7 +14,7 @@ class AccountOwnershipRecord < Sequel::Model
     self[:payment_method_id] = begin
       PaymentMethod.first(:slug => slug.to_s) ||
       PaymentMethod.first(:id => slug.to_i)   ||
-      raise(ArgumentError, "Unable to resolve rate_code with rate_code_id=#{slug}")
+      raise(ArgumentError, "Unable to resolve payment_method with payment_method_id=#{slug}")
     end[:id]
   end
 
