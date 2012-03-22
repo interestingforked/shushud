@@ -55,7 +55,7 @@ module Api
     #
     post "/payment_methods" do
       perform do
-        PaymentMethodService.new_payment_method(
+        PaymentMethodService.handle_in(
           :provider_id    => session[:provider_id],
           :slug           => nil,
           :card_token     => params[:card_token],
@@ -68,7 +68,7 @@ module Api
 
     put "/payment_methods/:slug" do
       perform do
-        PaymentMethodService.new_payment_method(
+        PaymentMethodService.handle_in(
           :provider_id    => session[:provider_id],
           :slug           => params[:slug],
           :card_token     => params[:card_token],

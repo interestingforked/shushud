@@ -1,7 +1,7 @@
 module PaymentMethodService
   extend self
 
-  def new_payment_method(params)
+  def handle_in(params)
     Shushu::DB.transaction do
       pm = find_or_create_pm(params)
       resolve_card(params, pm)
