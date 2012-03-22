@@ -48,7 +48,7 @@ module PaymentMethodService
   end
 
   def gen_slug
-    1
+    SecureRandom.uuid
   end
 
 end
