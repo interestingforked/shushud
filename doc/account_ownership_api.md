@@ -17,15 +17,14 @@ cards in their invoice.
 
 ## API
 
-### Possible Responses
-
-* 200 - Event accepted.
-* 404 - Account not found.
-
 ### Activate
 
-In order to build an invoice for a payment method, the payment method must be associated with one or
-more accounts. This API endpoint will allow you to activate the association.
+In order to build an invoice for a payment method, the payment method
+must be associated with one or more accounts. This API endpoint
+will allow you to activate the association.
+
+If no account can be found using the :account_id, Shushu will create one
+during the resource_ownership request.
 
 ```bash
 $ curl -X POST https://shushu.heroku.com/payment_methods/:payment_method_id/account_ownerships/:entity_id \
@@ -38,8 +37,9 @@ $ curl -X POST https://shushu.heroku.com/payment_methods/:payment_method_id/acco
 
 ### Deactivate
 
-When an account no longer belongs to a payment method, or if an account is to be
-moved to another payment method, the prior relationship must be deactivated.
+When an account no longer belongs to a payment method, or if an account is
+to be moved to another payment method, the prior relationship must be
+deactivated.
 
 ```bash
 $ curl -X POST https://shushu.heroku.com/payment_methods/:payment_method_id/account_ownerships/:entity_id \

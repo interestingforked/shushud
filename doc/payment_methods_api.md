@@ -1,11 +1,12 @@
 # PaymentMethod API
 
-While the [account][account_api] represents an aggregation of resources, the payment_method
-represents an aggregation of accounts. Also, similar to the account's
-usage_report, the payment_method can produce an invoice. Thus, a payment_method
-is required for invoice generation. Also, it should be noted that the many accounts
-can belong to a single payment_method by creating account_ownerhips records.
-See the [AccountOwnership API][act_own_api] for more details.
+While the [account][account_api] represents an aggregation of resources, the
+payment_method represents an aggregation of accounts. Also, similar to the
+account's usage_report, the payment_method can produce an invoice. Thus,
+a payment_method is required for invoice generation. Also, it should be
+noted that the many accounts can belong to a single payment_method by creating
+account_ownerhips records. See the [AccountOwnership API][act_own_api] for
+more details.
 
 ## Create PaymentMethod
 
@@ -64,7 +65,6 @@ $ curl -X PUT https://123:secret@shushu.heroku.com/payment_methods/id@yourdomain
 
 {"id": "id@yourdomain.com", "card_token": "abc123", "card_type": "visa", "card_last4": "4111"}
 ```
-
 
 ## Update PaymentMethod
 

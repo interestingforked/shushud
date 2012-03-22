@@ -12,17 +12,15 @@ events, usage reports can be generated for accounts.
 This API is idempotent. Furthermore, it does not care about the order in which
 it receives events. For instance, you can send the inactive state prior to
 sending the active state. In such a case, shushu will neglect all related
-records for reporting until the active arrives.
+records for reporting until the active record arrives.
 
 It is recomended to follow the [event buffering](https://github.com/heroku/engineering-docs/blob/master/event-buffering.md)
 approach when implementing a client for this library.
 
-### Possible Responses
-
-* 200 - Event accepted.
-* 404 - Account not found.
-
 ### Activate
+
+If no account can be found using the :account_id, Shushu will create one
+during the resource_ownership request.
 
 ```bash
 $ curl -i -X PUT https://shushu.heroku.com/accounts/:account_id/resource_ownerships/:entity_id \
