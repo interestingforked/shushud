@@ -1,4 +1,4 @@
-CREATE EXTENSION hstore;
+CREATE OR REPLACE EXTENSION hstore;
 
 CREATE OR REPLACE FUNCTION bn_month(timestamptz)
 RETURNS timestamptz AS $$
@@ -203,7 +203,7 @@ RETURNS TABLE(
     ($2, $3)
     AND
     billable_units.rate_code_id = $1
-$$ LANGUAGE SQL
+$$ LANGUAGE SQL STABLE
 ;
 
 CREATE OR REPLACE FUNCTION usage_report(int, timestamptz, timestamptz)
