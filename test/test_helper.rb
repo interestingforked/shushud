@@ -43,6 +43,10 @@ class ShushuTest < MiniTest::Unit::TestCase
     clean_tables
   end
 
+  def provider
+    @provider ||= build_provider
+  end
+
   def app
     Api::Http
   end
