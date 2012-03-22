@@ -18,10 +18,11 @@ class PaymentMethodApiTest < ShushuTest
   end
 
   def test_create_payment_method_with_id_and_with_token
-    put("/payment_methods/9999", {:card_token => "abc123"})
+    id = SecureRandom.uuid
+    put("/payment_methods/#{id}", {:card_token => "abc123"})
     assert_equal(201, last_response.status)
     body = JSON.parse(last_response.body)
-    assert_equal("9999", body["id"])
+    assert_equal(id, body["id"])
     assert_equal("abc123", body["card_token"])
   end
 

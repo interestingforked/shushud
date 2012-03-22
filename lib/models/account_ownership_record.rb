@@ -27,10 +27,14 @@ class AccountOwnershipRecord < Sequel::Model
   def to_h
     {
       :entity_id         => self[:entity_id],
-      :payment_method_id => self[:payment_method_id],
+      :payment_method_id => payment_method.api_id,
       :account_id        => self[:account_id],
       :from              => self[:from],
       :to                => self[:to]
     }
+  end
+
+  def payment_method
+    @payment_method ||= PaymentMethod[self[:payment_method_id]]
   end
 end
