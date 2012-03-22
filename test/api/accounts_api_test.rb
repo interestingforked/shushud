@@ -13,9 +13,9 @@ class AccountsApiTest < ShushuTest
 
   def test_create_account
     setup_auth
-    post "/accounts"
+    post("/accounts")
     assert_equal(201, last_response.status)
-    refute_nil JSON.parse(last_response.body)["id"]
+    refute_nil(JSON.parse(last_response.body)["id"])
   end
 
 end
