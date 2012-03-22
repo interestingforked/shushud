@@ -2,10 +2,6 @@ require File.expand_path('../../test_helper', __FILE__)
 
 class ReportServiceTest < ShushuTest
 
-  def provider
-    @provider ||= build_provider
-  end
-
   def test_report_returns_hash
     account = build_account(:provider_id => provider.id)
     rate_code = build_rate_code
