@@ -85,7 +85,7 @@ Use the same strategy in case 1. execpt add-ons only cares about the total in
 the report doc, not all of the supporting billable units.
 
 ```bash
-$ curl -x GET https://provider:token@shushu.heroku.com/rate_codes/:rate_code_slug/billable_units?start=time&end=time
+$ curl -X GET https://provider:token@shushu.heroku.com/rate_codes/:rate_code_slug/billable_units?from=time&to=time
 
 {
   "rate_code": :rate_code_slug,
@@ -93,8 +93,8 @@ $ curl -x GET https://provider:token@shushu.heroku.com/rate_codes/:rate_code_slu
   "billable_units": [
     {
       "resource_id": "app123",
-      "start": time,
-      "end": time,
+      "from": time,
+      "to": time,
       "qty": 0.007,
       "rate": 100,
       "product_group": "addon",

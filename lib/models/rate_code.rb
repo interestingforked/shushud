@@ -5,7 +5,8 @@ class RateCode < Sequel::Model
       :slug  => self[:slug],
       :rate  => self[:rate],
       :group => self[:product_group],
-      :name  => self[:product_name]
+      :name  => self[:product_name],
+      :period => self[:rate_period]
     }
   end
 
