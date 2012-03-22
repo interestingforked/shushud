@@ -152,7 +152,7 @@ module Api
           params[:state],
           session[:provider_id],
           params[:payment_method_id],
-          dec_int(params[:account_id]),
+          params[:account_id],
           dec_time(params[:time]),
           params[:entity_id]
         )
