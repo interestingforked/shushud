@@ -145,6 +145,7 @@ CREATE OR REPLACE VIEW act_bu AS
     billable_units.hid,
     GREATEST(billable_units.from, compacted_act_own.from) as from,
     LEAST(COALESCE(billable_units.to, now()), compacted_act_own.to) as to,
+    NULL::numeric as qty, -- stub this for now. will use it in invoice()
     billable_units.product_name,
     billable_units.product_group,
     billable_units.rate,
@@ -279,6 +280,13 @@ RETURNS TABLE(
         act_bu.hid,
         act_bu.from,
         LEAST(act_bu.to, $2),
+        (
+          CASE WHEN act_bu.rate_period = 'month' THEN
+            extract('epoch' from (LEAST(act_bu.to, $2) - GREATEST(act_bu.from, $1)))::numeric /  sec_in_month($1)
+          ELSE
+            extract('epoch' from (LEAST(act_bu.to, $2) - GREATEST(act_bu.from, $1)))::numeric / 3600
+          END
+        ),
         act_bu.product_name,
         act_bu.product_group,
         act_bu.rate,
@@ -287,43 +295,47 @@ RETURNS TABLE(
     )) as billable_units,
     -- compute the total number of dyno hours for the invoice
     sum(
-      (
-        (extract('epoch' FROM
-          LEAST(act_bu.to, $2)
-          -
-          GREATEST(act_bu.from, $1)
-        )::numeric / (3600)) -- convert seconds into hours
-      )
-    ) as dyno_hours,
-    -- compute the adjusted dyno hours for the dyno-hour credit
-    (
-      (
-        (extract('epoch' FROM
-          LEAST(act_bu.to, $2)
-          -
-          GREATEST(act_bu.from, $1)
-        )::numeric / (3600)) -- convert seconds into hours
-      )
-      -
-      LEAST(
+      CASE WHEN act_bu.rate_period = 'month' THEN
         (
           (extract('epoch' FROM
             LEAST(act_bu.to, $2)
             -
             GREATEST(act_bu.from, $1)
           )::numeric / (3600)) -- convert seconds into hours
-        ), $3 -- number of free dyno-hours
-      )
+        )
+      ELSE 0
+      END
+    ) as dyno_hours,
+    -- compute the adjusted dyno hours for the dyno-hour credit
+    sum(
+      CASE WHEN act_bu.rate_period = 'month' THEN
+        (
+          (extract('epoch' FROM
+            LEAST(act_bu.to, $2)
+            -
+            GREATEST(act_bu.from, $1)
+          )::numeric / (3600)) -- convert seconds into hours
+        )
+        -
+        LEAST(
+          (
+            (extract('epoch' FROM
+              LEAST(act_bu.to, $2)
+              -
+              GREATEST(act_bu.from, $1)
+            )::numeric / (3600)) -- convert seconds into hours
+          ), $3 -- number of free dyno-hours
+        )
+      ELSE 0
+      END
     ) as adjusted_dyno_hours
   FROM act_bu
   WHERE
     (act_bu.from, act_bu.to)
     OVERLAPS
     ($1, $2)
-    AND
-    act_bu.rate_period = 'hour'
   GROUP BY
-    act_bu.hid, act_bu.payment_method_id, act_bu.from, act_bu.to
+    act_bu.hid, act_bu.payment_method_id
 $$ LANGUAGE SQL
 ;
 

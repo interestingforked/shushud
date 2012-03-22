@@ -156,6 +156,28 @@ class ReportServiceTest < ShushuTest
     assert_in_delta(1.0, billable_unit["qty"].to_f, 0.001)
   end
 
+  def test_invoice_rate_period_month_and_hour
+    monthly_rc = build_rate_code(:rate_period => "month", :rate => 1000)
+    hourly_rc = build_rate_code(:rate_period => "hour", :rate => 5)
+
+    payment_method = build_payment_method
+    account = build_account(:provider_id => provider.id)
+    build_act_own(account.id, payment_method.id, 1, AccountOwnershipRecord::Active, jan)
+    build_res_own(account.id, "app123", 1, ResourceOwnershipRecord::Active, jan)
+    build_billable_event("app123", nil, 1, jan, monthly_rc.id)
+    build_billable_event("app123", nil, 1, jan, hourly_rc.id)
+
+    _, invoice = ReportService.invoice(payment_method.id, jan, feb)
+    billable_units = invoice[:billable_units]
+    assert_equal(["app123"], billable_units.keys)
+    sub_billable_units = billable_units["app123"]
+    assert_equal(2, sub_billable_units.length)
+    hourly_bu = sub_billable_units.find {|bu| bu["rate_period"] == "hour"}
+    monthly_bu = sub_billable_units.find {|bu| bu["rate_period"] == "month"}
+    assert_equal(1.0, Float(monthly_bu["qty"]))
+    assert_equal(744.0, Float(hourly_bu["qty"]))
+  end
+
   def test_invoice_two_accounts_one_event
     payment_method = build_payment_method
     account = build_account(:provider_id => provider.id)
