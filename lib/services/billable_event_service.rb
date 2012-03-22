@@ -33,6 +33,7 @@ module BillableEventService
         BillableEvent.create(
           :provider_id      => args[:provider_id],
           :rate_code_id     => args[:rate_code_id],
+          :entity_id_uuid   => args[:entity_id_uuid],
           :entity_id        => args[:entity_id],
           :hid              => args[:hid],
           :qty              => args[:qty],

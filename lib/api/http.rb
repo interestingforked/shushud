@@ -135,6 +135,7 @@ module Api
           :product_name   => params[:product_name],
           :description    => params[:description],
           :hid            => params[:hid],
+          :entity_id_uuid => params[:entity_id_uuid],
           :entity_id      => params[:entity_id],
           :qty            => params[:qty],
           :time           => dec_time(params[:time]),

@@ -119,6 +119,7 @@ Sequel.migration do
     end
     add_column :billable_events, :created_at,         "timestamptz"
     add_column :billable_events, :entity_id,          "varchar(255)"
+    add_column :billable_events, :entity_id_uuid,     "uuid"
     add_column :billable_events, :hid,                "varchar(255)"
     add_column :billable_events, :qty,                "int"
     add_column :billable_events, :product_name,       "varchar(255)"

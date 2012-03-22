@@ -30,18 +30,19 @@ class BillableEvent < Sequel::Model
 
   def to_h
     {
-      :id            => self[:id],
-      :created_at    => self[:created_at],
-      :provider_id   => self[:provider_id],
-      :entity_id     => self[:entity_id],
-      :hid           => self[:hid],
-      :product_group => rate_code[:product_group],
-      :product_name  => product_name,
-      :rate          => rate_code[:rate],
-      :rate_code     => rate_code[:slug],
-      :qty           => self[:qty],
-      :time          => self[:time],
-      :state         => self.class.dec_state(self[:state])
+      :id             => self[:id],
+      :created_at     => self[:created_at],
+      :provider_id    => self[:provider_id],
+      :entity_id      => self[:entity_id],
+      :entity_id_uuid => self[:entity_id_uuid],
+      :hid            => self[:hid],
+      :product_group  => rate_code[:product_group],
+      :product_name   => product_name,
+      :rate           => rate_code[:rate],
+      :rate_code      => rate_code[:slug],
+      :qty            => self[:qty],
+      :time           => self[:time],
+      :state          => self.class.dec_state(self[:state])
     }
   end
 
