@@ -108,10 +108,10 @@ module Api
       end
     end
 
-    get "/rate_codes/:rate_code_id/report" do
+    get "/rate_codes/:rate_code_slug/report" do
       perform do
         ReportService.rate_code_report(
-          params[:rate_code_id],
+          params[:rate_code_slug],
           dec_time(params[:from]),
           dec_time(params[:to])
         )

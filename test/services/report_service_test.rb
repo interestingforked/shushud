@@ -331,7 +331,8 @@ class ReportServiceTest < ShushuTest
     rate_code = build_rate_code
     build_billable_event("app123", nil, 1, jan, rate_code.id)
     build_billable_event("app124", nil, 1, jan, rate_code.id)
-    _, report = ReportService.rate_code_report(rate_code.id, jan, feb)
+    _, report = ReportService.rate_code_report(rate_code.slug, jan, feb)
+    assert_equal rate_code.slug, report[:rate_code]
     expected_total = (((feb - jan) / 60.0 / 60.0) * rate_code.rate) * 2
     assert_equal expected_total, report[:total].to_f
     billable_units = report[:billable_units]
@@ -354,7 +355,7 @@ class ReportServiceTest < ShushuTest
     #no one owns app124, but it still uses the rate code
     build_billable_event("app124", 2, 1, jan, rate_code.id)
 
-    _, report = ReportService.rate_code_report(rate_code.id, jan, feb)
+    _, report = ReportService.rate_code_report(rate_code.slug, jan, feb)
     expected_total = (((feb - jan) / 60.0 / 60.0) * rate_code.rate) * 2
     assert_equal(expected_total, report[:total].to_f)
 
