@@ -30,7 +30,7 @@ class PaymentAttemptsApiTest < ShushuTest
     })
     assert_equal(201, last_response.status)
     res = JSON.parse(last_response.body)
-    refute_nil res["id"]
+    refute_nil(res["id"])
     assert_equal(feb.utc.to_s, res["wait_until"])
   end
 
