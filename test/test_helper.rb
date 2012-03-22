@@ -66,7 +66,7 @@ class ShushuTest < MiniTest::Unit::TestCase
     BAD_NUM = "999999999999999"
     TOKEN= "abc123"
     def run(num, year, month)
-      Log.debug("#authorize num=#{num}")
+      Log.debug(:action => "authorize", :num => num)
       if num == GOOD_NUM
         [201, {:card_last4 => "1111", :card_type => "visa", :card_token => TOKEN}]
       else

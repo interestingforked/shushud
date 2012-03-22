@@ -20,7 +20,6 @@ module Shushu
   DB = (
     case ENV["RACK_ENV"].to_s
     when "production"
-      #Log.info("connecting production database url=#{ENV["DATABASE_URL"]}")
       Sequel.connect(ENV["DATABASE_URL"])
     when "test"
       Sequel.connect(ENV["TEST_DATABASE_URL"], :logger => Logger.new(File.new("./log/test.log","w")))
@@ -72,12 +71,11 @@ $stderr.sync = $stdout.sync = true
 Log = ShuLog.new($stdout)
 Log.level = ENV["LOG_LEVEL"].to_i
 Log.formatter = Proc.new do |severity, datetime, progname, msg|
-  "#{severity.to_s.downcase}=true #{msg}\n"
+  "#{msg}\n"
 end
 
 
 Shushu::Conf[:gateway] = BraintreeGateway
 Shushu::DB.sql_log_level = :debug
-Shushu::DB.logger = Log
 Shushu::DB.execute("SET timezone TO 'UTC'")
 Sequel.default_timezone = :utc

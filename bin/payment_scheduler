@@ -9,10 +9,11 @@ $: << File.expand_path("lib")
 require "shushu"
 require "stalker"
 
-Log.info("starting payment scheduler")
-PaymentService.ready_process.each do |pend|
-  recid, pmid = pend["receivable_id"], pend["payment_method_id"]
-  Log.info("#enqueue_payment_process receivable=#{recid} payment_method=#{pmid}")
-  Stalker.enqueue("payment.process",{:recid  => recid, :pmid => pmid})
+Log.info_t(:action => "exec_payment_scheduler") do
+  PaymentService.ready_process.each do |pend|
+    recid, pmid = pend["receivable_id"], pend["payment_method_id"]
+    Log.info_t(:action => "enqueue_payment_process", :receivable => recid, :payment_method => pmid) do
+      Stalker.enqueue("payment.process",{:recid  => recid, :pmid => pmid})
+    end
+  end
 end
-Log.info("stopping payment scheduler")
