@@ -208,12 +208,12 @@ module Api
     def perform
       begin
         t0 = Time.now
-        Log.info({:action => "begin_api_request", :provider_id => session[:provider_id]}.merge(params))
+        Log.info({:action => "begin_api_request", :provider => session[:provider_id]}.merge(params))
         s, b = yield
         status(s)
         body(enc_json(b))
         t1 = Time.now
-        Log.info({:action => "finish_api_request", :elapsed_time => (t1 - t0), :provider_id => session[:provider_id]}.merge(params))
+        Log.info({:action => "finish_api_request", :elapsed_time => (t1 - t0), :provider => session[:provider_id]}.merge(params))
       rescue RuntimeError, ArgumentError => e
         Log.error({:error => "argument", :exception => e.message, :backtrace => e.backtrace}.merge(params))
         status(400)
