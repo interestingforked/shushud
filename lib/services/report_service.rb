@@ -4,19 +4,18 @@ require "sequel/extensions/pg_hstore"
 module ReportService
   extend self
 
-  def rate_code_report(provider_id, rate_code_slug, from, to)
+  def rate_code_report(rc_slug, from, to)
     Log.info_t(
       :action    => "rate_code_report",
-      :rate_code => rate_code_slug,
+      :rate_code => rc_slug,
       :from      => from,
       :to        => to
     ) do
-      rate_code = RateCode.first(:slug => rate_code_slug, 
-                                 :provider_id => provider_id)
+      rcid = RateCode.resolve_id(rc_slug)
       s = "SELECT * FROM rate_code_report($1, $2, $3)"
-      billable_units = exec_sql(s, rate_code.id, from, to)
+      billable_units = exec_sql(s, rcid, from, to)
       [200, {
-        :rate_code      => rate_code_slug,
+        :rate_code      => rc_slug,
         :from           => from,
         :to             => to,
         :billable_units => billable_units,

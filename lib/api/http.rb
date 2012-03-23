@@ -111,7 +111,6 @@ module Api
     get "/rate_codes/:rate_code_slug/report" do
       perform do
         ReportService.rate_code_report(
-          enc_int(session[:provider_id]),
           params[:rate_code_slug],
           dec_time(params[:from]),
           dec_time(params[:to])
@@ -132,7 +131,7 @@ module Api
       perform do
         BillableEventService.handle_in(
           :provider_id    => session[:provider_id],
-          :rate_code_id   => params[:rate_code],
+          :rate_code_slug => params[:rate_code],
           :product_name   => params[:product_name],
           :description    => params[:description],
           :hid            => params[:hid],

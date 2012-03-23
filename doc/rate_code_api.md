@@ -17,6 +17,18 @@ the period is set to hour, the reporting mechanism will compute the qty as
 end_time - start_time. If the period is set to month, the qty will be computed
 as (end_time - start_time) / number of seconds in the month.
 
+### Slug Uniqueness
+
+When Shushu providers are submitting billable_events, they are required to
+include the slug of a rate_code. If slugs were not globally unique, then
+the provider of billable_events would need to include the provider_id of the
+rate_code's provider. To keep the billable_event provider from having to know
+about the rate_code provider, we require that slug's be globally unique.
+
+Slugs must also be a UUID. Provider's who submit rate_codes with UUID slugs
+can be assured that they will not collide with other providers based on the low
+probability that any two UUIDs will be equal.
+
 ## API
 
 ### Create Rate Code

@@ -19,7 +19,7 @@ module RateCodeService
     if !PERIODS.include?(args[:period])
       raise ArgumentError, "period must be one of #{PERIODS.join(',')}"
     end
-    
+
     RateCode.create(
       :provider_id   => args[:provider_id],
       :rate          => args[:rate],
