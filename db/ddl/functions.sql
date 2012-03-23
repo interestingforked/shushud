@@ -1,3 +1,5 @@
+CREATE EXTENSION hstore;
+
 CREATE OR REPLACE FUNCTION bn_month(timestamptz)
 RETURNS timestamptz AS $$
   SELECT (date_trunc('month', $1) + '1 month'::interval);
@@ -100,7 +102,8 @@ CREATE OR REPLACE VIEW billable_units AS
     rate_codes.product_group,
     COALESCE(rate_codes.product_name, a.product_name) as product_name,
     rate_codes.rate,
-    rate_codes.rate_period
+    rate_codes.rate_period,
+    a.provider_id
 
     FROM billable_events a
     LEFT OUTER JOIN rate_codes
