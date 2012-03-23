@@ -1,4 +1,4 @@
-require File.expand_path('../../test_helper', __FILE__)
+require File.expand_path("../../test_helper", __FILE__)
 
 class RateCodeApiTest < ShushuTest
 
@@ -9,7 +9,7 @@ class RateCodeApiTest < ShushuTest
   end
 
   def rate_code_params
-    { :rate => 5, :group => "dyno", :name => "web", :period => "month"}
+    {:rate => 5, :group => "dyno", :name => "web", :period => "month"}
   end
 
   def test_create_rate_code
@@ -19,7 +19,7 @@ class RateCodeApiTest < ShushuTest
   end
 
   def test_only_allows_month_or_hour_for_rate_period
-    [[400, 'foo'], [201, 'hour'], [201, 'month']].each do |status, period|
+    [[400, "foo"], [201, "hour"], [201, "month"]].each do |status, period|
       post("/rate_codes", rate_code_params.merge(:period => period))
       assert_equal(status, last_response.status)
     end
@@ -44,13 +44,14 @@ class RateCodeApiTest < ShushuTest
   end
 
   private
+
   def assert_returns_json(body)
     json = JSON.parse(body)
-    assert json['slug'] 
-    assert_equal 5,       json['rate'] 
-    assert_equal 'dyno',  json['group'] 
-    assert_equal 'web',   json['name'] 
-    assert_equal 'month', json['period'] 
+    assert(json["slug"])
+    assert_equal(5, json["rate"])
+    assert_equal("dyno", json["group"])
+    assert_equal("web", json["name"])
+    assert_equal("month", json["period"])
   end
 
 end
