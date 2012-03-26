@@ -33,7 +33,7 @@ module BillableEventService
         BillableEvent.create(
           :provider_id      => args[:provider_id],
           :rate_code_id     => args[:rate_code_id],
-          :entity_id_uuid   => args[:entity_id_uuid],
+          :entity_id_uuid   => validate_uuid(args[:entity_id_uuid]),
           :entity_id        => args[:entity_id],
           :hid              => args[:hid],
           :qty              => args[:qty],
@@ -58,6 +58,20 @@ module BillableEventService
 
   def missing_args(args)
     required_args(args[:state]) - args.reject {|k,v| v.nil?}.keys
+  end
+
+  def validate_uuid(str)
+    if str.nil?
+      return nil
+    elsif str.respond_to?(:length)
+      if str.length == 36
+        return str
+      else
+        nil
+      end
+    else
+      nil
+    end
   end
 
   def required_args(state)
