@@ -1,4 +1,4 @@
-require File.expand_path('../../test_helper', __FILE__)
+require File.expand_path("../../test_helper", __FILE__)
 
 class BillableEventsApiTest < ShushuTest
 
@@ -16,8 +16,8 @@ class BillableEventsApiTest < ShushuTest
     body = {
       "qty"       => 1,
       "rate_code" => @rate_code.slug,
-      "time"      => '2011-01-01 00:00:00',
-      "state"     => 'open'
+      "time"      => "2011-01-01 00:00:00",
+      "state"     => "open"
     }.merge(opts)
     put "resources/123/billable_events/#{entity_id || 1}", body
   end
@@ -27,34 +27,34 @@ class BillableEventsApiTest < ShushuTest
     body = {
       :qty         => 1,
       :rate_code   => @rate_code.slug,
-      :time        => '2011-01-01 00:00:00',
+      :time        => "2011-01-01 00:00:00",
       :description => "perhaps a command name?",
-      :state       => 'open'
+      :state       => "open"
     }
     put("/resources/123/billable_events/1", body)
     assert_equal(201, last_response.status)
-    assert_equal('2011-01-01 00:00:00 UTC', JSON.parse(last_response.body)["time"])
-    assert_equal('open', JSON.parse(last_response.body)["state"])
+    assert_equal("2011-01-01 00:00:00 UTC", JSON.parse(last_response.body)["time"])
+    assert_equal("open", JSON.parse(last_response.body)["state"])
   end
 
   def test_open_event_with_incorrect_params
     setup_auth
     body = {
       :qty        => 1,
-      :time       => '2011-01-01 00:00:00',
-      :state      => 'open'
+      :time       => "2011-01-01 00:00:00",
+      :state      => "open"
     }
     put("/resources/123/billable_events/1", body)
     assert_equal(400, last_response.status)
   end
 
   def test_open_event_with_incorrect_auth
-    authorize('something that is not a provider id', 'not a provider token')
+    authorize("something that is not a provider id", "not a provider token")
     body = {
       :qty        => 1,
       :rate_code  => @rate_code.slug,
-      :time       => '2011-01-01 00:00:00',
-      :state      => 'open'
+      :time       => "2011-01-01 00:00:00",
+      :state      => "open"
     }
     put("/resources/123/billable_events/1", body)
     assert_equal(401, last_response.status)
@@ -78,8 +78,8 @@ class BillableEventsApiTest < ShushuTest
     body = {
       :qty        => 1,
       :rate_code  => @rate_code.slug,
-      :time       => '2011-01-01 00:00:00',
-      :state      => 'open'
+      :time       => "2011-01-01 00:00:00",
+      :state      => "open"
     }
     put("/resources/123/billable_events/1", body)
     assert_equal(201, last_response.status)
@@ -95,8 +95,8 @@ class BillableEventsApiTest < ShushuTest
     put_body = {
       :qty        => 1,
       :rate_code  => @rate_code.slug,
-      :time       => '2011-01-01 00:00:00 +0000',
-      :state      => 'open'
+      :time       => "2011-01-01 00:00:00 +0000",
+      :state      => "open"
     }
 
     put "/resources/app123@heroku.com/billable_events/1", put_body
@@ -113,8 +113,8 @@ class BillableEventsApiTest < ShushuTest
     put_body = {
       :qty        => 1,
       :rate_code  => @rate_code.slug,
-      :time       => '2011-01-01 00:00:00 +0000',
-      :state      => 'open'
+      :time       => "2011-01-01 00:00:00 +0000",
+      :state      => "open"
     }
     put "/resources/app123/billable_events/1", put_body
     assert_equal 201, last_response.status
@@ -128,15 +128,15 @@ class BillableEventsApiTest < ShushuTest
     put_body = {
       :qty        => 1,
       :rate_code  => @rate_code.slug,
-      :time       => '2011-01-01 00:00:00 +0000',
-      :state      => 'open'
+      :time       => "2011-01-01 00:00:00 +0000",
+      :state      => "open"
     }
 
     put "/resources/app123@heroku.com/billable_events/1", put_body
     assert_equal(201, last_response.status)
     qty = JSON.parse(last_response.body)["qty"]
     time = JSON.parse(last_response.body)["time"]
-    put "/resources/app123@heroku.com/billable_events/1", put_body.merge(:qty => 2, :time => '2011-01-01 00:00:00 +0000')
+    put "/resources/app123@heroku.com/billable_events/1", put_body.merge(:qty => 2, :time => "2011-01-01 00:00:00 +0000")
     assert_equal(200, last_response.status)
     assert_equal qty, JSON.parse(last_response.body)["qty"]
     assert_equal time, JSON.parse(last_response.body)["time"]
@@ -147,12 +147,12 @@ class BillableEventsApiTest < ShushuTest
     body = {
       :qty        => 1,
       :rate_code  => @rate_code.slug,
-      :time       => '2011-01-01 00:00:00 +0000',
-      :state      => 'open'
+      :time       => "2011-01-01 00:00:00 +0000",
+      :state      => "open"
     }
     put "/resources/123/billable_events/1", body
     assert_equal 201, last_response.status
-    put "/resources/123/billable_events/1", body.merge({:state => "close", :time => '2011-01-01 00:00:01 +0000'})
+    put "/resources/123/billable_events/1", body.merge({:state => "close", :time => "2011-01-01 00:00:01 +0000"})
     assert_equal 201, last_response.status
   end
 
@@ -161,14 +161,14 @@ class BillableEventsApiTest < ShushuTest
     body = {
       :qty        => 1,
       :rate_code  => @rate_code.slug,
-      :time       => '2011-01-01 00:00:00 +0000',
-      :state      => 'open'
+      :time       => "2011-01-01 00:00:00 +0000",
+      :state      => "open"
     }
     put "/resources/123/billable_events/1", body
     assert_equal 201, last_response.status
-    put "/resources/123/billable_events/1", body.merge({:state => "close", :time => '2011-01-01 00:00:01 +0000'})
+    put "/resources/123/billable_events/1", body.merge({:state => "close", :time => "2011-01-01 00:00:01 +0000"})
     assert_equal 201, last_response.status
-    put "/resources/123/billable_events/1", body.merge({:state => "close", :time => '2011-01-01 00:00:01 +0000'})
+    put "/resources/123/billable_events/1", body.merge({:state => "close", :time => "2011-01-01 00:00:01 +0000"})
     assert_equal 200, last_response.status
   end
 
