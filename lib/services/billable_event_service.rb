@@ -61,14 +61,8 @@ module BillableEventService
   end
 
   def validate_uuid(str)
-    if str.nil?
-      return nil
-    elsif str.respond_to?(:length)
-      if str.length == 36
-        return str
-      else
-        nil
-      end
+    if str =~ /[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}/
+      str
     else
       nil
     end

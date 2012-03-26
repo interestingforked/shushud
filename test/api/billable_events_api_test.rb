@@ -51,6 +51,23 @@ class BillableEventsApiTest < ShushuTest
     assert_equal(201, last_response.status)
   end
 
+  def test_open_event_with_valid_entity_id_uuid
+    uuid = SecureRandom.uuid
+    setup_auth
+    body = {
+      :entity_id_uuid => uuid,
+      :qty            => 1,
+      :rate_code      => @rate_code.slug,
+      :time           => "2011-01-01 00:00:00",
+      :description    => "perhaps a command name?",
+      :state          => "open"
+    }
+    put("/resources/123/billable_events/1", body)
+    assert_equal(201, last_response.status)
+    assert_equal(uuid, JSON.parse(last_response.body)["entity_id_uuid"])
+  end
+
+
   def test_open_event_with_incorrect_params
     setup_auth
     body = {
