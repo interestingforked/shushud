@@ -5,13 +5,7 @@ class ReportServiceTest < ShushuTest
   def test_report_returns_hash
     account = build_account(:provider_id => provider.id)
     rate_code = build_rate_code
-    ResourceOwnershipRecord.create(
-      :account_id => account.id,
-      :hid        => "app123",
-      :entity_id   => 1,
-      :state      => ResourceOwnershipRecord::Active,
-      :time       => jan
-    )
+    build_res_own(account.id, "app123", nil, ResourceOwnershipRecord::ACTIVE, jan)
     BillableEvent.create(
       :hid          => "app123",
       :rate_code_id => rate_code.id,
@@ -25,13 +19,7 @@ class ReportServiceTest < ShushuTest
 
   def test_one_owner_one_event
     account = build_account(:provider_id => provider.id)
-    ResourceOwnershipRecord.create(
-      :account_id => account.id,
-      :hid        => "app123",
-      :entity_id   => 1,
-      :state      => ResourceOwnershipRecord::Active,
-      :time       => jan
-    )
+    build_res_own(account.id, "app123", nil, ResourceOwnershipRecord::ACTIVE, jan)
     BillableEvent.create(
       :hid          => "app123",
       :rate_code_id => build_rate_code.id,
@@ -53,9 +41,9 @@ class ReportServiceTest < ShushuTest
     another_account = build_account(:provider_id => provider.id)
 
     eid1 = SecureRandom.uuid
-    build_resource_ownership_record(account.id, "app123", eid1, "active", jan)
-    build_resource_ownership_record(account.id, "app123", eid1, "inactive", jan + 100)
-    build_resource_ownership_record(another_account.id, "app123", nil, "active", jan + 100)
+    build_resource_ownership_record(account.id, "app123", eid1, ResourceOwnershipRecord::ACTIVE, jan)
+    build_resource_ownership_record(account.id, "app123", eid1, ResourceOwnershipRecord::INACTIVE, jan + 100)
+    build_resource_ownership_record(another_account.id, "app123", nil, ResourceOwnershipRecord::ACTIVE, jan + 100)
 
     build_billable_event("app123", nil, 1, jan)
 
@@ -77,13 +65,7 @@ class ReportServiceTest < ShushuTest
   def test_billable_units_include_rate_code_information
     rate_code = build_rate_code(:product_name => "a test product", :product_group => "super dyno", :rate => 1000, :rate_period => "hour")
     account = build_account(:provider_id => provider.id)
-    ResourceOwnershipRecord.create(
-      :account_id => account.id,
-      :hid        => "app123",
-      :entity_id   => 1,
-      :state      => ResourceOwnershipRecord::Active,
-      :time       => jan
-    )
+    build_res_own(account.id, "app123", nil, ResourceOwnershipRecord::ACTIVE, jan)
     BillableEvent.create(
       :hid          => "app123",
       :rate_code_id => build_rate_code.id,
@@ -104,13 +86,7 @@ class ReportServiceTest < ShushuTest
   def test_billable_units_qty_computation_on_closed_event
     account = build_account(:provider_id => provider.id)
     rate_code = build_rate_code
-    ResourceOwnershipRecord.create(
-      :account_id => account.id,
-      :hid        => "app123",
-      :entity_id   => 1,
-      :state      => ResourceOwnershipRecord::Active,
-      :time       => jan
-    )
+    build_res_own(account.id, "app123", nil, ResourceOwnershipRecord::ACTIVE, jan)
     BillableEvent.create(
       :hid          => "app123",
       :entity_id     => 1,
@@ -133,13 +109,7 @@ class ReportServiceTest < ShushuTest
   def test_billable_units_qty_computation_on_open_event
     account = build_account(:provider_id => provider.id)
     rate_code = build_rate_code
-    ResourceOwnershipRecord.create(
-      :account_id => account.id,
-      :hid        => "app123",
-      :entity_id   => 1,
-      :state      => ResourceOwnershipRecord::Active,
-      :time       => jan
-    )
+    build_res_own(account.id, "app123", nil, ResourceOwnershipRecord::ACTIVE, jan)
     BillableEvent.create(
       :hid          => "app123",
       :entity_id     => 1,
@@ -158,8 +128,8 @@ class ReportServiceTest < ShushuTest
 
     payment_method = build_payment_method
     account = build_account(:provider_id => provider.id)
-    build_act_own(account.id, payment_method.id, nil, AccountOwnershipRecord::Active, jan)
-    build_res_own(account.id, "app123", 1, ResourceOwnershipRecord::Active, jan)
+    build_act_own(account.id, payment_method.id, nil, AccountOwnershipRecord::ACTIVE, jan)
+    build_res_own(account.id, "app123", nil, ResourceOwnershipRecord::ACTIVE, jan)
     build_billable_event("app123", nil, 1, jan, monthly_rc.id)
     build_billable_event("app123", nil, 1, jan, hourly_rc.id)
 
@@ -179,12 +149,14 @@ class ReportServiceTest < ShushuTest
     account = build_account(:provider_id => provider.id)
     another_account = build_account(:provider_id => provider.id)
 
-    build_act_own(account.id, payment_method.id, nil, AccountOwnershipRecord::Active, jan)
-    build_act_own(another_account.id, payment_method.id, nil, AccountOwnershipRecord::Active, jan)
+    build_act_own(account.id, payment_method.id, nil, AccountOwnershipRecord::ACTIVE, jan)
+    build_act_own(another_account.id, payment_method.id, nil, AccountOwnershipRecord::ACTIVE, jan)
 
-    build_res_own(account.id, "app123", 1, ResourceOwnershipRecord::Active, jan)
-    build_res_own(account.id, "app123", 1, ResourceOwnershipRecord::Inactive, (jan + 100))
-    build_res_own(another_account.id, "app123", 2, ResourceOwnershipRecord::Active, (jan + 100))
+    res_own_uuid1 = SecureRandom.uuid
+    res_own_uuid2 = SecureRandom.uuid
+    build_res_own(account.id, "app123", res_own_uuid1, ResourceOwnershipRecord::ACTIVE, jan)
+    build_res_own(account.id, "app123", res_own_uuid1, ResourceOwnershipRecord::INACTIVE, (jan + 100))
+    build_res_own(another_account.id, "app123", res_own_uuid2, ResourceOwnershipRecord::ACTIVE, (jan + 100))
 
     build_billable_event("app123", 1, 1, jan)
 
@@ -205,13 +177,16 @@ class ReportServiceTest < ShushuTest
     account = build_account
     another_account = build_account
 
-    build_act_own(account.id, payment_method.id, nil, AccountOwnershipRecord::Active, jan)
-    build_act_own(another_account.id, another_payment_method.id, nil, AccountOwnershipRecord::Active, jan)
+    build_act_own(account.id, payment_method.id, nil, AccountOwnershipRecord::ACTIVE, jan)
+    build_act_own(another_account.id, another_payment_method.id, nil, AccountOwnershipRecord::ACTIVE, jan)
 
-    build_res_own(account.id, "app124", nil, ResourceOwnershipRecord::Active, jan)
-    build_res_own(account.id, "app123", 1, ResourceOwnershipRecord::Active, jan)
-    build_res_own(account.id, "app123", 1, ResourceOwnershipRecord::Inactive, jan + 100)
-    build_res_own(another_account.id, "app123", 2, ResourceOwnershipRecord::Active, jan + 101)
+    res_own_uuid1 = SecureRandom.uuid
+    res_own_uuid2 = SecureRandom.uuid
+    res_own_uuid3 = SecureRandom.uuid
+    build_res_own(account.id, "app124", res_own_uuid1, ResourceOwnershipRecord::ACTIVE, jan)
+    build_res_own(account.id, "app123", res_own_uuid2, ResourceOwnershipRecord::ACTIVE, jan)
+    build_res_own(account.id, "app123", res_own_uuid2, ResourceOwnershipRecord::INACTIVE, jan + 100)
+    build_res_own(another_account.id, "app123", res_own_uuid3, ResourceOwnershipRecord::ACTIVE, jan + 101)
 
     build_billable_event("app123", 1, 1, jan)
     build_billable_event("app124", 2, 1, jan)
@@ -240,13 +215,8 @@ class ReportServiceTest < ShushuTest
   def test_inv_uses_prod_name_on_events_when_not_present_on_rate_code
     account = build_account(:provider_id => provider.id)
     rate_code = build_rate_code(:product_name => nil)
-    ResourceOwnershipRecord.create(
-      :account_id => account.id,
-      :hid        => "app123",
-      :entity_id   => 1,
-      :state      => ResourceOwnershipRecord::Active,
-      :time       => jan
-    )
+    build_res_own(account.id, "app123", nil, ResourceOwnershipRecord::ACTIVE, jan)
+
     BillableEvent.create(
       :hid          => "app123",
       :product_name => "web",
@@ -263,13 +233,8 @@ class ReportServiceTest < ShushuTest
   def test_invoice_uses_product_name_on_rate_codes_when_present
     account = build_account(:provider_id => provider.id)
     rate_code = build_rate_code(:product_name => "specialweb")
-    ResourceOwnershipRecord.create(
-      :account_id => account.id,
-      :hid        => "app123",
-      :entity_id   => 1,
-      :state      => ResourceOwnershipRecord::Active,
-      :time       => jan
-    )
+    build_res_own(account.id, "app123", nil, ResourceOwnershipRecord::ACTIVE, jan)
+
     BillableEvent.create(
       :hid          => "app123",
       :product_name => "web",
@@ -289,12 +254,14 @@ class ReportServiceTest < ShushuTest
     account = build_account(:provider_id => provider.id)
     another_account = build_account(:provider_id => provider.id)
 
-    build_act_own(account.id, payment_method.id, nil, AccountOwnershipRecord::Active, jan)
-    build_act_own(another_account.id, payment_method.id, nil, AccountOwnershipRecord::Active, jan)
+    build_act_own(account.id, payment_method.id, nil, AccountOwnershipRecord::ACTIVE, jan)
+    build_act_own(another_account.id, payment_method.id, nil, AccountOwnershipRecord::ACTIVE, jan)
 
-    build_res_own(account.id, "app123", 1, ResourceOwnershipRecord::Active, jan)
-    build_res_own(account.id, "app123", 1, ResourceOwnershipRecord::Inactive, jan + 100)
-    build_res_own(another_account.id, "app123", 2, ResourceOwnershipRecord::Active, jan + 101)
+    res_own_uuid1 = SecureRandom.uuid
+    res_own_uuid2 = SecureRandom.uuid
+    build_res_own(account.id, "app123", res_own_uuid1, ResourceOwnershipRecord::ACTIVE, jan)
+    build_res_own(account.id, "app123", res_own_uuid1, ResourceOwnershipRecord::INACTIVE, jan + 100)
+    build_res_own(another_account.id, "app123", res_own_uuid2, ResourceOwnershipRecord::ACTIVE, jan + 101)
 
     build_billable_event("app123", 1, 1, jan)
     build_billable_event("app124", 2, 1, jan)
@@ -354,9 +321,11 @@ class ReportServiceTest < ShushuTest
     account = build_account(:provider_id => provider.id)
     another_account = build_account(:provider_id => provider.id)
 
-    build_res_own(account.id, "app123", 1, ResourceOwnershipRecord::Active, jan)
-    build_res_own(account.id, "app123", 1, ResourceOwnershipRecord::Inactive, jan + 100)
-    build_res_own(another_account.id, "app123", 2, ResourceOwnershipRecord::Active, jan + 101)
+    res_own_uuid1 = SecureRandom.uuid
+    res_own_uuid2 = SecureRandom.uuid
+    build_res_own(account.id, "app123", res_own_uuid1, ResourceOwnershipRecord::ACTIVE, jan)
+    build_res_own(account.id, "app123", res_own_uuid1, ResourceOwnershipRecord::INACTIVE, jan + 100)
+    build_res_own(another_account.id, "app123", res_own_uuid2, ResourceOwnershipRecord::ACTIVE, jan + 101)
 
     #many people have owned app123
     build_billable_event("app123", 1, 1, jan, rate_code.id)

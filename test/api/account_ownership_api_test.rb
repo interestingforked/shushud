@@ -14,7 +14,7 @@ class AccountOwnershipApiTest < ShushuTest
     s = SecureRandom.uuid
     pm = build_payment_method(:slug => s)
     put("/payment_methods/#{s}/account_ownerships/#{acct_own_eid}", {
-      :state => AccountOwnershipRecord::Active,
+      :state => "active",
       :account_id => acct.id,
       :time => Time.now.utc.to_s
     })
@@ -29,7 +29,7 @@ class AccountOwnershipApiTest < ShushuTest
     acct_own_eid = SecureRandom.uuid
     pm = build_payment_method(:slug => pmid)
     put("/payment_methods/#{pmid}/account_ownerships/#{acct_own_eid}", {
-      :state => AccountOwnershipRecord::Active,
+      :state => "active",
       :account_id => aid,
       :time => Time.now.utc.to_s
     })

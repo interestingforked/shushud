@@ -41,11 +41,11 @@ CREATE OR REPLACE VIEW account_ownerships AS
     FROM account_ownership_records a
     LEFT OUTER JOIN account_ownership_records b
     ON
-          a.entity_id    = b.entity_id
-      AND a.state       = 'active'
-      AND b.state       = 'inactive'
+          a.entity_id   = b.entity_id
+      AND a.state       = 1
+      AND b.state       = 0
     WHERE
-          a.state       = 'active'
+          a.state       = 1
 ;
 
 CREATE OR REPLACE VIEW resource_ownerships AS
@@ -59,11 +59,11 @@ CREATE OR REPLACE VIEW resource_ownerships AS
     FROM resource_ownership_records a
     LEFT OUTER JOIN resource_ownership_records b
     ON
-          a.entity_id    = b.entity_id
-      AND a.state       = 'active'
-      AND b.state       = 'inactive'
+          a.entity_id   = b.entity_id
+      AND a.state       = 1
+      AND b.state       = 0
     WHERE
-          a.state       = 'active'
+          a.state       = 1
 ;
 
 CREATE OR REPLACE VIEW compacted_res_own AS

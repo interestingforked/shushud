@@ -13,11 +13,11 @@ module OwnershipService
   end
 
   def activate(provider_id, primary_id, secondary_id, time, entity_id)
-    [200, create_record(provider_id, primary_id, secondary_id, model.active, time, entity_id)]
+    [200, create_record(provider_id, primary_id, secondary_id, model::ACTIVE, time, entity_id)]
   end
 
   def deactivate(provider_id, primary_id, secondary_id, time, entity_id)
-    [200, create_record(provider_id, primary_id, secondary_id, model.inactive, time, entity_id)]
+    [200, create_record(provider_id, primary_id, secondary_id, model::INACTIVE, time, entity_id)]
   end
 end
 

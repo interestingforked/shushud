@@ -1,15 +1,6 @@
 class ResourceOwnershipRecord < Sequel::Model
-
-  Active = "active"
-  Inactive = "inactive"
-
-  def self.active
-    Active
-  end
-
-  def self.inactive
-    Inactive
-  end
+  ACTIVE = 1
+  INACTIVE = 0
 
   def account_id=(slug)
     self[:account_id] = begin
@@ -34,7 +25,7 @@ class ResourceOwnershipRecord < Sequel::Model
       :resource_id => self[:hid],
       :from        => self[:from],
       :to          => self[:to]
-      }
+    }
   end
 
   def account

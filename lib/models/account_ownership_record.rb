@@ -1,14 +1,6 @@
 class AccountOwnershipRecord < Sequel::Model
-  Active = "active"
-  Inactive = "inactive"
-
-  def self.active
-    Active
-  end
-
-  def self.inactive
-    Inactive
-  end
+  ACTIVE = 1
+  INACTIVE = 0
 
   def payment_method_id=(slug)
     self[:payment_method_id] = begin

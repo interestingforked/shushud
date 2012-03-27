@@ -40,7 +40,7 @@ class OpenCloseOrderingTest < ShushuTest
 
     account = build_account(:provider_id => @provider.id)
     put("/accounts/#{account.id}/resource_ownerships/entity1", {
-      :state => ResourceOwnershipRecord::Active,
+      :state => ResourceOwnershipRecord::ACTIVE,
       :resource_id => "123",
       :time => jan
     })

@@ -9,8 +9,8 @@ class ResourceOwnershipApiTest < ShushuTest
   end
 
   def test_activate_record
-    put("/accounts/#{account.id}/resource_ownerships/event1", {
-      :state => ResourceOwnershipRecord::Active,
+    put("/accounts/#{account.id}/resource_ownerships/#{SecureRandom.uuid}", {
+      :state => "active",
       :resource_id => "123",
       :time => Time.now.utc.to_s
     })
@@ -18,8 +18,8 @@ class ResourceOwnershipApiTest < ShushuTest
   end
 
   def test_activate_record_with_new_account_id_
-    put("/accounts/new_slug/resource_ownerships/event1", {
-      :state => ResourceOwnershipRecord::Active,
+    put("/accounts/new_slug/resource_ownerships/#{SecureRandom.uuid}", {
+      :state => "active",
       :resource_id => "123",
       :time => Time.now.utc.to_s
     })
@@ -29,13 +29,14 @@ class ResourceOwnershipApiTest < ShushuTest
   end
 
   def test_deactivate_record
-    put("/accounts/#{account.id}/resource_ownerships/event1", {
-      :state => ResourceOwnershipRecord::Active,
+    eid = SecureRandom.uuid
+    put("/accounts/#{account.id}/resource_ownerships/#{eid}", {
+      :state => "active",
       :resource_id => "123",
       :time => Time.now.utc.to_s
     })
-    put("/accounts/#{account.id}/resource_ownerships/event1", {
-      :state => ResourceOwnershipRecord::Inactive,
+    put("/accounts/#{account.id}/resource_ownerships/#{eid}", {
+      :state => "inactive",
       :resource_id => "123",
       :time => Time.now.utc.to_s
     })
