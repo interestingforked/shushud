@@ -39,7 +39,7 @@ module ShushuHelpers
     AccountOwnershipRecord.create(
       :account_id        => account_id,
       :payment_method_id => payment_method_id,
-      :entity_id         => entity_id,
+      :entity_id         => entity_id || SecureRandom.uuid,
       :state             => state,
       :time              => time
     )

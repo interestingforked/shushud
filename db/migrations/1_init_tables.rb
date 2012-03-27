@@ -77,7 +77,7 @@ Sequel.migration do
       foreign_key :provider_id, :providers
     end
     add_column :account_ownership_records, :created_at, "timestamptz"
-    add_column :account_ownership_records, :entity_id,  "varchar(255)"
+    add_column :account_ownership_records, :entity_id,  "uuid"
     add_column :account_ownership_records, :time,       "timestamptz"
     add_column :account_ownership_records, :state,      "varchar(255)"
     alter_table(:account_ownership_records) do
