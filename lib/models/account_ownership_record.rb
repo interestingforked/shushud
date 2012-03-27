@@ -18,12 +18,6 @@ class AccountOwnershipRecord < Sequel::Model
     end[:id]
   end
 
-  def self.collapse(payment_method_id)
-    Shushu::DB.synchronize do |conn|
-      conn.exec("SELECT * from account_ownerships WHERE payment_method_id = ? ", payment_method_id).to_a
-    end
-  end
-
   def account_id=(slug)
     self[:account_id] = begin
       if a = Account.first(:slug => slug.to_s)
