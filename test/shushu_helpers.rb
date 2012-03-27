@@ -10,7 +10,7 @@ module ShushuHelpers
 
   def build_rate_code(opts={})
     RateCode.create({
-      :slug => "RT01",
+      :slug => SecureRandom.uuid,
       :rate => 5,
       :rate_period => "hour",
       :provider_id => provider.id,
@@ -55,13 +55,13 @@ module ShushuHelpers
     )
   end
 
-  def build_billable_event(hid, entity_id, state, time, rate_code_id=nil)
+  def build_billable_event(hid, entity_id, state, time, rate_code_slug=nil)
     BillableEvent.create(
       :hid => hid,
       :entity_id => entity_id || SecureRandom.uuid,
       :state => state,
       :time => time,
-      :rate_code_id => rate_code_id || build_rate_code.id
+      :rate_code_id => rate_code_slug || build_rate_code.slug
     )
   end
 

@@ -51,11 +51,7 @@ class BillableEvent < Sequel::Model
   end
 
   def rate_code_id=(slug)
-    self[:rate_code_id] = begin
-      RateCode.first(:slug => slug.to_s) ||
-      RateCode.first(:id => slug.to_i)   ||
-      raise(ArgumentError, "Unable to resolve rate_code with rate_code_id=#{slug}")
-    end[:id]
+    self[:rate_code_id] = RateCode.resolve_id(slug)
   end
 
   def rate_code

@@ -1,7 +1,7 @@
 class RateCode < Sequel::Model
 
   def self.resolve_id(slug)
-    if r = RateCode[:slug => slug]
+    if r = RateCode[:slug => Utils.validate_uuid!(slug)]
       r[:id]
     else
       raise(NotFound, "Could not find rate_code with slug=#{slug}")

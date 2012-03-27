@@ -35,6 +35,7 @@ module Shushu
 
 end
 
+require "./lib/utils"
 require "./lib/plugins/created_at_setter"
 require "./lib/plugins/model"
 require "./lib/plugins/log"
@@ -74,7 +75,6 @@ Log.level = ENV["LOG_LEVEL"].to_i
 Log.formatter = Proc.new do |severity, datetime, progname, msg|
   "#{severity.to_s.downcase}=true #{msg}\n"
 end
-
 
 Shushu::Conf[:gateway] = BraintreeGateway
 Shushu::DB.sql_log_level = :debug

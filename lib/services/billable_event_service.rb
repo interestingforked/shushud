@@ -32,8 +32,8 @@ module BillableEventService
       begin
         BillableEvent.create(
           :provider_id      => args[:provider_id],
-          :entity_id_uuid   => validate_uuid(args[:entity_id_uuid]),
-          :rate_code_id     => RateCode.resolve_id(args[:rate_code_slug]),
+          :entity_id_uuid   => Utils.validate_uuid(args[:entity_id_uuid]),
+          :rate_code_id     => args[:rate_code],
           :entity_id        => args[:entity_id],
           :hid              => args[:hid],
           :qty              => args[:qty],
@@ -60,18 +60,10 @@ module BillableEventService
     required_args(args[:state]) - args.reject {|k,v| v.nil?}.keys
   end
 
-  def validate_uuid(str)
-    if str =~ /[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}/
-      str
-    else
-      nil
-    end
-  end
-
   def required_args(state)
     case state.to_s
     when "open"
-      [:provider_id, :rate_code_slug, :entity_id, :hid, :qty, :time, :state]
+      [:provider_id, :rate_code, :entity_id, :hid, :qty, :time, :state]
     when "close"
       [:provider_id, :entity_id, :state, :time]
     end

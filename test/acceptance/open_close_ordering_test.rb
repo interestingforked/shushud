@@ -26,7 +26,7 @@ class OpenCloseOrderingTest < ShushuTest
       :state     => 'close',
       :time      => "2012-01-01 00:00:01 UTC"
     })
-    assert_equal(last_response.status, 201)
+    assert_equal(201, last_response.status)
   end
 
   def test_usage_report_does_not_include_close_without_open
@@ -36,10 +36,10 @@ class OpenCloseOrderingTest < ShushuTest
       :state     => 'close',
       :time      => jan
     })
-    assert_equal(last_response.status, 201)
+    assert_equal(201, last_response.status)
 
     account = build_account(:provider_id => @provider.id)
-    put("/accounts/#{account.id}/resource_ownerships/entity1", {
+    put("/accounts/#{account.id}/resource_ownerships/#{SecureRandom.uuid}", {
       :state => ResourceOwnershipRecord::ACTIVE,
       :resource_id => "123",
       :time => jan
