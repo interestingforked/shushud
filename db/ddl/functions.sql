@@ -398,6 +398,49 @@ RETURNS numeric AS $$
   $$ LANGUAGE SQL STABLE
 ;
 
+CREATE OR REPLACE FUNCTION
+res_diff(timestamptz, timestamptz, timestamptz, timestamptz, int)
+RETURNS TABLE(hid text, ltotal numeric, rtotal numeric, diff numeric) AS $$
+  SELECT
+    hid,
+    ((sum(
+      extract('epoch' from (
+        LEAST($2, COALESCE(bu.to, now()))
+        -
+        GREATEST($1, bu.from)
+      ))
+    ) / 3600) * bu.rate)::numeric,
+    ((sum(
+      extract('epoch' from (
+        LEAST($4, COALESCE(bu.to, now()))
+        -
+        GREATEST($3, bu.from)
+      ))
+    ) / 3600) * bu.rate)::numeric,
+    (
+      (sum(
+        extract('epoch' from (
+          LEAST($4, COALESCE(bu.to, now()))
+          -
+          GREATEST($3, bu.from)
+        ))
+      ) / 3600) * bu.rate
+      -
+      (sum(
+        extract('epoch' from (
+          LEAST($2, COALESCE(bu.to, now()))
+          -
+          GREATEST($1, bu.from)
+        ))
+      ) / 3600) * bu.rate
+    )::numeric
+  FROM
+    billable_units bu
+  WHERE
+    2 > $5
+  GROUP BY hid, rate;
+$$ LANGUAGE SQL STABLE;
+
 /*
 CREATE OR REPLACE VIEW platform_inv AS
   SELECT

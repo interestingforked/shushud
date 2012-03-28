@@ -1,13 +1,13 @@
-require File.expand_path('../../../lib/shushu', __FILE__)
-
-#TableCleaner.clean_tables
+require File.expand_path("../../../lib/shushu", __FILE__)
 
 provider = Provider.create :name => "shushu@heroku.com", :token => "secret"
 
+reid = SecureRandom.uuid
 RateCodeService.handle_in(
   :provider_id        => provider.id,
-  :slug               => "RT01",
+  :slug               => reid,
   :rate               => 5,
+  :period             => "hour",
   :product_group      => "dyno",
   :product_name       => "web"
 )
@@ -15,20 +15,20 @@ RateCodeService.handle_in(
 SecureRandom.uuid.tap do |eid|
   BillableEventService.handle_in(
     :provider_id    => provider.id,
-    :rate_code_id   => "RT01",
+    :rate_code      => reid,
     :hid            => "app123@heorku.com",
     :entity_id      => eid,
     :qty            => 1,
-    :time           => Time.utc(2012,1),
-    :state          => BillableEvent::Open
+    :time           => Time.utc(2000,1),
+    :state          => "open"
   )
   BillableEventService.handle_in(
     :provider_id    => provider.id,
-    :rate_code_id   => "RT01",
+    :rate_code      => reid,
     :hid            => "app123@heorku.com",
     :entity_id      => eid,
     :qty            => 1,
-    :time           => Time.utc(2012,1,15),
-    :state          => BillableEvent::Close
+    :time           => Time.utc(2011,1),
+    :state          => "close"
   )
 end

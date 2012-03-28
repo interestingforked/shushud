@@ -74,6 +74,14 @@ module ReportService
     end
   end
 
+  def res_diff(lfrom, lto, rfrom, rto, sbit)
+    Log.info_t(:action => "res_diff", :sbit => sbit) do
+      s = "SELECT * FROM res_diff($1, $2, $3, $4, $5)"
+      resources = exec_sql(s, lfrom, lto, rfrom, rto, sbit)
+      [200, {:resources => resources}]
+    end
+  end
+
   def exec_sql(sql, *args)
     Shushu::DB.synchronize do |conn|
       conn.exec(sql, args).to_a
