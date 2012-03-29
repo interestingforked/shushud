@@ -7,6 +7,8 @@ to the report_service ruby module. Here are the default reports provided by Shus
 * Invoice
 * Usage Report
 * Rate Code Report
+* Resource Difference
+* Revenue Report
 
 ## Invoice
 
@@ -152,10 +154,34 @@ $ curl -X GET \
   lrev=int&   \
   rrev=int&   \
   limit=int&  \
-  offset=int"
+  offset=int" \
 
 [
   {"resource": "resource123@heroku.com", "lrev": 1000.0, "rrev": 0.0, "diff": -1000.0},
   {"resource": "resource124@heroku.com", "lrev": 0.0, "rrev": 10.0, "diff": 10.0}
 ]
+```
+
+## Revenue Report
+
+Revenue is computed by looking at all billable_events that spane a given period,
+scoping the billable_events within the specified period, grouping them by rate,
+summing the quantity within the groups, and finally taking a sum of the product
+of grouped, sumed quantities with their respective rates.
+
+### Quantity Based Credits
+
+Heroku issues a quantity based credit. For instance, all resources receive
+750 free hours for a particular rate_code. The 750hrs is a parameter to the
+revenue report.
+
+### API
+
+```bash
+$ curl -X GET "https://provider:token@shushu.heroku.com/rev_report? \
+  from=time&
+  to=time&
+  qcredit=int"
+
+{"total": 12345.00}
 ```
