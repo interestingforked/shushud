@@ -104,3 +104,58 @@ $ curl -X GET https://provider:token@shushu.heroku.com/rate_codes/:rate_code_slu
   ]
 }
 ```
+
+## Resource Difference
+
+Over time, resources will accumulate billable_events in such a way that
+they increase and decrease their spend with respect to a billing period. For
+example, if I have an app that uses 1 dyno for the month of January and uses
+2 dynos for the month of February, I have a difference of 1 dyno between January
+and February. This report will return a list of resources and their
+respective differences in revenue.
+
+### API
+
+#### Periods of Comparison
+
+This endpoint will compute differences between two periods of time. Thus the API
+expects 4 time parameters. 2 parameters to represent the first period and 2
+parameters to represent the second period.
+
+#### Direction of Difference
+
+In addition to timestamps, the API also
+expects a sign bit. This parameter will filter the results on the sign of the
+differnce. For example, if the sign bit is 1, the results will show all resources
+that increased since the last period. If the sign bit is -1, the results will
+show all resources that decreased since the last period.
+
+#### Starting & Ending Revenue
+
+Some resources will have a starting revenue of $0.00 and end with a
+revenue of $100.00. Likewise start with $100.00 and end with $0.00.
+The lrev and rrev parameters provide a mechanism to filter the list of resources.
+
+#### Pagination
+
+By specifying a limit and offset, the client can implement pagination of
+this API.
+
+```bash
+$ curl -X GET \
+  "https://provider:token@shushu.heroku.com/res_diff? \
+  lfrom=time& \
+  lto=time&   \
+  rfrom=time& \
+  rto=time&   \
+  sbit=int&   \
+  lrev=int&   \
+  rrev=int&   \
+  limit=int&  \
+  offset=int"
+
+[
+  {"resource": "resource123@heroku.com", "lrev": 1000.0, "rrev": 0.0, "diff": -1000.0},
+  {"resource": "resource124@heroku.com", "lrev": 0.0, "rrev": 10.0, "diff": 10.0}
+]
+```
