@@ -138,10 +138,10 @@ Some resources will have a starting revenue of $0.00 and end with a
 revenue of $100.00. Likewise start with $100.00 and end with $0.00.
 The lrev and rrev parameters provide a mechanism to filter the list of resources.
 
-#### Pagination
+#### Limiting Result Set
 
-By specifying a limit and offset, the client can implement pagination of
-this API.
+On a production installation, the number of results from the API
+will be quite numerous.
 
 ```bash
 $ curl -X GET \
@@ -153,8 +153,7 @@ $ curl -X GET \
   sbit=int&   \
   lrev=int&   \
   rrev=int&   \
-  limit=int&  \
-  offset=int" \
+  limit=int"
 
 [
   {"resource": "resource123@heroku.com", "lrev": 1000.0, "rrev": 0.0, "diff": -1000.0},
