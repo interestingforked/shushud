@@ -130,5 +130,10 @@ Sequel.migration do
       add_unique_constraint([:provider_id, :entity_id, :state])
     end
 
+   create_table(:open_events) do
+     primary_key(:entity_id, "uuid")
+   end
+   add_column(:open_events, :state, "integer")
+
   end
 end

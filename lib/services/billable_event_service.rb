@@ -42,7 +42,7 @@ module BillableEventService
             :description      => args[:description],
             :time             => args[:time],
             :state            => BillableEvent.enc_state(state)
-          )
+          ).tap {|ev| EventTracker.track(ev[:entity_id_uuid], ev[:state])}
         end
       rescue StandardError => e
         Log.error({:error => true, :action => "#{state}_event"}.merge(args))
