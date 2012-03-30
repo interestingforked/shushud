@@ -74,10 +74,10 @@ module ReportService
     end
   end
 
-  def res_diff(lfrom, lto, rfrom, rto, sbit)
+  def res_diff(lfrom, lto, rfrom, rto, sbit, lrev, rrev, limit=100)
     Log.info_t(:action => "res_diff", :sbit => sbit) do
-      s = "SELECT * FROM res_diff($1, $2, $3, $4, $5)"
-      resources = exec_sql(s, lfrom, lto, rfrom, rto, sbit)
+      s = "SELECT * FROM res_diff($1, $2, $3, $4, $5) LIMIT $6"
+      resources = exec_sql(s, lfrom, lto, rfrom, rto, sbit, limit)
       [200, {:resources => resources}]
     end
   end
