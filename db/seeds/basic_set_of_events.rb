@@ -32,3 +32,15 @@ SecureRandom.uuid.tap do |eid|
     :state          => "close"
   )
 end
+
+SecureRandom.uuid.tap do |eid|
+  BillableEventService.handle_in(
+    :provider_id    => provider.id,
+    :rate_code      => reid,
+    :hid            => "app123@heorku.com",
+    :entity_id      => eid,
+    :qty            => 1,
+    :time           => Time.utc(2000,1),
+    :state          => "open"
+  )
+end
