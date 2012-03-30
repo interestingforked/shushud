@@ -95,7 +95,7 @@ CREATE OR REPLACE VIEW compacted_act_own AS
 CREATE OR REPLACE VIEW billable_units AS
   SELECT
     a.hid,
-    a.entity_id_uuid as entity_id,
+    a.entity_id,
     a.time as from,
     b.time as to,
     a.rate_code_id,
@@ -110,7 +110,7 @@ CREATE OR REPLACE VIEW billable_units AS
     ON rate_codes.id = a.rate_code_id
     LEFT OUTER JOIN billable_events b
     ON
-      a.entity_id_uuid = b.entity_id_uuid
+      a.entity_id = b.entity_id
       AND a.state = 1
       AND b.state = 0
     WHERE
