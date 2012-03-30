@@ -30,18 +30,20 @@ module BillableEventService
   def create_record(state, args)
     Log.info_t({:info => true, :action => "#{state}_event"}.merge(args)) do
       begin
-        BillableEvent.create(
-          :provider_id      => args[:provider_id],
-          :entity_id_uuid   => Utils.validate_uuid(args[:entity_id_uuid]),
-          :rate_code_id     => args[:rate_code],
-          :entity_id        => args[:entity_id],
-          :hid              => args[:hid],
-          :qty              => args[:qty],
-          :product_name     => args[:product_name],
-          :description      => args[:description],
-          :time             => args[:time],
-          :state            => BillableEvent.enc_state(state)
-        )
+        Utils.txn do
+          BillableEvent.create(
+            :provider_id      => args[:provider_id],
+            :entity_id_uuid   => Utils.validate_uuid(args[:entity_id_uuid]),
+            :rate_code_id     => args[:rate_code],
+            :entity_id        => args[:entity_id],
+            :hid              => args[:hid],
+            :qty              => args[:qty],
+            :product_name     => args[:product_name],
+            :description      => args[:description],
+            :time             => args[:time],
+            :state            => BillableEvent.enc_state(state)
+          )
+        end
       rescue StandardError => e
         Log.error({:error => true, :action => "#{state}_event"}.merge(args))
         raise(e)

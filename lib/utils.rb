@@ -28,4 +28,8 @@ module Utils
     Time.mktime(y, m)
   end
 
+  def txn
+    Shushu::DB.transaction {yield}
+  end
+
 end
