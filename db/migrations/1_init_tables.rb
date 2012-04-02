@@ -134,6 +134,8 @@ Sequel.migration do
      primary_key(:entity_id, "uuid")
    end
    add_column(:open_events, :state, "integer")
+   add_column(:open_events, :provider, "integer")
+   add_column(:open_events, :time, "timestamptz")
 
   end
 end

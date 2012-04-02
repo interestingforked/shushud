@@ -28,7 +28,7 @@ SecureRandom.uuid.tap do |eid|
     :hid            => "app123@heorku.com",
     :entity_id      => eid,
     :qty            => 1,
-    :time           => Time.utc(2011,1),
+    :time           => Time.utc(2000,3),
     :state          => "close"
   )
 end
@@ -40,7 +40,28 @@ SecureRandom.uuid.tap do |eid|
     :hid            => "app123@heorku.com",
     :entity_id      => eid,
     :qty            => 1,
+    :time           => Time.utc(2000,2),
+    :state          => "open"
+  )
+end
+
+SecureRandom.uuid.tap do |eid|
+  BillableEventService.handle_in(
+    :provider_id    => provider.id,
+    :rate_code      => reid,
+    :hid            => "app124@heorku.com",
+    :entity_id      => eid,
+    :qty            => 1,
     :time           => Time.utc(2000,1),
     :state          => "open"
+  )
+  BillableEventService.handle_in(
+    :provider_id    => provider.id,
+    :rate_code      => reid,
+    :hid            => "app124@heorku.com",
+    :entity_id      => eid,
+    :qty            => 1,
+    :time           => Time.utc(2000,2),
+    :state          => "close"
   )
 end
