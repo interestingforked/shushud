@@ -118,6 +118,13 @@ respective differences in revenue.
 
 ### API
 
+#### Totals versus Full Sets
+
+The endpoint `/res_diff` will return the count of resources matching
+the conditions as an integer.
+The endpoint `/res_diff/resources` will return a JSON representation
+of the resources themselves as an array of hashes.  
+
 #### Periods of Comparison
 
 This endpoint will compute differences between two periods of time. Thus the API
@@ -127,21 +134,36 @@ parameters to represent the second period.
 #### Direction of Difference
 
 In addition to timestamps, the API also
-expects a sign bit. This parameter will filter the results on the sign of the
-differnce. For example, if the sign bit is 1, the results will show all resources
-that increased since the last period. If the sign bit is -1, the results will
-show all resources that decreased since the last period.
+expects a parameter indicating if the delta of the difference is increasing or decreasing. 
+Results with no difference are inherently excluded from the result set.  This
+means the results are either all increasing or all decreasing which allows the
+paramter to be specified as an invariant.
 
 #### Starting & Ending Revenue
 
 Some resources will have a starting revenue of $0.00 and end with a
 revenue of $100.00. Likewise start with $100.00 and end with $0.00.
-The lrev and rrev parameters provide a mechanism to filter the list of resources.
+
+As of now, the only interesting conditions occur when the revenue values are 
+either zero or non-zero.  This is specified via parameters as the invariants 
+`lrev_zero` and `rrev_zero`.
 
 #### Limiting Result Set
 
 On a production installation, the number of results from the API
-will be quite numerous.
+will be quite numerous.  Instead of supporting pagination with a limit
+and offset parameter, the `/res_diff/resources` endpoint will sort 
+its results descending by delta.  The limit parameter will take the
+top N results from this list.  
+
+#### Boolean parameters
+
+Boolean parameters can be encoded as the following:
+
+* True: 1, t, or true (case insensitive)
+* False: 0, f, or false (case insensitive)
+
+#### Examples
 
 ```bash
 $ curl -X GET \
@@ -150,9 +172,21 @@ $ curl -X GET \
   lto=time&   \
   rfrom=time& \
   rto=time&   \
-  sbit=int&   \
-  lrev=int&   \
-  rrev=int&   \
+  delta_increasing=bool&   \
+  lrev_zero=bool&   \
+  rrev_zero=bool"
+
+  123
+
+$ curl -X GET \
+  "https://provider:token@shushu.heroku.com/res_diff/resources? \
+  lfrom=time& \
+  lto=time&   \
+  rfrom=time& \
+  rto=time&   \
+  delta_increasing=bool&   \
+  lrev_zero=bool&   \
+  rrev_zero=bool&   \
   limit=int"
 
 [
