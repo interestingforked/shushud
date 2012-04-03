@@ -8,4 +8,10 @@ use Rack::Session::Cookie,
   :secret          => ENV["SESSION_SECRET"],
   :expire_after    => 120
 
-run Api::Http
+map "/" do
+  run Api::Events
+end
+
+map "/reports" do
+  run Api::Reports
+end

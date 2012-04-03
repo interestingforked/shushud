@@ -1,5 +1,5 @@
 module Api
-  class Base < Sinatra::Base
+  class Http < Sinatra::Base
     include Authentication
     include Helpers
 
@@ -37,7 +37,7 @@ module Api
     end
   end
 
-  class Reports < Base
+  class Reports < Http
     before {authenticate_provider; content_type(:json)}
 
     get "/res_diff" do
@@ -62,7 +62,7 @@ module Api
     end
   end
 
-  class Events < Base
+  class Events < Http
     before {authenticate_provider; content_type(:json)}
     #
     # Errors
@@ -256,16 +256,6 @@ module Api
           :product_name  => params[:name]
         )
       end
-    end
-  end
-
-  Http = Rack::Builder.new do
-    map "/" do
-      run Events
-    end
-
-    map "/reports" do
-      run Reports
     end
   end
 end
