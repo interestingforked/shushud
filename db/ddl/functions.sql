@@ -251,7 +251,7 @@ RETURNS numeric AS $$
 ;
 
 CREATE OR REPLACE FUNCTION
-res_diff(timestamptz, timestamptz, timestamptz, timestamptz, int)
+res_diff(timestamptz, timestamptz, timestamptz, timestamptz, boolean, boolean, boolean)
 RETURNS TABLE(
   hid text,
   ltotal numeric,
@@ -298,11 +298,19 @@ RETURNS TABLE(
     )::numeric
   FROM
     billable_units bu
+  WHERE
+    (4 > 0) = $5
+    AND
+    (2 = 0) = $6
+    AND
+    (3 = 0) = $7
+    AND
+    4 != 0
   GROUP BY hid, rate
 $$ LANGUAGE SQL STABLE;
 
 CREATE OR REPLACE FUNCTION
-res_diff_agg(timestamptz, timestamptz, timestamptz, timestamptz, int)
+res_diff_agg(timestamptz, timestamptz, timestamptz, timestamptz, boolean, boolean, boolean)
 RETURNS TABLE(
   sdiff numeric,
   sltotal numeric,
@@ -312,6 +320,5 @@ RETURNS TABLE(
     sum(diff),
     sum(ltotal),
     sum(rtotal)
-  FROM res_diff($1, $2, $3, $4, $5)
-  where rtotal = 0
+  FROM res_diff($1, $2, $3, $4, $5, $6, $7)
 $$ LANGUAGE SQL STABLE;
