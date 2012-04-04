@@ -2,7 +2,7 @@ source :rubygems
 
 gem "pg"
 gem "unicorn"
-gem "rack", "1.3.5"
+gem "rack"
 gem "sinatra"
 gem "sequel", :git => "git://github.com/jeremyevans/sequel.git"
 gem "yajl-ruby", :require => "yajl"

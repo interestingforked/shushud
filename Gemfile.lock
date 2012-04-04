@@ -1,26 +1,26 @@
 GIT
   remote: git://github.com/jeremyevans/sequel.git
-  revision: b82dad30c3ec052697b4885c19b934711101eafa
+  revision: 1f441defba7be1cc9458850db44ee5aa41c828b2
   specs:
-    sequel (3.33.0)
+    sequel (3.34.1)
 
 GEM
   remote: http://rubygems.org/
   specs:
-    ansi (1.4.1)
+    ansi (1.4.2)
     archive-tar-minitar (0.5.2)
     beanstalk-client (1.1.1)
-    braintree (2.13.2)
+    braintree (2.14.0)
       builder (>= 2.0.0)
     builder (3.0.0)
     columnize (0.3.6)
-    json_pure (1.6.5)
+    json_pure (1.6.6)
     kgio (2.7.4)
     linecache19 (0.5.12)
       ruby_core_source (>= 0.1.4)
-    newrelic_rpm (3.3.2)
-    pg (0.12.2)
-    rack (1.3.5)
+    newrelic_rpm (3.3.3)
+    pg (0.13.2)
+    rack (1.4.1)
     rack-protection (1.2.0)
       rack
     rack-test (0.6.1)
@@ -36,15 +36,15 @@ GEM
       ruby-debug-base19 (>= 0.11.19)
     ruby_core_source (0.1.5)
       archive-tar-minitar (>= 0.5.2)
-    sinatra (1.3.1)
-      rack (~> 1.3, >= 1.3.4)
-      rack-protection (~> 1.1, >= 1.1.2)
+    sinatra (1.3.2)
+      rack (~> 1.3, >= 1.3.6)
+      rack-protection (~> 1.2)
       tilt (~> 1.3, >= 1.3.3)
     stalker (0.9.0)
       beanstalk-client
       json_pure
     tilt (1.3.3)
-    turn (0.8.3)
+    turn (0.9.4)
       ansi
     unicorn (4.2.1)
       kgio (~> 2.6)
@@ -59,7 +59,7 @@ DEPENDENCIES
   braintree
   newrelic_rpm
   pg
-  rack (= 1.3.5)
+  rack
   rack-test
   ruby-debug19
   sequel!
