@@ -13,10 +13,6 @@ module Api
       end
     end
 
-    delete "/sessions" do
-      session.clear
-    end
-
     #
     # Heartbeat
     #

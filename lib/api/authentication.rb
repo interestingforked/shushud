@@ -1,7 +1,6 @@
 module Api
   module Authentication
     include Helpers
-    include Sinatra::Cookies
 
     def authenticate_provider
       Log.info_t(:action => "authenticate_provider") do

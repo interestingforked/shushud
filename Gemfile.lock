@@ -9,15 +9,13 @@ GEM
   specs:
     ansi (1.4.1)
     archive-tar-minitar (0.5.2)
-    backports (2.3.0)
     beanstalk-client (1.1.1)
     braintree (2.13.2)
       builder (>= 2.0.0)
     builder (3.0.0)
     columnize (0.3.6)
-    daemons (1.1.6)
-    eventmachine (0.12.10)
     json_pure (1.6.5)
+    kgio (2.7.4)
     linecache19 (0.5.12)
       ruby_core_source (>= 0.1.4)
     newrelic_rpm (3.3.2)
@@ -27,6 +25,7 @@ GEM
       rack
     rack-test (0.6.1)
       rack (>= 1.0)
+    raindrops (0.8.0)
     ruby-debug-base19 (0.11.25)
       columnize (>= 0.3.1)
       linecache19 (>= 0.5.11)
@@ -41,23 +40,16 @@ GEM
       rack (~> 1.3, >= 1.3.4)
       rack-protection (~> 1.1, >= 1.1.2)
       tilt (~> 1.3, >= 1.3.3)
-    sinatra-contrib (1.3.1)
-      backports (>= 2.0)
-      eventmachine
-      rack-protection
-      rack-test
-      sinatra (~> 1.3.0)
-      tilt (~> 1.3)
     stalker (0.9.0)
       beanstalk-client
       json_pure
-    thin (1.3.1)
-      daemons (>= 1.0.9)
-      eventmachine (>= 0.12.6)
-      rack (>= 1.0.0)
     tilt (1.3.3)
     turn (0.8.3)
       ansi
+    unicorn (4.2.1)
+      kgio (~> 2.6)
+      rack
+      raindrops (~> 0.7)
     yajl-ruby (1.1.0)
 
 PLATFORMS
@@ -72,8 +64,7 @@ DEPENDENCIES
   ruby-debug19
   sequel!
   sinatra
-  sinatra-contrib
   stalker
-  thin
   turn
+  unicorn
   yajl-ruby

@@ -3,10 +3,10 @@ require "cgi"
 require "securerandom"
 require "digest/sha1"
 
+require "sinatra"
 require "braintree"
 require "yajl"
 require "sequel"
-require "sinatra/cookies"
 require "newrelic_rpm"
 
 module Shushu
