@@ -1,39 +1,43 @@
-module LogParser
-  extend self
-
-  def unparse(x)
-    if x.values.any? {|v| [Array, Hash].include?(v.class)}
-      raise(ArgumentError, "can not unparse #{x.class}")
-    end
-    Yajl::Encoder.encode(x)
-  end
-
-  def parse(x)
-    Yajl::Decoder.decode(x)
-  end
-end
-
 class ShuLog < Logger
 
-  def error(*args)
-    super(LogParser.unparse(*args))
+  def unparse(data)
+    data.map do |(k, v)|
+      if (v == true)
+        "#{k}=true"
+      elsif v.is_a?(Float)
+        "#{k}=#{format("%.3f", v)}"
+      elsif v.nil?
+        nil
+      else
+        v_str = v.to_s
+        if (v_str =~ /^[a-zA-z0-9\-\_\.]+$/)
+          "#{k}=#{v_str}"
+        else
+          "#{k}=\"#{v_str.sub(/".*/, "...")}\""
+        end
+      end
+    end.compact.join(" ")
   end
 
-  def info(*args)
-    super(LogParser.unparse(*args))
+  def debug(data)
+    super(unparse(data.merge(:debug => true)))
   end
 
-  def info_t(hash)
+  def error(data)
+    super(unparse(data.merge(:error => true)))
+  end
+
+  def info(data)
+    super(unparse(data.merge(:info => true)))
+  end
+
+  def info_t(data)
     t0 = Time.now
     res = yield
     t1 = Time.now
     el = t1 - t0
-    info(hash.merge({:elapsed_time => el}))
+    info(data.merge({:elapsed_time => el}))
     res
-  end
-
-  def debug(*args)
-    super(LogParser.unparse(*args))
   end
 
 end
