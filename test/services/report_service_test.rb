@@ -343,13 +343,13 @@ class ReportServiceTest < ShushuTest
     build_billable_event("app123", eid2, 1, t1, rate_code.slug)
     build_billable_event("app123", eid2, 0, t2, rate_code.slug)
 
-    _, report = ReportService.res_diff(t0, t1, t1, t2, 1, 0, 100)
+    _, report = ReportService.res_diff(t0, t1, t1, t2, 1, 0, 0)
     resource = report[:resources].pop
     assert_equal(5, resource["ltotal"].to_f)
     assert_equal(10, resource["rtotal"].to_f)
     assert_equal(5, resource["diff"].to_f)
 
-    _, report = ReportService.res_diff(t1, t2, t2, t3, 1, 0, 100)
+    _, report = ReportService.res_diff(t1, t2, t2, t3, 0, 0, 0)
     resource = report[:resources].pop
     assert_equal(10, resource["ltotal"].to_f)
     assert_equal(5, resource["rtotal"].to_f)
@@ -364,16 +364,17 @@ class ReportServiceTest < ShushuTest
     eid1 = SecureRandom.uuid
     eid2 = SecureRandom.uuid
     rate_code = build_rate_code(:rate => 5)
-    build_billable_event("app124", eid1, 1, t0, rate_code.slug)
+    build_billable_event("app124", eid1, 1, t1, rate_code.slug)
+    build_billable_event("app124", eid1, 0, t2, rate_code.slug)
     build_billable_event("app123", eid2, 1, t1, rate_code.slug)
     build_billable_event("app123", eid2, 0, t2, rate_code.slug)
 
     limit = 1
 
-    _, report = ReportService.res_diff(t0, t1, t1, t2, 1, 0, 100, limit)
+    _, report = ReportService.res_diff(t0, t1, t1, t2, 1, 1, 0, limit)
     assert_equal(1, report[:resources].length)
 
-    _, report = ReportService.res_diff(t0, t1, t1, t2, 1, 0, 100)
+    _, report = ReportService.res_diff(t0, t1, t1, t2, 1, 1, 0)
     assert_equal(2, report[:resources].length)
   end
 
