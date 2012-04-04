@@ -51,8 +51,8 @@ SecureRandom.uuid.tap do |eid|
     :rate_code      => reid,
     :hid            => "app124@heorku.com",
     :entity_id      => eid,
-    :qty            => 1,
-    :time           => Time.utc(2000,1),
+    :qty            => 2,
+    :time           => Time.utc(2000,2),
     :state          => "open"
   )
   BillableEventService.handle_in(
@@ -60,8 +60,71 @@ SecureRandom.uuid.tap do |eid|
     :rate_code      => reid,
     :hid            => "app124@heorku.com",
     :entity_id      => eid,
+    :qty            => 2,
+    :time           => Time.utc(2000,3),
+    :state          => "close"
+  )
+end
+
+SecureRandom.uuid.tap do |eid|
+  BillableEventService.handle_in(
+    :provider_id    => provider.id,
+    :rate_code      => reid,
+    :hid            => "app125@heorku.com",
+    :entity_id      => eid,
+    :qty            => 1,
+    :time           => Time.utc(2000,1),
+    :state          => "open"
+  )
+  BillableEventService.handle_in(
+    :provider_id    => provider.id,
+    :rate_code      => reid,
+    :hid            => "app125@heorku.com",
+    :entity_id      => eid,
     :qty            => 1,
     :time           => Time.utc(2000,2),
+    :state          => "close"
+  )
+end
+
+SecureRandom.uuid.tap do |eid|
+  BillableEventService.handle_in(
+    :provider_id    => provider.id,
+    :rate_code      => reid,
+    :hid            => "app126@heorku.com",
+    :entity_id      => eid,
+    :qty            => 6,
+    :time           => Time.utc(2000,1),
+    :state          => "open"
+  )
+  BillableEventService.handle_in(
+    :provider_id    => provider.id,
+    :rate_code      => reid,
+    :hid            => "app126@heorku.com",
+    :entity_id      => eid,
+    :qty            => 6,
+    :time           => Time.utc(2000,2),
+    :state          => "close"
+  )
+end
+
+SecureRandom.uuid.tap do |eid|
+  BillableEventService.handle_in(
+    :provider_id    => provider.id,
+    :rate_code      => reid,
+    :hid            => "app126@heorku.com",
+    :entity_id      => eid,
+    :qty            => 3,
+    :time           => Time.utc(2000,2),
+    :state          => "open"
+  )
+  BillableEventService.handle_in(
+    :provider_id    => provider.id,
+    :rate_code      => reid,
+    :hid            => "app126@heorku.com",
+    :entity_id      => eid,
+    :qty            => 3,
+    :time           => Time.utc(2000,3),
     :state          => "close"
   )
 end

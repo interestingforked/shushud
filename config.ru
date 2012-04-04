@@ -1,4 +1,11 @@
 require "./lib/shushu"
 
 use Rack::CommonLogger
-run Api::Http
+
+map "/" do
+  run Api::Events
+end
+
+map "/reports" do
+  run Api::Reports
+end

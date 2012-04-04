@@ -48,7 +48,7 @@ class ShushuTest < MiniTest::Unit::TestCase
   end
 
   def app
-    Api::Http
+    Api::Events
   end
 
   def jan

@@ -3,6 +3,66 @@ module Api
     include Authentication
     include Helpers
 
+    def perform
+      begin
+        t0 = Time.now
+        Log.info({:action => "begin_api_request", :provider => session[:provider_id]}.merge(request.params))
+        s, b = yield
+        status(s)
+        body(enc_json(b))
+        t1 = Time.now
+        Log.info({:action => "finish_api_request", :elapsed_time => (t1 - t0), :provider => session[:provider_id]}.merge(request.params))
+      rescue RuntimeError, ArgumentError => e
+        Log.error({:error => "argument", :exception => e.message, :backtrace => e.backtrace}.merge(params))
+        status(400)
+        body(enc_json(e.message))
+      rescue Shushu::AuthorizationError => e
+        Log.error({:error => "authorization", :exception => e.message, :backtrace => e.backtrace}.merge(params))
+        status(403)
+        body(enc_json(e.message))
+      rescue Shushu::NotFound => e
+        Log.error({:error => "not-found", :exception => e.message, :backtrace => e.backtrace}.merge(params))
+        status(404)
+        body(enc_json(e.message))
+      rescue Shushu::DataConflict => e
+        Log.error({:error => "conflict", :exception => e.message, :backtrace => e.backtrace}.merge(params))
+        status(409)
+        body(enc_json(e.message))
+      rescue Exception => e
+        Log.error({:error => true, :exception => e.message, :backtrace => e.backtrace}.merge(params))
+        status(500)
+        body(enc_json(e.message))
+        raise if Shushu.test?
+      end
+    end
+  end
+
+  class Reports < Http
+    before {authenticate_provider; content_type(:json)}
+
+    get "/res_diff" do
+      perform do
+        ReportService.res_diff(
+          dec_time(params[:lfrom]),
+          dec_time(params[:lto]),
+          dec_time(params[:rfrom]),
+          dec_time(params[:rto]),
+          dec_bool(params[:delta_increasing]),
+          dec_bool(params[:lrev_zero]),
+          dec_bool(params[:rrev_zero]),
+          params[:limit]
+        )
+      end
+    end
+
+    get "/rev_report" do
+      perform do
+        ReportService.rev_report(dec_time(params[:from]), dec_time(params[:to]))
+      end
+    end
+  end
+
+  class Events < Http
     before {authenticate_provider; content_type(:json)}
     #
     # Errors
@@ -108,27 +168,6 @@ module Api
       end
     end
 
-    get "/res_diff" do
-      perform do
-        ReportService.res_diff(
-          dec_time(params[:lfrom]),
-          dec_time(params[:lto]),
-          dec_time(params[:rfrom]),
-          dec_time(params[:lto]),
-          params[:sbit],
-          params[:lrev],
-          params[:rrev],
-          params[:limit]
-        )
-      end
-    end
-
-    get "/rev_report" do
-      perform do
-        ReportService.rev_report(dec_time(params[:from]), dec_time(params[:to]))
-      end
-    end
-
     #
     # BillableEvents
     #
@@ -214,39 +253,5 @@ module Api
         )
       end
     end
-
-    def perform
-      begin
-        t0 = Time.now
-        Log.info({:action => "begin_api_request", :provider => session[:provider_id]}.merge(request.params))
-        s, b = yield
-        status(s)
-        body(enc_json(b))
-        t1 = Time.now
-        Log.info({:action => "finish_api_request", :elapsed_time => (t1 - t0), :provider => session[:provider_id]}.merge(request.params))
-      rescue RuntimeError, ArgumentError => e
-        Log.error({:exception => e.message.to_s, :backtrace => e.backtrace.to_s}.merge(params))
-        status(400)
-        body(enc_json(e.message))
-      rescue Shushu::AuthorizationError => e
-        Log.error({:exception => e.message.to_s, :backtrace => e.backtrace.to_s}.merge(params))
-        status(403)
-        body(enc_json(e.message))
-      rescue Shushu::NotFound => e
-        Log.error({:exception => e.message.to_s, :backtrace => e.backtrace.to_s}.merge(params))
-        status(404)
-        body(enc_json(e.message))
-      rescue Shushu::DataConflict => e
-        Log.error({:exception => e.message.to_s, :backtrace => e.backtrace.to_s}.merge(params))
-        status(409)
-        body(enc_json(e.message))
-      rescue Exception => e
-        Log.error({:exception => e.message.to_s, :backtrace => e.backtrace.to_s}.merge(params))
-        status(500)
-        body(enc_json(e.message))
-        raise if Shushu.test?
-      end
-    end
-
   end
 end
