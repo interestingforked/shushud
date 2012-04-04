@@ -2,7 +2,7 @@ module Api
   class Reports < Http
     before {authenticate_provider; content_type(:json)}
 
-    get "/res_diff" do
+    get "/res_diff/resources" do
       perform do
         ReportService.res_diff(
           dec_time(params[:lfrom]),
