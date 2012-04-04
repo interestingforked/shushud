@@ -12,16 +12,20 @@ class ResDiffReportTest < ShushuTest
   end
 
   def time
-    Time.mktime(2012,1)
-  end
-
-  def make_increased_then_decreased
-    t0 = time 
+    t0 = Time.mktime(2012,1)
     t1 = t0 + 60 * 60
     t2 = t1 + 60 * 60
     t3 = t2 + 60 * 60
-    eid1 = SecureRandom.uuid
-    eid2 = SecureRandom.uuid
+    [t0, t1, t2, t3]
+  end
+
+  def uuids
+    [SecureRandom.uuid, SecureRandom.uuid]
+  end
+
+  def make_increased_then_decreased
+    t0, t1, t2, t3 = time
+    eid1, eid2     = uuids
     rate_code = build_rate_code(:rate => 5)
     build_billable_event("app123", eid1, 1, t0, rate_code.slug)
     build_billable_event("app123", eid2, 1, t1, rate_code.slug)
@@ -30,12 +34,8 @@ class ResDiffReportTest < ShushuTest
   end
 
   def make_new_and_attrition
-    t0 = time 
-    t1 = t0 + 60 * 60
-    t2 = t1 + 60 * 60
-    t3 = t2 + 60 * 60
-    eid1 = SecureRandom.uuid
-    eid2 = SecureRandom.uuid
+    t0, t1, t2, t3 = time
+    eid1, eid2     = uuids
     rate_code = build_rate_code(:rate => 5)
     build_billable_event("app123", eid1, 1, t0, rate_code.slug)
     build_billable_event("app123", eid1, 0, t1, rate_code.slug)
@@ -45,12 +45,8 @@ class ResDiffReportTest < ShushuTest
   end
 
   def build_multiple
-    t0 = time
-    t1 = t0 + 60 * 60
-    t2 = t1 + 60 * 60
-    t3 = t2 + 60 * 60
-    eid1 = SecureRandom.uuid
-    eid2 = SecureRandom.uuid
+    t0, t1, t2, t3 = time
+    eid1, eid2     = uuids
     rate_code = build_rate_code(:rate => 5)
     build_billable_event("app124", eid1, 1, t1, rate_code.slug)
     build_billable_event("app124", eid1, 0, t2, rate_code.slug)
