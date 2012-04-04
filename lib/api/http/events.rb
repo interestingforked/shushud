@@ -88,6 +88,8 @@ module Api
 
     #
     # Reports
+    # TODO: move to reports.rb -- need to make sure anyone depending
+    # on these is notified
     #
     get "/accounts/:account_id/usage_reports" do
       perform do
@@ -102,6 +104,12 @@ module Api
           dec_time(params[:from]),
           dec_time(params[:to])
         )
+      end
+    end
+
+    get "/rev_report" do
+      perform do
+        ReportService.rev_report(dec_time(params[:from]), dec_time(params[:to]))
       end
     end
 

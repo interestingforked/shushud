@@ -29,36 +29,7 @@ class ResDiffReportTest < ShushuTest
     [t0, t1, t2, t3]
   end
 
-
-  def test_res_diff_drilldown_with_increased
-    t0, t1, t2, t3 = make_increased_then_decreased.map(&:to_s)
-    get '/res_diff/resources', {lfrom: t0, lto: t1, rfrom: t1, rto: t2, 
-                                delta_increasing: 1, lrev_zero: 0, rrev_zero: 0}
-
-    assert_equal 200, last_response.status
-    report = JSON.parse(last_response.body)
-    assert_equal 1, report['resources'].length
-    resource = report['resources'].pop
-    assert_equal(5, resource["ltotal"].to_f)
-    assert_equal(10, resource["rtotal"].to_f)
-    assert_equal(5, resource["diff"].to_f)
-  end
-
-  def test_res_diff_drilldown_with_decreased
-    t0, t1, t2, t3 = make_increased_then_decreased.map(&:to_s)
-    get '/res_diff/resources', {lfrom: t1, lto: t2, rfrom: t2, rto: t3, 
-                                delta_increasing: 0, lrev_zero: 0, rrev_zero: 0}
-
-    assert_equal 200, last_response.status
-    report = JSON.parse(last_response.body)
-    assert_equal 1, report['resources'].length
-    resource = report['resources'].pop
-    assert_equal(10, resource["ltotal"].to_f)
-    assert_equal(5, resource["rtotal"].to_f)
-    assert_equal(-5, resource["diff"].to_f)
-  end
-
-  def test_res_diff_drilldown_with_limit
+  def build_multiple
     t0 = Time.mktime(2012,1)
     t1 = t0 + 60 * 60
     t2 = t1 + 60 * 60
@@ -70,19 +41,60 @@ class ResDiffReportTest < ShushuTest
     build_billable_event("app124", eid1, 0, t2, rate_code.slug)
     build_billable_event("app123", eid2, 1, t1, rate_code.slug)
     build_billable_event("app123", eid2, 0, t2, rate_code.slug)
+    [t0, t1, t2, t3]
+  end
 
-    get '/res_diff/resources', {lfrom: t0, lto: t1, rfrom: t1, rto: t2, 
-                                delta_increasing: 1, lrev_zero: 1, rrev_zero: 0, limit: 1}
+  def test_res_diff_drilldown_with_increased
+    t0, t1, t2, t3 = make_increased_then_decreased.map(&:to_s)
+    get('/res_diff/resources', {lfrom: t0, lto: t1, rfrom: t1, rto: t2, 
+                                delta_increasing: 1, lrev_zero: 0, rrev_zero: 0})
 
-    assert_equal 200, last_response.status
+    assert_equal(200, last_response.status)
     report = JSON.parse(last_response.body)
-    assert_equal 1, report['resources'].length
+    assert_equal(1, report['resources'].length)
+    resource = report['resources'].pop
+    assert_equal(5, resource["ltotal"].to_f)
+    assert_equal(10, resource["rtotal"].to_f)
+    assert_equal(5, resource["diff"].to_f)
+  end
 
-    get '/res_diff/resources', {lfrom: t0, lto: t1, rfrom: t1, rto: t2, 
-                                delta_increasing: 1, lrev_zero: 1, rrev_zero: 0}
+  def test_res_diff_aggregate_with_multiple
+    t0, t1, t2, t3 = build_multiple.map(&:to_s)
+    get('/res_diff', {lfrom: t0, lto: t1, rfrom: t1, rto: t2, 
+                      delta_increasing: 1, lrev_zero: 1, rrev_zero: 0})
+    assert_equal(200, last_response.status)
+    agg = JSON.parse(last_response.body)
+    assert_equal(10, agg['diff'].to_f)
+  end
 
-    assert_equal 200, last_response.status
+  def test_res_diff_drilldown_with_decreased
+    t0, t1, t2, t3 = make_increased_then_decreased.map(&:to_s)
+    get '/res_diff/resources', {lfrom: t1, lto: t2, rfrom: t2, rto: t3, 
+                                delta_increasing: 0, lrev_zero: 0, rrev_zero: 0}
+
+    assert_equal(200, last_response.status)
     report = JSON.parse(last_response.body)
-    assert_equal 2, report['resources'].length
+    assert_equal(1, report['resources'].length)
+    resource = report['resources'].pop
+    assert_equal(10, resource["ltotal"].to_f)
+    assert_equal(5, resource["rtotal"].to_f)
+    assert_equal(-5, resource["diff"].to_f)
+  end
+
+  def test_res_diff_drilldown_with_limit
+    t0, t1, t2, t3 = build_multiple.map(&:to_s)
+    get('/res_diff/resources', {lfrom: t0, lto: t1, rfrom: t1, rto: t2, 
+                                delta_increasing: 1, lrev_zero: 1, rrev_zero: 0, limit: 1})
+
+    assert_equal(200, last_response.status)
+    report = JSON.parse(last_response.body)
+    assert_equal(1, report['resources'].length)
+
+    get('/res_diff/resources', {lfrom: t0, lto: t1, rfrom: t1, rto: t2, 
+                                delta_increasing: 1, lrev_zero: 1, rrev_zero: 0})
+
+    assert_equal(200, last_response.status)
+    report = JSON.parse(last_response.body)
+    assert_equal(2, report['resources'].length)
   end
 end
