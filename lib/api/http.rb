@@ -46,10 +46,10 @@ module Api
           dec_time(params[:lfrom]),
           dec_time(params[:lto]),
           dec_time(params[:rfrom]),
-          dec_time(params[:lto]),
-          params[:sbit],
-          params[:lrev],
-          params[:rrev],
+          dec_time(params[:rto]),
+          dec_bool(params[:delta_increasing]),
+          dec_bool(params[:lrev_zero]),
+          dec_bool(params[:rrev_zero]),
           params[:limit]
         )
       end
