@@ -1,2 +1,2 @@
 #sh
-bundle exec thin start -e production
+bundle exec unicorn -p $PORT -c ./etc/unicorn.rb
