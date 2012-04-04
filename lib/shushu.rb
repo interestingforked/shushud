@@ -7,7 +7,6 @@ require "sinatra"
 require "braintree"
 require "yajl"
 require "sequel"
-require "newrelic_rpm"
 
 module Shushu
   Root = File.expand_path("..", File.dirname(__FILE__))

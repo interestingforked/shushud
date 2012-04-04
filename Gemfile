@@ -8,7 +8,6 @@ gem "sequel", "3.34.1"
 gem "yajl-ruby", "1.1.0", :require => "yajl"
 gem "braintree", "2.14.0"
 gem "stalker", "0.9.0"
-gem "newrelic_rpm"
 
 group :test do
   gem "minitest"
