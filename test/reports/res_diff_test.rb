@@ -30,7 +30,7 @@ class ResDiffReportTest < ShushuTest
   end
 
 
-  def test_res_diff_with_increase_app
+  def test_res_diff_with_increased_app
     t0, t1, t2 = make_increased_app.map(&:to_s)
     get '/res_diff', {lfrom: t0, lto: t1, rfrom: t1, rto: t2, 
                       delta_increasing: 1, lrev_zero: 0, rrev_zero: 0}

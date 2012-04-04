@@ -41,6 +41,8 @@ require "./lib/plugins/log"
 require "./lib/api/helpers"
 require "./lib/api/authentication"
 require "./lib/api/http"
+require "./lib/api/http/reports"
+require "./lib/api/http/events"
 
 require "./lib/models/event_tracker"
 require "./lib/models/billable_event"
