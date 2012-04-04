@@ -230,12 +230,6 @@ RETURNS TABLE(
       )
     ) as adjusted_dyno_hours
   FROM billable_units bu
-  WHERE
-    (bu.from, COALESCE(bu.to, now()))
-    OVERLAPS
-    ($1, $2)
-    AND
-    bu.rate_period = 'hour'
   GROUP BY
     bu.hid, bu.rate
 $$ LANGUAGE SQL STABLE
@@ -246,7 +240,7 @@ RETURNS numeric AS $$
   SELECT
     sum(adjusted_dyno_hours * rate) as total
   FROM
-    grouped_billable_units($1, $2, $3)
+    grouped_billable_units($1, $2, $3) bu
   $$ LANGUAGE SQL STABLE
 ;
 
@@ -259,62 +253,39 @@ RETURNS TABLE(
   diff numeric
 ) AS $$
   SELECT
-    hid,
+    l.hid,
     -- ltotal
-    ((sum(
-      extract('epoch' from (
-        LEAST($2, COALESCE(bu.to, now()))
-        -
-        GREATEST($1, bu.from)
-      ))
-    ) / 3600) * bu.rate)::numeric,
-
-    -- rtotal
-    ((sum(
-      extract('epoch' from (
-        LEAST($4, COALESCE(bu.to, now()))
-        -
-        GREATEST($3, bu.from)
-      ))
-    ) / 3600) * bu.rate)::numeric,
-
-    -- The difference between ltotal and rtotal
-    (
-      (sum(
-        extract('epoch' from (
-          LEAST($4, COALESCE(bu.to, now()))
-          -
-          GREATEST($3, bu.from)
-        ))
-      ) / 3600) * bu.rate
-      -
-      (sum(
-        extract('epoch' from (
-          LEAST($2, COALESCE(bu.to, now()))
-          -
-          GREATEST($1, bu.from)
-        ))
-      ) / 3600) * bu.rate
-    )::numeric
+    sum(l.adjusted_dyno_hours) * l.rate  as ltotal,
+    sum(r.adjusted_dyno_hours) * r.rate as rtotal,
+    (sum(r.adjusted_dyno_hours)*r.rate)-(sum(l.adjusted_dyno_hours)*l.rate) diff
   FROM
-    billable_units bu
-  GROUP BY hid, rate
+    grouped_billable_units($1, $2, 0) as l
+    INNER JOIN grouped_billable_units($3, $4, 0) as r
+    ON l.hid = r.hid
+  GROUP BY l.hid, l.rate, r.rate
 $$ LANGUAGE SQL STABLE;
 
-CREATE OR REPLACE FUNCTION
-res_diff(timestamptz, timestamptz, timestamptz, timestamptz, boolean, boolean, boolean)
+CREATE OR REPLACE FUNCTION res_diff(
+  timestamptz,
+  timestamptz,
+  timestamptz,
+  timestamptz,
+  boolean,
+  boolean,
+  boolean
+)
 RETURNS TABLE(
   hid text,
   ltotal numeric,
   rtotal numeric,
   diff numeric
 ) AS $$
-  SELECT * 
-  FROM 
+  SELECT *
+  FROM
     res_diff_inner($1, $2, $3, $4)
   WHERE
-    (diff > 0) = $5 
-    AND 
+    (diff > 0) = $5
+    AND
     (diff != 0)
     AND
     (ltotal = 0) = $6
