@@ -28,7 +28,7 @@ class BraintreeGateway
 
     if transaction.success?
       txn_id = transaction.transaction.id #braintree gem :(
-      Log.info("#payment_process_success")
+      Log.info(:action => "gateway_process", :success => true)
       [PaymentService::SUCCESS, transaction.response]
     else
       handle_failure
@@ -42,10 +42,10 @@ class BraintreeGateway
       code = transaction.transaction.processor_response_code
       text = transaction.transaction.processor_response_text
       state = FAILMAP[code] || PaymentService::FAILED_NOACT
-      Log.info("#payment_process_failed code=#{code} text=#{text} attempt_state=#{state}")
+      Log.info(:action => "gateway_process", :failed => true, :code => code, :text => text, :state => state)
       [state, text]
     else
-      Log.info("#payment_gateway_failed")
+      Log.info(:action => "gateway_process", :failed => true)
       [PaymentService::FAILED_NOACT, transaction.transaction.gateway_rejection_reason]
     end
   end

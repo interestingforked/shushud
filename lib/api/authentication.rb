@@ -5,15 +5,14 @@ module Api
 
     def authenticate_provider
       Log.info_t(:action => "authenticate_provider") do
-        if authenticated?
-          Log.info("#session_found provider=#{session[:provider_id]}")
-        else
+        unless authenticated?
           if proper_request?
             id, token = *auth.credentials
-            Log.info("#session_begin provider=#{id}")
             Provider.auth?(id, token) ? session[:provider_id] = id : unauthenticated!
-            Log.info("#session_created provider=#{id}")
+            Log.info(:action => "authenticated", :provider => id)
           else
+            ip, agent = request.env["REMOTE_ADDR"], request.env["HTTP_USER_AGENT"]
+            Log.info(:action => "unauthenticated", :ip => ip, :agent => agent)
             unauthenticated!
           end
         end
@@ -37,7 +36,6 @@ module Api
     end
 
     def unauthenticated!(realm="shushu.heroku.com")
-      Log.info("#unauthenticated ip=#{request.env["REMOTE_ADDR"]} agent=#{request.env["HTTP_USER_AGENT"]}")
       response['WWW-Authenticate'] = %(Basic realm="Restricted Area")
       throw(:halt, [401, enc_json("Not authorized")])
     end

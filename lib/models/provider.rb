@@ -16,7 +16,7 @@ class Provider < Sequel::Model
     token ||= SecureRandom.hex(128)
     enc_token = self.class.enc(token)
     update(:token => enc_token)
-    Log.info("#provider_token_reset provider=#{self[:id]}")
+    Log.info(:action => "reset_token", :provider => self[:id])
   end
 
   def disabled?
@@ -25,12 +25,12 @@ class Provider < Sequel::Model
 
   def disable!
     update(:disabled => true)
-    Log.info("#provider_disabled provider=#{self[:id]}")
+    Log.info(:action => "disable_provider", :provider => self[:id])
   end
 
   def enable
     update(:disabled => false)
-    Log.info("#provider_enabled provider=#{self[:id]}")
+    Log.info(:action => "enable_provider", :provider => self[:id])
   end
 
   def root?

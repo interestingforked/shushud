@@ -229,23 +229,23 @@ module Api
         t1 = Time.now
         Log.info({:action => "finish_api_request", :elapsed_time => (t1 - t0), :provider => session[:provider_id]}.merge(params))
       rescue RuntimeError, ArgumentError => e
-        Log.error({:error => "argument", :exception => e.message, :backtrace => e.backtrace}.merge(params))
+        Log.error({:exception => e.message.to_s, :backtrace => e.backtrace.to_s}.merge(params))
         status(400)
         body(enc_json(e.message))
       rescue Shushu::AuthorizationError => e
-        Log.error({:error => "authorization", :exception => e.message, :backtrace => e.backtrace}.merge(params))
+        Log.error({:exception => e.message.to_s, :backtrace => e.backtrace.to_s}.merge(params))
         status(403)
         body(enc_json(e.message))
       rescue Shushu::NotFound => e
-        Log.error({:error => "not-found", :exception => e.message, :backtrace => e.backtrace}.merge(params))
+        Log.error({:exception => e.message.to_s, :backtrace => e.backtrace.to_s}.merge(params))
         status(404)
         body(enc_json(e.message))
       rescue Shushu::DataConflict => e
-        Log.error({:error => "conflict", :exception => e.message, :backtrace => e.backtrace}.merge(params))
+        Log.error({:exception => e.message.to_s, :backtrace => e.backtrace.to_s}.merge(params))
         status(409)
         body(enc_json(e.message))
       rescue Exception => e
-        Log.error({:error => true, :exception => e.message, :backtrace => e.backtrace}.merge(params))
+        Log.error({:exception => e.message.to_s, :backtrace => e.backtrace.to_s}.merge(params))
         status(500)
         body(enc_json(e.message))
         raise if Shushu.test?

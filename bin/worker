@@ -10,19 +10,15 @@ require "shushu"
 require "stalker"
 include Stalker
 
-Log.info("parsing provider credentials")
 provider_id, token = ENV["PROVIDER_ID"].to_i, ENV["PROVIDER_TOKEN"].to_s
 unless Provider.auth?(id, token)
   raise(Shushu::AuthorizationError, "Ensure PROVIDER_ID & PROVIDER_TOKEN are set in the env")
 end
-Log.info("provider authenticated")
 
-Log.info("parsing job definitions")
 job("payment.process") do |args|
   recid, pmid = args["recid"], args["pmid"]
-  Log.info("#payment_service_process receivable=#{recid} payment_method=#{pmid}")
-  PaymentService.process(provider_id, recid, pmid)
-  Log.info("#payment_service_process_complete receivable=#{recid} payment_method=#{pmid}")
+  Log.info_t(:action => "payment_service_process", :receivable => recid, :payment_method => pmid) do
+    PaymentService.process(provider_id, recid, pmid)
+  end
 end
-Log.info("starting worker")
 Stalker.work
