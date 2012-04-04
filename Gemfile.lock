@@ -52,16 +52,16 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  braintree
+  braintree (= 2.14.0)
   minitest
   newrelic_rpm
-  pg
-  rack
+  pg (= 0.13.2)
+  rack (= 1.4.1)
   rack-test
   ruby-debug19
   sequel (= 3.34.1)
-  sinatra
-  stalker
+  sinatra (= 1.3.2)
+  stalker (= 0.9.0)
   turn
-  unicorn
-  yajl-ruby
+  unicorn (= 4.2.1)
+  yajl-ruby (= 1.1.0)
