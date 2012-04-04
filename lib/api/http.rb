@@ -42,6 +42,7 @@ module Api
     before {authenticate_provider; content_type(:json)}
 
     get "/res_diff" do
+      p :params, params
       perform do
         ReportService.res_diff(
           dec_time(params[:lfrom]),
