@@ -109,7 +109,6 @@ class ResDiffReportTest < ShushuTest
   def test_res_diff_with_attrition
     t0, t1, t2, t3 = make_new_and_attrition.map(&:to_s)
     params = {lfrom: t0, lto: t1, rfrom: t1, rto: t2, delta_increasing: 0, lrev_zero: 0, rrev_zero: 1}
-
     get('/res_diff/resources', params)
     assert_equal(200, last_response.status)
 
