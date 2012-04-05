@@ -192,7 +192,8 @@ RETURNS TABLE(
 $$ LANGUAGE SQL
 ;
 
-CREATE OR REPLACE FUNCTION grouped_billable_units(timestamptz, timestamptz, int)
+CREATE OR REPLACE FUNCTION
+adjusted_billable_units(timestamptz, timestamptz, int)
 RETURNS TABLE(
   hid varchar,
   rate int,
@@ -230,6 +231,10 @@ RETURNS TABLE(
       )
     ) as adjusted_dyno_hours
   FROM billable_units bu
+  WHERE
+  ($1, $2)
+  OVERLAPS
+  (bu.from, COALESCE(bu.to, now()))
   GROUP BY
     bu.hid, bu.rate
 $$ LANGUAGE SQL STABLE
@@ -240,7 +245,7 @@ RETURNS numeric AS $$
   SELECT
     sum(adjusted_dyno_hours * rate) as total
   FROM
-    grouped_billable_units($1, $2, $3) bu
+    adjusted_billable_units($1, $2, $3) bu
   $$ LANGUAGE SQL STABLE
 ;
 
@@ -259,8 +264,8 @@ RETURNS TABLE(
     sum(r.adjusted_dyno_hours) * r.rate as rtotal,
     (sum(r.adjusted_dyno_hours)*r.rate)-(sum(l.adjusted_dyno_hours)*l.rate) diff
   FROM
-    grouped_billable_units($1, $2, 0) as l
-    INNER JOIN grouped_billable_units($3, $4, 0) as r
+    adjusted_billable_units($1, $2, 0) as l
+    INNER JOIN adjusted_billable_units($3, $4, 0) as r
     ON l.hid = r.hid
   GROUP BY l.hid, l.rate, r.rate
 $$ LANGUAGE SQL STABLE;
