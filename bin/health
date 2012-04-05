@@ -1,0 +1,16 @@
+#!/usr/bin/env ruby
+# encoding: utf-8
+
+trap("INT")  {@working = false}
+trap("TERM") {@working = false}
+
+$: << File.expand_path("lib")
+
+require "shushu"
+
+@working = true
+while(@working)
+  event_count = Shushu::DB[:open_events].filter(:provider => 5).count
+  Log.info(:action => "health_check", :query => "billable_event_count", :count => event_count)
+  sleep(1)
+end
