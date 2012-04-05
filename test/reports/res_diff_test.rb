@@ -80,7 +80,7 @@ class ResDiffReportTest < ShushuTest
   end
 
   def test_res_diff_drilldown_with_limit
-    t0, t1, t2, t3 = build_multiple.map(&:to_s)
+    t0, t1, t2, t3 = build_multiple_new.map(&:to_s)
     params = {lfrom: t0, lto: t1, rfrom: t1, rto: t2, delta_increasing: 1, lrev_zero: 1, rrev_zero: 0} 
 
     get('/res_diff/resources', params.merge(limit: 1)) 
@@ -93,7 +93,7 @@ class ResDiffReportTest < ShushuTest
   end
 
   def test_res_diff_aggregate_with_multiple_new
-    t0, t1, t2, t3 = build_multiple.map(&:to_s)
+    t0, t1, t2, t3 = build_multiple_new.map(&:to_s)
     params = {lfrom: t0, lto: t1, rfrom: t1, rto: t2,  delta_increasing: 1, lrev_zero: 1, rrev_zero: 0}
     get('/res_diff', params)
     assert_agg_diff(240)
@@ -134,7 +134,7 @@ class ResDiffReportTest < ShushuTest
   end
 
   # app123 and app124 both are new in t1 -> t2
-  def build_multiple
+  def build_multiple_new
     t0, t1, t2, t3 = time
     eid1, eid2     = uuids
     rate_code = build_rate_code(:rate => 5)
