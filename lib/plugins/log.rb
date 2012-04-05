@@ -33,15 +33,19 @@ class ShuLog < Logger
   end
 
   def debug(data)
-    super(unparse(data.merge(:debug => true)))
+    super(unparse({:debug => true}.merge(data)))
+  end
+
+  def warn(data)
+    super(unparse({:warn => true}.merge(data)))
   end
 
   def error(data)
-    super(unparse(data.merge(:error => true)))
+    super(unparse({:error => true}.merge(data)))
   end
 
   def info(data)
-    super(unparse(data.merge(:info => true)))
+    super(unparse({:info => true}.merge(data)))
   end
 
   def info_t(data)
