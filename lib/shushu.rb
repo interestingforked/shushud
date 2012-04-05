@@ -68,6 +68,8 @@ require "./etc/payment_state_transitions"
 
 require "./lib/gateways/braintree"
 
+PG_WARN_THREASHOLD = ENV["PG_WARN_THREASHOLD"].to_i || 300
+
 $stderr.sync = $stdout.sync = true
 Log = ShuLog.new($stdout)
 Log.level = ENV["LOG_LEVEL"].to_i

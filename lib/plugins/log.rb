@@ -1,4 +1,3 @@
-PG_WARN_THREASHOLD = 200
 module SequelLogger
   def log_duration(t, sql)
     t = Integer(t*= 1000) #convert s to ms
