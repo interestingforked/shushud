@@ -271,13 +271,13 @@ RETURNS TABLE(
 $$ LANGUAGE SQL STABLE;
 
 CREATE OR REPLACE FUNCTION res_diff(
-  timestamptz,
-  timestamptz,
-  timestamptz,
-  timestamptz,
-  boolean,
-  boolean,
-  boolean
+  timestamptz, --lfrom
+  timestamptz, --lto
+  timestamptz, --rfrom
+  timestamptz, --rto
+  boolean,     --delta_increaase
+  boolean,     --lrev_zero
+  boolean      --rrev_zero
 )
 RETURNS TABLE(
   hid text,
