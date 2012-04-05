@@ -76,7 +76,7 @@ Log.formatter = Proc.new do |severity, datetime, progname, msg|
 end
 
 Shushu::Conf[:gateway] = BraintreeGateway
-Shushu::DB.sql_log_level = :debug
+Shushu::DB.loggers << Log
 Shushu::DB.class.send(:include, SequelLogger)
 Shushu::DB.execute("SET timezone TO 'UTC'")
 Sequel.default_timezone = :utc
