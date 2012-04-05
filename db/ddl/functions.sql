@@ -259,7 +259,6 @@ RETURNS TABLE(
 ) AS $$
   SELECT
     l.hid,
-    -- ltotal
     sum(l.adjusted_dyno_hours) * l.rate  as ltotal,
     sum(r.adjusted_dyno_hours) * r.rate as rtotal,
     (sum(r.adjusted_dyno_hours)*r.rate)-(sum(l.adjusted_dyno_hours)*l.rate) diff
