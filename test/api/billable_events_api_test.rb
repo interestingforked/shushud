@@ -14,31 +14,17 @@ class BillableEventsApiTest < ShushuTest
 
   def test_open_event
     setup_auth
-    body = {
+    put("/resources/123/billable_events/1", {
+      :entity_id_uuid => SecureRandom.uuid,
       :qty         => 1,
       :rate_code   => @rate_code.slug,
       :time        => "2011-01-01 00:00:00",
       :description => "perhaps a command name?",
       :state       => "open"
-    }
-    put("/resources/123/billable_events/1", body)
+    })
     assert_equal(201, last_response.status)
     assert_equal("2011-01-01 00:00:00 UTC", JSON.parse(last_response.body)["time"])
     assert_equal("open", JSON.parse(last_response.body)["state"])
-  end
-
-  def test_open_event_with_blank_entity_id_uuid
-    setup_auth
-    body = {
-      :entity_id_uuid => "",
-      :qty            => 1,
-      :rate_code      => @rate_code.slug,
-      :time           => "2011-01-01 00:00:00",
-      :description    => "perhaps a command name?",
-      :state          => "open"
-    }
-    put("/resources/123/billable_events/1", body)
-    assert_equal(201, last_response.status)
   end
 
   def test_open_event_with_valid_entity_id_uuid
@@ -97,6 +83,7 @@ class BillableEventsApiTest < ShushuTest
   def test_open_event_with_used_entity_id_but_diff_provider
     setup_auth
     body = {
+      :entity_id_uuid => SecureRandom.uuid,
       :qty        => 1,
       :rate_code  => @rate_code.slug,
       :time       => "2011-01-01 00:00:00",
@@ -113,18 +100,25 @@ class BillableEventsApiTest < ShushuTest
 
   def test_open_event_on_second_call_returns_same_billable_entity_id
     setup_auth
-    put_body = {
+    eid = SecureRandom.uuid
+    put("/resources/app123@heroku.com/billable_events/1", {
+      :entity_id_uuid => eid,
       :qty        => 1,
       :rate_code  => @rate_code.slug,
       :time       => "2011-01-01 00:00:00 +0000",
       :state      => "open"
-    }
-
-    put "/resources/app123@heroku.com/billable_events/1", put_body
+    })
     assert_equal(201, last_response.status)
     billable_entity_id = JSON.parse(last_response.body)["id"]
     assert(!billable_entity_id.nil?, "Did not receive id")
-    put "/resources/app123@heroku.com/billable_events/1", put_body
+
+    put("/resources/app123@heroku.com/billable_events/1", {
+      :entity_id_uuid => eid,
+      :qty        => 1,
+      :rate_code  => @rate_code.slug,
+      :time       => "2011-01-01 00:00:00 +0000",
+      :state      => "open"
+    })
     assert_equal(200, last_response.status)
     assert_equal billable_entity_id, JSON.parse(last_response.body)["id"]
   end
@@ -132,6 +126,7 @@ class BillableEventsApiTest < ShushuTest
   def test_open_event_on_third_call
     setup_auth
     put_body = {
+      :entity_id_uuid => SecureRandom.uuid,
       :qty        => 1,
       :rate_code  => @rate_code.slug,
       :time       => "2011-01-01 00:00:00 +0000",
@@ -147,6 +142,7 @@ class BillableEventsApiTest < ShushuTest
   def test_open_event_on_second_call_and_ignores_change
     setup_auth
     put_body = {
+      :entity_id_uuid => SecureRandom.uuid,
       :qty        => 1,
       :rate_code  => @rate_code.slug,
       :time       => "2011-01-01 00:00:00 +0000",
@@ -166,6 +162,7 @@ class BillableEventsApiTest < ShushuTest
   def test_close_event
     setup_auth
     body = {
+      :entity_id_uuid => SecureRandom.uuid,
       :qty        => 1,
       :rate_code  => @rate_code.slug,
       :time       => "2011-01-01 00:00:00 +0000",
@@ -180,6 +177,7 @@ class BillableEventsApiTest < ShushuTest
   def test_close_event_a_second_time
     setup_auth
     body = {
+      :entity_id_uuid => SecureRandom.uuid,
       :qty        => 1,
       :rate_code  => @rate_code.slug,
       :time       => "2011-01-01 00:00:00 +0000",

@@ -8,8 +8,8 @@ module BillableEventService
 
   def handle_in(args)
     check_args!(args)
-    if event = BillableEvent.prev_recorded(args[:state], args[:entity_id], args[:provider_id])
-      Log.info(:action => "event_found", :provider => event[:provider_id], :entity => event[:entity_id])
+    if event = BillableEvent.prev_recorded(args[:state], args[:entity_id_uuid], args[:provider_id])
+      Log.info(:action => "event_found", :provider => event[:provider_id], :entity => event[:entity_id_uuid])
       [200, event.to_h]
     else
       [201, open_or_close(args).to_h]
@@ -72,9 +72,9 @@ module BillableEventService
   def required_args(state)
     case state.to_s
     when "open"
-      [:provider_id, :rate_code, :entity_id, :hid, :qty, :time, :state]
+      [:provider_id, :rate_code, :entity_id_uuid, :hid, :qty, :time, :state]
     when "close"
-      [:provider_id, :entity_id, :state, :time]
+      [:provider_id, :entity_id_uuid, :state, :time]
     end
   end
 

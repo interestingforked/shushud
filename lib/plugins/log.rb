@@ -8,6 +8,10 @@ module SequelLogger
     end
   end
 
+  def log_exception(e, sql)
+    Log.error(:exception => e.class, :sql => sql)
+  end
+
   def action(sql)
     sql[/(\w+){1}/].downcase
   end

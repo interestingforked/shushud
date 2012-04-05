@@ -20,7 +20,9 @@ class OpenCloseOrderingTest < ShushuTest
   end
 
   def test_close_can_happen_before_open
-    put("resources/123/billable_events/1", {
+    eid = SecureRandom.uuid
+    put("resources/123/billable_events/#{eid}", {
+      :entity_id_uuid => eid,
       :qty       => 1,
       :rate_code => @rate_code.slug,
       :state     => 'close',
@@ -30,7 +32,9 @@ class OpenCloseOrderingTest < ShushuTest
   end
 
   def test_usage_report_does_not_include_close_without_open
-    put("resources/123/billable_events/1", {
+    eid = SecureRandom.uuid
+    put("resources/123/billable_events/#{eid}", {
+      :entity_id_uuid => eid,
       :qty       => 1,
       :rate_code => @rate_code.slug,
       :state     => 'close',
@@ -39,7 +43,8 @@ class OpenCloseOrderingTest < ShushuTest
     assert_equal(201, last_response.status)
 
     account = build_account(:provider_id => @provider.id)
-    put("/accounts/#{account.id}/resource_ownerships/#{SecureRandom.uuid}", {
+    aeid = SecureRandom.uuid
+    put("/accounts/#{account.id}/resource_ownerships/#{aeid}", {
       :state => ResourceOwnershipRecord::ACTIVE,
       :resource_id => "123",
       :time => jan

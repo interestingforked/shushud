@@ -127,7 +127,7 @@ Sequel.migration do
     add_column :billable_events, :time,               "timestamptz"
     add_column :billable_events, :state,              "int"
     alter_table(:billable_events) do
-      add_unique_constraint([:provider_id, :entity_id, :state])
+      add_unique_constraint([:provider_id, :entity_id_uuid, :state])
     end
 
    create_table(:open_events) do
