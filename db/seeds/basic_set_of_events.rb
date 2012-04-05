@@ -72,3 +72,7 @@ SecureRandom.uuid.tap do |eid|
   be(eid, 'app127@heroku.com', Time.utc(2000, 2), 2, 'open')
   be(eid, 'app127@heroku.com', Time.utc(2000, 3), 2, 'close')
 end
+
+SecureRandom.uuid.tap do |eid|
+  be(eid, 'app127@heroku.com', Time.utc(2000, 2), 2, 'open')
+end
