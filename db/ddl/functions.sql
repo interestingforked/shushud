@@ -232,9 +232,9 @@ RETURNS TABLE(
     ) as adjusted_dyno_hours
   FROM billable_units bu
   WHERE
-  ($1, $2)
-  OVERLAPS
   (bu.from, COALESCE(bu.to, now()))
+  OVERLAPS
+  (($1 - '1 second'::interval), ($2 + '1 second'::interval))
   GROUP BY
     bu.hid, bu.rate
 $$ LANGUAGE SQL STABLE
