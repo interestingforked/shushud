@@ -331,28 +331,16 @@ class ReportServiceTest < ShushuTest
     assert_equal(feb, Time.parse(billable_unit["to"]))
   end
 
-  def test_res_diff
-    t0 = Time.mktime(2012,1)
-    t1 = t0 + 60 * 60
-    t2 = t1 + 60 * 60
-    t3 = t2 + 60 * 60
-    eid1 = SecureRandom.uuid
-    eid2 = SecureRandom.uuid
-    rate_code = build_rate_code(:rate => 5)
-    build_billable_event("app123", eid1, 1, t0, rate_code.slug)
-    build_billable_event("app123", eid2, 1, t1, rate_code.slug)
-    build_billable_event("app123", eid2, 0, t2, rate_code.slug)
-
-    _, report = ReportService.res_diff(t0, t1, t1, t2, true, false, false)
-    resource = report[:resources].pop
-    assert_equal(5, resource["ltotal"].to_f)
-    assert_equal(10, resource["rtotal"].to_f)
-    assert_equal(5, resource["diff"].to_f)
-
-    _, report = ReportService.res_diff(t1, t2, t2, t3, false, false, false)
-    resource = report[:resources].pop
-    assert_equal(10, resource["ltotal"].to_f)
-    assert_equal(5, resource["rtotal"].to_f)
-    assert_equal(-5, resource["diff"].to_f)
+=begin
+  def test_rate_code_report_perc_month
+    rate_code = build_rate_code(:rate => 100, :rate_period => "month")
+    build_billable_event("app123", nil, 1, jan, rate_code.id)
+    build_billable_event("app124", nil, 1, jan, rate_code.id)
+    _, report = ReportService.rate_code_report(rate_code.id, jan, feb)
+    expected_total = (((feb - jan) / 60.0 / 60.0) * rate_code.rate) * 2
+    assert_equal(expected_total, report[:total].to_f)
+    billable_units = report[:billable_units]
+    assert_equal(2, billable_units.last["qty"])
   end
+=end
 end

@@ -82,6 +82,14 @@ module ReportService
     end
   end
 
+  def res_diff_agg(lfrom, lto, rfrom, rto, delta_increaase, lrev_zero, rrev_zero)
+    Log.info_t(:action => "res_diff_agg") do
+      s = "SELECT * FROM res_diff_agg($1, $2, $3, $4, $5, $6, $7)"
+      r = exec_sql(s, lfrom, lto, rfrom, rto, delta_increaase, lrev_zero, rrev_zero).pop
+      [200, {:diff => r['sdiff'], :ltotal => r['sltotal'], :rtotal => r['srtotal']}]
+    end
+  end
+
   def exec_sql(sql, *args)
     Shushu::DB.synchronize do |conn|
       conn.exec(sql, args).to_a
