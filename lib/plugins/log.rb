@@ -2,7 +2,7 @@ module SequelLogger
   def log_duration(t, sql)
     t = Integer(t*=1000)
     if t > PG_WARN_THREASHOLD
-      Log.error(:action => action(sql), :time => t, :sql => sql)
+      Log.warn(:action => action(sql), :time => t, :sql => sql)
     else
       Log.info(:action => action(sql), :time => t, :sql => sql[0..20])
     end
