@@ -77,5 +77,6 @@ end
 
 Shushu::Conf[:gateway] = BraintreeGateway
 Shushu::DB.sql_log_level = :debug
+Shushu::DB.class.send(:include, SequelLogger)
 Shushu::DB.execute("SET timezone TO 'UTC'")
 Sequel.default_timezone = :utc
