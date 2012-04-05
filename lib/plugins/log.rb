@@ -18,8 +18,6 @@ class ShuLog < Logger
     data.map do |(k, v)|
       if (v == true)
         "#{k}=true"
-      elsif v.is_a?(Float)
-        "#{k}=#{format("%.3f", v)}"
       elsif v.nil?
         nil
       else
