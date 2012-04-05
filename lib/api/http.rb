@@ -5,31 +5,32 @@ module Api
 
     def perform
       begin
-        t0 = Time.now
-        Log.info({:action => "begin_api_request", :provider => session[:provider_id]}.merge(request.params))
-        s, b = yield
-        status(s)
-        body(enc_json(b))
-        t1 = Time.now
-        Log.info({:action => "finish_api_request", :elapsed_time => (t1 - t0), :provider => session[:provider_id]}.merge(request.params))
+        Log.info_t({
+          :action => "finish_api_request",
+          :provider => session[:provider_id]
+        }.merge(request.params)) do
+          s, b = yield
+          status(s)
+          body(enc_json(b))
+        end
       rescue RuntimeError, ArgumentError => e
-        Log.error({:error => "argument", :exception => e.message, :backtrace => e.backtrace}.merge(params))
+        Log.error({:exception => e.message, :backtrace => e.backtrace}.merge(params))
         status(400)
         body(enc_json(e.message))
       rescue Shushu::AuthorizationError => e
-        Log.error({:error => "authorization", :exception => e.message, :backtrace => e.backtrace}.merge(params))
+        Log.error({:exception => e.message, :backtrace => e.backtrace}.merge(params))
         status(403)
         body(enc_json(e.message))
       rescue Shushu::NotFound => e
-        Log.error({:error => "not-found", :exception => e.message, :backtrace => e.backtrace}.merge(params))
+        Log.error({:exception => e.message, :backtrace => e.backtrace}.merge(params))
         status(404)
         body(enc_json(e.message))
       rescue Shushu::DataConflict => e
-        Log.error({:error => "conflict", :exception => e.message, :backtrace => e.backtrace}.merge(params))
+        Log.error({:exception => e.message, :backtrace => e.backtrace}.merge(params))
         status(409)
         body(enc_json(e.message))
       rescue Exception => e
-        Log.error({:error => true, :exception => e.message, :backtrace => e.backtrace}.merge(params))
+        Log.error({:exception => e.message, :backtrace => e.backtrace}.merge(params))
         status(500)
         body(enc_json(e.message))
         raise if Shushu.test?
