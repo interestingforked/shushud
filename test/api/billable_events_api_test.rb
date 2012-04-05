@@ -12,16 +12,6 @@ class BillableEventsApiTest < ShushuTest
     authorize(@provider.id, "abc123")
   end
 
-  def open_event(entity_id, opts={})
-    body = {
-      "qty"       => 1,
-      "rate_code" => @rate_code.slug,
-      "time"      => "2011-01-01 00:00:00",
-      "state"     => "open"
-    }.merge(opts)
-    put "resources/123/billable_events/#{entity_id || 1}", body
-  end
-
   def test_open_event
     setup_auth
     body = {
@@ -205,7 +195,13 @@ class BillableEventsApiTest < ShushuTest
 
   def test_get_events
     setup_auth
-    open_event("456")
+    put("resources/123/billable_events/456",{
+      "entity_id_uuid" => SecureRandom.uuid,
+      "qty"       => 1,
+      "rate_code" => @rate_code.slug,
+      "time"      => "2011-01-01 00:00:00",
+      "state"     => "open"
+    })
     get("/billable_events")
     assert_equal("456", JSON.parse(last_response.body).first["entity_id"])
   end
