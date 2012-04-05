@@ -52,7 +52,7 @@ class ShuLog < Logger
     t0 = Time.now
     res = yield
     t1 = Time.now
-    el = t1 - t0
+    el = Integer(t1 - t0) * 1000
     info(data.merge({:elapsed_time => el}))
     res
   end
