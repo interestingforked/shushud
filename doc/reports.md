@@ -167,7 +167,7 @@ Boolean parameters can be encoded as the following:
 
 ```bash
 $ curl -X GET \
-  "https://provider:token@shushu.heroku.com/res_diff? \
+  "https://provider:token@shushu.heroku.com/reports/res_diff? \
   lfrom=time& \
   lto=time&   \
   rfrom=time& \
@@ -179,7 +179,7 @@ $ curl -X GET \
   123
 
 $ curl -X GET \
-  "https://provider:token@shushu.heroku.com/res_diff/resources? \
+  "https://provider:token@shushu.heroku.com/reports/res_diff/resources? \
   lfrom=time& \
   lto=time&   \
   rfrom=time& \
@@ -211,7 +211,7 @@ revenue report.
 ### API
 
 ```bash
-$ curl -X GET "https://provider:token@shushu.heroku.com/rev_report? \
+$ curl -X GET "https://provider:token@shushu.heroku.com/reports/revenue \
   from=time&
   to=time&
   qcredit=int"

@@ -15,6 +15,12 @@ module Api
       end
     end
 
+    get "/revenue" do
+      perform do
+        ReportService.rev_report(dec_time(params[:from]), dec_time(params[:to]))
+      end
+    end
+
     def res_diff_params
       [
         dec_time(params[:lfrom]),
