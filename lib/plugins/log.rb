@@ -1,6 +1,6 @@
 module SequelLogger
   def log_duration(t, sql)
-    t = Integer(t*= 1000) #convert s to ms
+    t*= 1000 #convert s to ms
     if t > PG_WARN_THREASHOLD
       Log.error(:action => action(sql), :time => t, :sql => sql)
     else
