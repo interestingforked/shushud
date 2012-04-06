@@ -14,14 +14,14 @@
 # get "/hello/:name" do
 #   params[:name]
 # end
-# => action="/hello/:name" elapsed_time=0.001
+# => action="/hello/:name" elapsed=0.001
 #
 # Sequel Example:
 #
 # DB.loggers << Logger.new($stdout)
 # DB.class.send(:include, Sequel::Instrumentation)
 # DB[:events].count
-# => action=select elapsed_time=0.1 sql="select count(*) from events"
+# => action=select elapsed=0.1 sql="select count(*) from events"
 
 
 require "sinatra/base"
@@ -52,24 +52,25 @@ module Instruments
           Instruments.logger.info({
             :action => "finish_api_request",
             :route => @instrumented_route,
-            :elapsed_time => t,
+            :elapsed => t,
+            :method => env["REQUEST_METHOD"].downcase,
             :status => response.status
           }.merge(params))
         end
       end
     end
-    register(Instrumentation)
   end
-  ::Sinatra::Base.send(:include, ::Sinatra::Instrumentation)
 
   module ::Sequel
     module Instrumentation
       def log_duration(t, sql)
         t = Integer(t*=1000)
-        if t > PG_WARN_THREASHOLD
-          Instruments.logger.warn(:action => action(sql), :time => t, :sql => sql)
+        if t > DB_ERROR_THREASHOLD
+          Instruments.error.warn(:action => action(sql), :elapsed => t, :sql => sql)
+        elsif t > DB_WARN_THREASHOLD
+          Instruments.logger.warn(:action => action(sql), :elapsed => t, :sql => sql)
         else
-          Instruments.logger.info(:action => action(sql), :time => t, :sql => sql[0..20])
+          Instruments.logger.info(:action => action(sql), :elapsed => t, :sql => sql[0..20])
         end
       end
 

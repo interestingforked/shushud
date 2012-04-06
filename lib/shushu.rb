@@ -79,7 +79,8 @@ require "./etc/payment_state_transitions"
 
 require "./lib/gateways/braintree"
 
-PG_WARN_THREASHOLD = ENV["PG_WARN_THREASHOLD"].to_i
+DB_WARN_THREASHOLD = ENV["DB_WARN_THREASHOLD"].to_i
+DB_ERROR_THREASHOLD = ENV["DB_ERROR_THREASHOLD"].to_i
 
 Shushu::Conf[:gateway] = BraintreeGateway
 Shushu::DB.loggers << Log
