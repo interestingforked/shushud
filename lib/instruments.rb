@@ -50,7 +50,8 @@ module Instruments
         after do
           t = Integer((Time.now - @start_request)*1000)
           Instruments.logger.info({
-            :action => "finish_api_request",
+            :app => "shushu",
+            :action => "http-request",
             :route => @instrumented_route,
             :elapsed => t,
             :method => env["REQUEST_METHOD"].downcase,
