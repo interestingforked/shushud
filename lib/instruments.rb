@@ -38,8 +38,8 @@ module Instruments
 
   module ::Sinatra
     module Instrumentation
-      def route(verb, action, *) # in a modular app, do `def self.route`
-        condition {@action = action} # will trigger in instance scope before route
+      def route(verb, action, *)
+        condition {@instrumented_route = action}
         super
       end
 
@@ -49,7 +49,12 @@ module Instruments
         end
         after do
           t = Integer((Time.now - @start_request)*1000)
-          Instruments.logger.info(:action => @action, :elapsed_time => t)
+          Instruments.logger.info({
+            :action => "finish_api_request",
+            :route => @instrumented_route,
+            :elapsed_time => t,
+            :status => response.status
+          }.merge(params))
         end
       end
     end

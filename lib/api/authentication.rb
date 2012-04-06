@@ -3,17 +3,19 @@ module Api
     include Helpers
 
     def authenticate_provider
-      Log.info_t(:action => "authenticate_provider") do
-        unless authenticated?
-          if proper_request?
-            id, token = *auth.credentials
-            Provider.auth?(id, token) ? session[:provider_id] = id : unauthenticated!
-            Log.info(:action => "authenticated", :provider => id)
+      unless authenticated?
+        if proper_request?
+          id, token = *auth.credentials
+          if Provider.auth?(id, token)
+            session[:provider_id] = params[:provider_id] = id
           else
-            ip, agent = request.env["REMOTE_ADDR"], request.env["HTTP_USER_AGENT"]
-            Log.info(:action => "unauthenticated", :ip => ip, :agent => agent)
             unauthenticated!
           end
+          Log.info(:action => "authenticated", :provider => id)
+        else
+          ip, agent = request.env["REMOTE_ADDR"], request.env["HTTP_USER_AGENT"]
+          Log.info(:action => "unauthenticated", :ip => ip, :agent => agent)
+          unauthenticated!
         end
       end
     end

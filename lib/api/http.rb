@@ -8,14 +8,9 @@ module Api
 
     def perform
       begin
-        Log.info_t({
-          :action => "finish_api_request",
-          :provider => session[:provider_id]
-        }.merge(request.params)) do
-          s, b = yield
-          status(s)
-          body(enc_json(b))
-        end
+        s, b = yield
+        status(s)
+        body(enc_json(b))
       rescue RuntimeError, ArgumentError => e
         Log.error({:exception => e.message, :backtrace => e.backtrace}.merge(params))
         status(400)
