@@ -18,6 +18,7 @@ SecureRandom.uuid.tap do |eid|
     :rate_code      => reid,
     :hid            => "app123@heorku.com",
     :entity_id      => eid,
+    :entity_id_uuid => eid,
     :qty            => 1,
     :time           => Time.utc(2000,1),
     :state          => "open"
@@ -27,6 +28,7 @@ SecureRandom.uuid.tap do |eid|
     :rate_code      => reid,
     :hid            => "app123@heorku.com",
     :entity_id      => eid,
+    :entity_id_uuid => eid,
     :qty            => 1,
     :time           => Time.utc(2000,3),
     :state          => "close"
@@ -39,6 +41,7 @@ SecureRandom.uuid.tap do |eid|
     :rate_code      => reid,
     :hid            => "app123@heorku.com",
     :entity_id      => eid,
+    :entity_id_uuid => eid,
     :qty            => 1,
     :time           => Time.utc(2000,2),
     :state          => "open"
@@ -51,6 +54,7 @@ SecureRandom.uuid.tap do |eid|
     :rate_code      => reid,
     :hid            => "app124@heorku.com",
     :entity_id      => eid,
+    :entity_id_uuid => eid,
     :qty            => 2,
     :time           => Time.utc(2000,2),
     :state          => "open"
@@ -60,6 +64,7 @@ SecureRandom.uuid.tap do |eid|
     :rate_code      => reid,
     :hid            => "app124@heorku.com",
     :entity_id      => eid,
+    :entity_id_uuid => eid,
     :qty            => 2,
     :time           => Time.utc(2000,3),
     :state          => "close"
@@ -72,6 +77,7 @@ SecureRandom.uuid.tap do |eid|
     :rate_code      => reid,
     :hid            => "app125@heorku.com",
     :entity_id      => eid,
+    :entity_id_uuid => eid,
     :qty            => 1,
     :time           => Time.utc(2000,1),
     :state          => "open"
@@ -81,6 +87,7 @@ SecureRandom.uuid.tap do |eid|
     :rate_code      => reid,
     :hid            => "app125@heorku.com",
     :entity_id      => eid,
+    :entity_id_uuid => eid,
     :qty            => 1,
     :time           => Time.utc(2000,2),
     :state          => "close"
@@ -93,6 +100,7 @@ SecureRandom.uuid.tap do |eid|
     :rate_code      => reid,
     :hid            => "app126@heorku.com",
     :entity_id      => eid,
+    :entity_id_uuid => eid,
     :qty            => 6,
     :time           => Time.utc(2000,1),
     :state          => "open"
@@ -102,6 +110,7 @@ SecureRandom.uuid.tap do |eid|
     :rate_code      => reid,
     :hid            => "app126@heorku.com",
     :entity_id      => eid,
+    :entity_id_uuid => eid,
     :qty            => 6,
     :time           => Time.utc(2000,2),
     :state          => "close"
@@ -114,6 +123,7 @@ SecureRandom.uuid.tap do |eid|
     :rate_code      => reid,
     :hid            => "app126@heorku.com",
     :entity_id      => eid,
+    :entity_id_uuid => eid,
     :qty            => 3,
     :time           => Time.utc(2000,2),
     :state          => "open"
@@ -123,6 +133,7 @@ SecureRandom.uuid.tap do |eid|
     :rate_code      => reid,
     :hid            => "app126@heorku.com",
     :entity_id      => eid,
+    :entity_id_uuid => eid,
     :qty            => 3,
     :time           => Time.utc(2000,3),
     :state          => "close"
