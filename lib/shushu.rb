@@ -33,10 +33,19 @@ module Shushu
 
 end
 
+require "./lib/plugins/log"
+require "./lib/instruments"
+$stderr.sync = $stdout.sync = true
+Log = ShuLog.new($stdout)
+Log.level = ENV["LOG_LEVEL"].to_i
+Log.formatter = Proc.new do |severity, datetime, progname, msg|
+  "#{msg}\n"
+end
+Instruments.logger = Log
+
 require "./lib/utils"
 require "./lib/plugins/created_at_setter"
 require "./lib/plugins/model"
-require "./lib/plugins/log"
 
 require "./lib/api/helpers"
 require "./lib/api/authentication"
@@ -72,15 +81,8 @@ require "./lib/gateways/braintree"
 
 PG_WARN_THREASHOLD = ENV["PG_WARN_THREASHOLD"].to_i
 
-$stderr.sync = $stdout.sync = true
-Log = ShuLog.new($stdout)
-Log.level = ENV["LOG_LEVEL"].to_i
-Log.formatter = Proc.new do |severity, datetime, progname, msg|
-  "#{msg}\n"
-end
-
 Shushu::Conf[:gateway] = BraintreeGateway
 Shushu::DB.loggers << Log
-Shushu::DB.class.send(:include, SequelLogger)
+Shushu::DB.class.send(:include, Sequel::Instrumentation)
 Shushu::DB.execute("SET timezone TO 'UTC'")
 Sequel.default_timezone = :utc

@@ -1,6 +1,8 @@
 module Api
   class Events < Http
+
     before {authenticate_provider; content_type(:json)}
+
     #
     # Errors
     #

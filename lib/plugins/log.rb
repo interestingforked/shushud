@@ -1,22 +1,3 @@
-module SequelLogger
-  def log_duration(t, sql)
-    t = Integer(t*=1000)
-    if t > PG_WARN_THREASHOLD
-      Log.warn(:action => action(sql), :time => t, :sql => sql)
-    else
-      Log.info(:action => action(sql), :time => t, :sql => sql[0..20])
-    end
-  end
-
-  def log_exception(e, sql)
-    Log.error(:exception => e.class, :sql => sql)
-  end
-
-  def action(sql)
-    sql[/(\w+){1}/].downcase
-  end
-end
-
 class ShuLog < Logger
 
   def unparse(data)

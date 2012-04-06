@@ -3,6 +3,9 @@ module Api
     include Authentication
     include Helpers
 
+    register Sinatra::Instrumentation
+    instrument_routes
+
     def perform
       begin
         Log.info_t({
