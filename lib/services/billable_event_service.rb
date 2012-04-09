@@ -28,33 +28,31 @@ module BillableEventService
   end
 
   def create_record(state, args)
-    Log.info_t({:action => "#{state}_event"}.merge(args)) do
-      begin
-        Utils.txn do
-          BillableEvent.create(
-            :provider_id      => args[:provider_id],
-            :entity_id_uuid   => Utils.validate_uuid(args[:entity_id_uuid]),
-            :rate_code_id     => args[:rate_code],
-            :entity_id        => args[:entity_id],
-            :hid              => args[:hid],
-            :qty              => args[:qty],
-            :product_name     => args[:product_name],
-            :description      => args[:description],
-            :time             => args[:time],
-            :state            => BillableEvent.enc_state(state)
-          ).tap do |ev|
-            EventTracker.track(
-              ev[:entity_id_uuid],
-              ev[:state],
-              ev[:created_at],
-              ev[:provider_id]
-            )
-          end
+    begin
+      Utils.txn do
+        BillableEvent.create(
+          :provider_id      => args[:provider_id],
+          :entity_id_uuid   => Utils.validate_uuid(args[:entity_id_uuid]),
+          :rate_code_id     => args[:rate_code],
+          :entity_id        => args[:entity_id],
+          :hid              => args[:hid],
+          :qty              => args[:qty],
+          :product_name     => args[:product_name],
+          :description      => args[:description],
+          :time             => args[:time],
+          :state            => BillableEvent.enc_state(state)
+        ).tap do |ev|
+          EventTracker.track(
+            ev[:entity_id_uuid],
+            ev[:state],
+            ev[:created_at],
+            ev[:provider_id]
+          )
         end
-      rescue StandardError => e
-        Log.error({:action => "#{state}_event"}.merge(args))
-        raise(e)
       end
+    rescue StandardError => e
+      Log.error({:action => "#{state}_event"}.merge(args))
+      raise(e)
     end
   end
 
