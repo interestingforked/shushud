@@ -67,7 +67,7 @@ module Instruments
       def log_duration(t, sql)
         t = Integer(t*=1000)
         if t > DB_ERROR_THREASHOLD
-          Instruments.error.warn(:action => action(sql), :elapsed => t, :sql => sql)
+          Instruments.logger.error(:action => action(sql), :elapsed => t, :sql => sql)
         elsif t > DB_WARN_THREASHOLD
           Instruments.logger.warn(:action => action(sql), :elapsed => t, :sql => sql)
         else

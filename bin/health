@@ -8,9 +8,17 @@ $: << File.expand_path("lib")
 
 require "shushu"
 
+PSMGR_VISDB = Sequel.connect(ENV["PSMGR_VISDB"])
+PSMGR_VISDB.loggers << Logger.new($stdout)
+PSMGR_VISDB.class.send(:include, Sequel::Instrumentation)
+
 @working = true
 while(@working)
+  service_count = PSMGR_VISDB[:services].filter("opened_at IS NOT NULL and closed_at IS NULL").count
+  Log.info(:action => "health_check", :query => "service_count", :count => service_count)
+
   event_count = Shushu::DB[:open_events].filter(:provider => 5).count
   Log.info(:action => "health_check", :query => "billable_event_count", :count => event_count)
+
   sleep(1)
 end
