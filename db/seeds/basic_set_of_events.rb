@@ -10,10 +10,11 @@ end
 
 def be(eid, hid, time, qty, state)
   BillableEventService.handle_in({
+    :entity_id_uuid => eid,
+    :entity_id      => eid,
     :provider_id    => provider.id,
     :rate_code      => reid,
     :hid            => hid,
-    :entity_id      => eid,
     :time           => time,
     :state          => state,
     :qty            => qty
