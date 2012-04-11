@@ -1,0 +1,4 @@
+#! /usr/bin/env ruby
+require './lib/shushu'
+
+Rack::Worker.cache.flush_all

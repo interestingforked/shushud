@@ -14,6 +14,7 @@ GEM
       builder (>= 2.0.0)
     builder (3.0.0)
     columnize (0.3.6)
+    dalli (2.0.2)
     instruments (0.0.4)
     json_pure (1.6.6)
     kgio (2.7.4)
@@ -21,11 +22,14 @@ GEM
       ruby_core_source (>= 0.1.4)
     minitest (2.11.4)
     pg (0.13.2)
+    queue_classic (2.0.0rc11)
+      pg (~> 0.13.2)
     rack (1.4.1)
     rack-protection (1.2.0)
       rack
     rack-test (0.6.1)
       rack (>= 1.0)
+    rack-worker (0.0.1.rc1)
     raindrops (0.8.0)
     ruby-debug-base19 (0.11.25)
       columnize (>= 0.3.1)
@@ -59,11 +63,14 @@ PLATFORMS
 
 DEPENDENCIES
   braintree (= 2.14.0)
+  dalli
   instruments (= 0.0.4)
   minitest
   pg (= 0.13.2)
+  queue_classic (~> 2.0.0rc11)
   rack (= 1.4.1)
   rack-test
+  rack-worker
   ruby-debug19
   scrolls (= 0.0.8)
   sequel!

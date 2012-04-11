@@ -1,16 +1,7 @@
 $stderr.sync = $stdout.sync = true
 
-require "logger"
-require "cgi"
-require "securerandom"
-require "digest/sha1"
-
-require "sinatra"
-require "braintree"
-require "yajl"
-require "sequel"
-require "scrolls"
-require "instruments"
+require 'bundler'
+Bundler.require
 
 Scrolls::Log.start
 Instruments.defaults = {
