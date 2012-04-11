@@ -9,7 +9,7 @@ gem "yajl-ruby", "1.1.0", :require => "yajl"
 gem "braintree", "2.14.0"
 gem "stalker", "0.9.0"
 gem "scrolls", "0.0.8"
-gem "instruments","0.0.3"
+gem "instruments","0.0.4"
 
 
 group :test do

@@ -14,7 +14,7 @@ GEM
       builder (>= 2.0.0)
     builder (3.0.0)
     columnize (0.3.6)
-    instruments (0.0.3)
+    instruments (0.0.4)
     json_pure (1.6.6)
     kgio (2.7.4)
     linecache19 (0.5.12)
@@ -59,7 +59,7 @@ PLATFORMS
 
 DEPENDENCIES
   braintree (= 2.14.0)
-  instruments (= 0.0.3)
+  instruments (= 0.0.4)
   minitest
   pg (= 0.13.2)
   rack (= 1.4.1)
