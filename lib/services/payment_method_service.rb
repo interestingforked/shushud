@@ -38,11 +38,11 @@ module PaymentMethodService
 
   def run_auth(params)
     if t = params[:card_token]
-      Log.debug(:action => "auth", :token => true, :provider => params[:provider_id])
+      log(:level => :debug, :action => "auth", :token => true, :provider => params[:provider_id])
       # Assume the token is good and move on.
       [201, {:card_token => t}]
     else
-      Log.debug(:action => "auth", :token => false, :provider => params[:provider_id])
+      log(:level => :debug, :action => "auth", :token => false, :provider => params[:provider_id])
       Authorizer.run(params[:card_num], params[:card_exp_month], params[:card_exp_year])
     end
   end

@@ -9,7 +9,7 @@ module BillableEventService
   def handle_in(args)
     check_args!(args)
     if event = BillableEvent.prev_recorded(args[:state], args[:entity_id_uuid], args[:provider_id])
-      Log.info(:action => "event_found", :provider => event[:provider_id], :entity => event[:entity_id_uuid])
+      log(:action => "event_found", :provider => event[:provider_id], :entity => event[:entity_id_uuid])
       [200, event.to_h]
     else
       [201, open_or_close(args).to_h]
@@ -20,7 +20,6 @@ module BillableEventService
 
   def open_or_close(args)
     if !["open", "close"].include?(args[:state])
-      Log.error({:action => "open_or_close"}.merge(args))
       raise(ArgumentError, "Unable to create new event with args=#{args}")
     else
       create_record(args[:state], args)
@@ -28,31 +27,26 @@ module BillableEventService
   end
 
   def create_record(state, args)
-    begin
-      Utils.txn do
-        BillableEvent.create(
-          :provider_id      => args[:provider_id],
-          :entity_id_uuid   => Utils.validate_uuid(args[:entity_id_uuid]),
-          :rate_code_id     => args[:rate_code],
-          :entity_id        => args[:entity_id],
-          :hid              => args[:hid],
-          :qty              => args[:qty],
-          :product_name     => args[:product_name],
-          :description      => args[:description],
-          :time             => args[:time],
-          :state            => BillableEvent.enc_state(state)
-        ).tap do |ev|
-          EventTracker.track(
-            ev[:entity_id_uuid],
-            ev[:state],
-            ev[:created_at],
-            ev[:provider_id]
-          )
-        end
+    Utils.txn do
+      BillableEvent.create(
+        :provider_id      => args[:provider_id],
+        :entity_id_uuid   => Utils.validate_uuid(args[:entity_id_uuid]),
+        :rate_code_id     => args[:rate_code],
+        :entity_id        => args[:entity_id],
+        :hid              => args[:hid],
+        :qty              => args[:qty],
+        :product_name     => args[:product_name],
+        :description      => args[:description],
+        :time             => args[:time],
+        :state            => BillableEvent.enc_state(state)
+      ).tap do |ev|
+        EventTracker.track(
+          ev[:entity_id_uuid],
+          ev[:state],
+          ev[:created_at],
+          ev[:provider_id]
+        )
       end
-    rescue StandardError => e
-      Log.error({:action => "#{state}_event"}.merge(args))
-      raise(e)
     end
   end
 

@@ -5,89 +5,62 @@ module ReportService
   extend self
 
   def rate_code_report(rc_slug, from, to)
-    Log.info_t(
-      :action    => "rate_code_report",
-      :rate_code => rc_slug,
-      :from      => from,
-      :to        => to
-    ) do
-      rcid = RateCode.resolve_id(rc_slug)
-      s = "SELECT * FROM rate_code_report($1, $2, $3)"
-      billable_units = exec_sql(s, rcid, from, to)
-      [200, {
-        :rate_code      => rc_slug,
-        :from           => from,
-        :to             => to,
-        :billable_units => billable_units,
-        :total          => Calculator.total(billable_units)
-      }]
-    end
+    rcid = RateCode.resolve_id(rc_slug)
+    s = "SELECT * FROM rate_code_report($1, $2, $3)"
+    billable_units = exec_sql(s, rcid, from, to)
+    [200, {
+      :rate_code      => rc_slug,
+      :from           => from,
+      :to             => to,
+      :billable_units => billable_units,
+      :total          => Calculator.total(billable_units)
+    }]
   end
 
   def usage_report(account_id, from, to)
-    Log.info_t(
-      :action     => "usage_report",
-      :account_id => account_id,
-      :from       => from,
-      :to         => to
-    ) do
-      s = "SELECT * FROM usage_report($1, $2, $3)"
-      billable_units = exec_sql(s, account_id, from, to)
-      [200, {
-        :account_id     => account_id,
-        :from           => from,
-        :to             => to,
-        :billable_units => billable_units,
-        :total          => Calculator.total(billable_units)
-      }]
-    end
+    s = "SELECT * FROM usage_report($1, $2, $3)"
+    billable_units = exec_sql(s, account_id, from, to)
+    [200, {
+      :account_id     => account_id,
+      :from           => from,
+      :to             => to,
+      :billable_units => billable_units,
+      :total          => Calculator.total(billable_units)
+    }]
   end
 
   def invoice(payment_method_id, from, to)
-    Log.info_t(
-        :action         => "usage_report",
-        :payment_method => payment_method_id,
-        :from           => from,
-        :to             => to
-      ) do
-      s = "SELECT * FROM invoice($1, $2, $3)"
-      s << " WHERE payment_method_id = $4"
-      billable_units = {}
-      invoice = exec_sql(s, from, to, 0, payment_method_id).each do |li|
-        billable_units[li["hid"]] = p_a(li["billable_units"]).map {|h| p_h(h)}
-      end
-      [200, {
-        :payment_method_id => payment_method_id,
-        :from              => from,
-        :to                => to,
-        :billable_units    => billable_units,
-        :total             => invoice.map {|x| x["total"].to_f}.reduce(:+)
-      }]
+    s = "SELECT * FROM invoice($1, $2, $3)"
+    s << " WHERE payment_method_id = $4"
+    billable_units = {}
+    invoice = exec_sql(s, from, to, 0, payment_method_id).each do |li|
+      billable_units[li["hid"]] = p_a(li["billable_units"]).map {|h| p_h(h)}
     end
+    [200, {
+      :payment_method_id => payment_method_id,
+      :from              => from,
+      :to                => to,
+      :billable_units    => billable_units,
+      :total             => invoice.map {|x| x["total"].to_f}.reduce(:+)
+    }]
   end
 
   def rev_report(from, to, credit=0)
-    Log.info_t(:action => "rev_report", :from => from, :to => to) do
-      s = "SELECT rev_report($1, $2, $3)"
-      total = exec_sql(s, from, to, credit).pop["rev_report"].to_f
-      [200, {:time => Time.now, :total => total}]
-    end
+    s = "SELECT rev_report($1, $2, $3)"
+    total = exec_sql(s, from, to, credit).pop["rev_report"].to_f
+    [200, {:time => Time.now, :total => total}]
   end
 
   def res_diff(lfrom, lto, rfrom, rto, delta_increase, lrev_zero, rrev_zero, limit=100)
-    Log.info_t(:action => "res_diff") do
-      s = "SELECT * FROM res_diff($1, $2, $3, $4, $5, $6, $7) LIMIT $8"
-      resources = exec_sql(s, lfrom, lto, rfrom, rto, delta_increase, lrev_zero, rrev_zero, limit)
-      [200, {:resources => resources}]
-    end
+    s = "SELECT * FROM res_diff($1, $2, $3, $4, $5, $6, $7) LIMIT $8"
+    resources = exec_sql(s, lfrom, lto, rfrom, rto, delta_increase, lrev_zero, rrev_zero, limit)
+    [200, {:resources => resources}]
   end
 
   def res_diff_agg(lfrom, lto, rfrom, rto, delta_increase, lrev_zero, rrev_zero)
-    Log.info_t(:action => "res_diff_agg") do
-      s = "SELECT * FROM res_diff_agg($1, $2, $3, $4, $5, $6, $7)"
-      r = exec_sql(s, lfrom, lto, rfrom, rto, delta_increase, lrev_zero, rrev_zero).pop
-      [200, {:diff => r['sdiff'], :ltotal => r['sltotal'], :rtotal => r['srtotal']}]
-    end
+    s = "SELECT * FROM res_diff_agg($1, $2, $3, $4, $5, $6, $7)"
+    r = exec_sql(s, lfrom, lto, rfrom, rto, delta_increase, lrev_zero, rrev_zero).pop
+    [200, {:diff => r['sdiff'], :ltotal => r['sltotal'], :rtotal => r['srtotal']}]
   end
 
   def exec_sql(sql, *args)

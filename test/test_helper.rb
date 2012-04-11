@@ -9,8 +9,6 @@ require "shushu_helpers"
 require "ruby-debug"
 require "rack/test"
 
-Log.level = Logger::ERROR
-
 module TableCleaner
   def clean_tables
     Shushu::DB.transaction do
@@ -70,7 +68,7 @@ class ShushuTest < MiniTest::Unit::TestCase
     BAD_NUM = "999999999999999"
     TOKEN= "abc123"
     def run(num, year, month)
-      Log.debug(:action => "authorize", :num => num)
+      log(:level => :debug, :action => "authorize", :num => num)
       if num == GOOD_NUM
         [201, {:card_last4 => "1111", :card_type => "visa", :card_token => TOKEN}]
       else

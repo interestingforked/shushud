@@ -19,7 +19,7 @@ module PaymentService
   def process(provider_id, recid, pmid, skip_retry=false)
     Shushu::DB.transaction do
       rec, pm = resolve_rec(recid), resolve_pm(pmid)
-      Log.info(:action => "process_payment", :receivable => rec.id, :card_token => pm.card_token, :amount => rec.amount)
+      log(:action => "process_payment", :receivable => rec.id, :card_token => pm.card_token, :amount => rec.amount)
       # We place process jobs in the queue based upon results from #ready_process.
       # However, someone might use this method directly.
       if ReceivablesService.collected?(rec.id)
@@ -96,7 +96,7 @@ module PaymentService
   # vary the strategy at runtime.
   def handle_transition!(state, rec, pm, skip_retry)
     assert_can_handle_state!(state)
-    Log.info(:action => "transition_payment_state", :payment_method => pm.id, :state => state)
+    log(:action => "transition_payment_state", :payment_method => pm.id, :state => state)
     if blk = TRANSITION_CALLBACK[state]
       blk.call({
         :skip_retry => skip_retry,

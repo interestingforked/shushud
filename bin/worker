@@ -1,8 +1,8 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
 
-trap('INT')  {exit}
-trap('TERM') {exit}
+trap("INT")  {exit}
+trap("TERM") {exit}
 
 $: << File.expand_path("lib")
 
@@ -17,8 +17,6 @@ end
 
 job("payment.process") do |args|
   recid, pmid = args["recid"], args["pmid"]
-  Log.info_t(:action => "payment_service_process", :receivable => recid, :payment_method => pmid) do
-    PaymentService.process(provider_id, recid, pmid)
-  end
+  PaymentService.process(provider_id, recid, pmid)
 end
 Stalker.work

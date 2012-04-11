@@ -1,3 +1,5 @@
+$stderr.sync = $stdout.sync = true
+
 require "logger"
 require "cgi"
 require "securerandom"
@@ -7,6 +9,22 @@ require "sinatra"
 require "braintree"
 require "yajl"
 require "sequel"
+require "scrolls"
+require "instruments"
+
+Scrolls::Log.start
+Instruments.defaults = {
+  :logger => Scrolls,
+  :method => :log,
+  :data => {:level => :info}
+}
+
+module Kernel
+  def log(data)
+    data[:level] ||= :info
+    Scrolls.log(data)
+  end
+end
 
 module Shushu
   Root = File.expand_path("..", File.dirname(__FILE__))
@@ -32,16 +50,6 @@ module Shushu
   end
 
 end
-
-require "./lib/plugins/log"
-require "./lib/instruments"
-$stderr.sync = $stdout.sync = true
-Log = ShuLog.new($stdout)
-Log.level = ENV["LOG_LEVEL"].to_i
-Log.formatter = Proc.new do |severity, datetime, progname, msg|
-  "#{msg}\n"
-end
-Instruments.logger = Log
 
 require "./lib/utils"
 require "./lib/plugins/created_at_setter"
@@ -79,11 +87,6 @@ require "./etc/payment_state_transitions"
 
 require "./lib/gateways/braintree"
 
-DB_WARN_THREASHOLD = ENV["DB_WARN_THREASHOLD"].to_i
-DB_ERROR_THREASHOLD = ENV["DB_ERROR_THREASHOLD"].to_i
-
 Shushu::Conf[:gateway] = BraintreeGateway
-Shushu::DB.loggers << Log
-Shushu::DB.class.send(:include, Sequel::Instrumentation)
 Shushu::DB.execute("SET timezone TO 'UTC'")
 Sequel.default_timezone = :utc

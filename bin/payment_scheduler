@@ -1,19 +1,15 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
 
-trap('INT')  {exit}
-trap('TERM') {exit}
+trap("INT")  {exit}
+trap("TERM") {exit}
 
 $: << File.expand_path("lib")
 
 require "shushu"
 require "stalker"
 
-Log.info_t(:action => "exec_payment_scheduler") do
-  PaymentService.ready_process.each do |pend|
-    recid, pmid = pend["receivable_id"], pend["payment_method_id"]
-    Log.info_t(:action => "enqueue_payment_process", :receivable => recid, :payment_method => pmid) do
-      Stalker.enqueue("payment.process",{:recid  => recid, :pmid => pmid})
-    end
-  end
+PaymentService.ready_process.each do |pend|
+  recid, pmid = pend["receivable_id"], pend["payment_method_id"]
+  Stalker.enqueue("payment.process",{:recid  => recid, :pmid => pmid})
 end

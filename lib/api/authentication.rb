@@ -11,10 +11,10 @@ module Api
           else
             unauthenticated!
           end
-          Log.info(:action => "authenticated", :provider => id)
+          log(:action => "authenticated", :provider => id)
         else
           ip, agent = request.env["REMOTE_ADDR"], request.env["HTTP_USER_AGENT"]
-          Log.info(:action => "unauthenticated", :ip => ip, :agent => agent)
+          log(:action => "unauthenticated", :ip => ip, :agent => agent)
           unauthenticated!
         end
       end
