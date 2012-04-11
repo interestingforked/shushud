@@ -3,11 +3,14 @@ $:.unshift("test")
 
 ENV["RACK_ENV"] = "test"
 
-require "minitest/autorun"
+require 'bundler'
+Bundler.require :test
+
 require "shushu"
 require "shushu_helpers"
-require "ruby-debug"
-require "rack/test"
+
+#disable Rack::Worker caching for tests
+Rack::Worker.cache = false
 
 module TableCleaner
   def clean_tables

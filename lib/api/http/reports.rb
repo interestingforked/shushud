@@ -1,5 +1,7 @@
 module Api
   class Reports < Http
+    use Rack::Worker
+
     before {authenticate_provider; content_type(:json)}
 
     get "/res_diff" do
