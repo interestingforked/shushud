@@ -16,7 +16,7 @@ Scrolls::Log.start
 Instruments.defaults = {
   :logger => Scrolls,
   :method => :log,
-  :data => {:level => :info}
+  :data => {:app => "shushu", :level => :info}
 }
 
 module Kernel
