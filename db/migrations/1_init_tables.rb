@@ -133,9 +133,29 @@ Sequel.migration do
    create_table(:open_events) do
      primary_key(:entity_id, "uuid")
    end
-   add_column(:open_events, :state, "integer")
-   add_column(:open_events, :provider, "integer")
-   add_column(:open_events, :time, "timestamptz")
+   add_column(:open_events, :state,          "integer")
+   add_column(:open_events, :provider_id,    "integer")
+   add_column(:open_events, :resource_id,    "varchar(255)")
+   add_column(:open_events, :time,           "timestamptz")
+   add_column(:open_events, :rate,           "integer")
+   add_column(:open_events, :rate_period,    "text")
+   add_column(:open_events, :product_group,  "text")
+   add_column(:open_events, :product_name,   "text")
+   add_column(:open_events, :created_at,     "timestamptz")
+
+   create_table(:close_events) do
+     primary_key(:entity_id, "uuid")
+   end
+   add_column(:close_events, :provider_id,    "integer")
+   add_column(:close_events, :resource_id,    "varchar(255)")
+   add_column(:close_events, :from,           "timestamptz")
+   add_column(:close_events, :to,             "timestamptz")
+   add_column(:close_events, :qty,            "integer")
+   add_column(:close_events, :rate,           "integer")
+   add_column(:close_events, :rate_period,    "text")
+   add_column(:close_events, :product_group,  "text")
+   add_column(:close_events, :product_name,   "text")
+   add_column(:close_events, :created_at,     "timestamptz")
 
   end
 end

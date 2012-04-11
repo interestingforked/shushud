@@ -49,11 +49,17 @@ class BillableEvent < Sequel::Model
   end
 
   def rate_code_id=(slug)
-    self[:rate_code_id] = RateCode.resolve_id(slug)
+    self[:rate_code_id] = rate_code(slug)[:id]
   end
 
-  def rate_code
-    @rate_code ||= RateCode[self[:rate_code_id]]
+  def rate_code(slug=nil)
+    @rate_code ||= begin
+      if slug
+        RateCode[RateCode.resolve_id(slug)]
+      else
+        RateCode[self[:rate_code_id]]
+      end
+    end
   end
 
 end

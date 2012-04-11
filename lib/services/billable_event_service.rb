@@ -39,7 +39,18 @@ module BillableEventService
         :description      => args[:description],
         :time             => args[:time],
         :state            => BillableEvent.enc_state(state)
-      )
+      ).tap do |ev|
+        EventTracker.track(
+          :entity_id      => ev[:entity_id_uuid],
+          :state          => ev[:state],
+          :provider_id    => ev[:provider_id],
+          :time           => ev[:time],
+          :rate           => ev.rate_code.rate,
+          :rate_period    => ev.rate_code.rate_period,
+          :product_group  => ev.rate_code.product_group,
+          :product_name   => ev.rate_code.product_name
+        )
+      end
     end
   end
 
