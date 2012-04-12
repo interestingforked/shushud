@@ -4,3 +4,4 @@ worker: bundle exec bin/worker
 payment_scheduler: bundle exec bin/payment_scheduler
 health: bundle exec bin/health
 qc_worker: bundle exec bin/qc_worker
+transformer: bundle exec bin/transformer
