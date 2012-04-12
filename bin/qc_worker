@@ -1,4 +1,5 @@
 #! /usr/bin/env ruby
 require './lib/shushu'
 
+$stdout.sync = $stderr.sync = true
 QC::Worker.new.start
