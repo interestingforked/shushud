@@ -6,7 +6,8 @@ Sequel.migration do
     Types = File.join(Shushu::Root, "/db/ddl/types.sql")
     Views = File.join(Shushu::Root, "/db/ddl/views.sql")
     Funcs = File.join(Shushu::Root, "/db/ddl/functions.sql")
-    [Types, Views, Funcs].each do |f|
+    Trans = File.join(Shushu::Root, "/db/ddl/transformer.sql")
+    [Types, Views, Funcs, Trans].each do |f|
       file = File.open(f)
       execute(file.read)
       file.close

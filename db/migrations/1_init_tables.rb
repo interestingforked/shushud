@@ -126,6 +126,7 @@ Sequel.migration do
     add_column :billable_events, :description,        "varchar(255)"
     add_column :billable_events, :time,               "timestamptz"
     add_column :billable_events, :state,              "int"
+    add_column :billable_events, :recorded_at,        "timestamptz"
     alter_table(:billable_events) do
       add_unique_constraint([:provider_id, :entity_id_uuid, :state])
     end

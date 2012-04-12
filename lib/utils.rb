@@ -32,4 +32,10 @@ module Utils
     Shushu::DB.transaction {yield}
   end
 
+  def exec(sql, *args)
+    Shushu::DB.synchronize do |conn|
+      conn.exec(sql, args).to_a
+    end
+  end
+
 end

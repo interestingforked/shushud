@@ -1,0 +1,15 @@
+#!/usr/bin/env ruby
+# encoding: utf-8
+
+trap("INT")  {@working = false}
+trap("TERM") {@working = false}
+
+require "./lib/shushu"
+
+@limit = (ENV["TRANSFORM_LIMIT"] || 500).to_i
+@working = true
+
+while(@working)
+  Utils.exec("SELECT transform($1)", @limit)
+  sleep(1)
+end
