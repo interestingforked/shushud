@@ -25,12 +25,18 @@ module Shushu
   AuthorizationError  = Class.new(ShushuError)
 
   Conf = {}
-  DB = (
+  DB, RSDB = (
     case ENV["RACK_ENV"].to_s
     when "production"
-      Sequel.connect(ENV["DATABASE_URL"])
+      [
+        Sequel.connect(ENV["DATABASE_URL"]),
+        Sequel.connect(ENV["READ_SLAVE_DATABASE_URL"])
+      ]
     when "test"
-      Sequel.connect(ENV["TEST_DATABASE_URL"], :logger => Logger.new(File.new("./log/test.log","w")))
+      [
+        Sequel.connect(ENV["TEST_DATABASE_URL"], :logger => Logger.new(File.new("./log/test.log","w"))),
+        Sequel.connect(ENV["TEST_DATABASE_URL"], :logger => Logger.new(File.new("./log/test.log","w")))
+      ]
     else
       raise(ArgumentError, "RACK_ENV must be production or test. RACK_ENV=#{ENV["RACK_ENV"]}")
     end

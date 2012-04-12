@@ -7,7 +7,7 @@ module ReportService
   def rate_code_report(rc_slug, from, to)
     rcid = RateCode.resolve_id(rc_slug)
     s = "SELECT * FROM rate_code_report($1, $2, $3)"
-    billable_units = exec_sql(s, rcid, from, to)
+    billable_units = Utils.read_exec(s, rcid, from, to)
     [200, {
       :rate_code      => rc_slug,
       :from           => from,
@@ -19,7 +19,7 @@ module ReportService
 
   def usage_report(account_id, from, to)
     s = "SELECT * FROM usage_report($1, $2, $3)"
-    billable_units = exec_sql(s, account_id, from, to)
+    billable_units = Utils.read_exec(s, account_id, from, to)
     [200, {
       :account_id     => account_id,
       :from           => from,
@@ -33,7 +33,7 @@ module ReportService
     s = "SELECT * FROM invoice($1, $2, $3)"
     s << " WHERE payment_method_id = $4"
     billable_units = {}
-    invoice = exec_sql(s, from, to, 0, payment_method_id).each do |li|
+    invoice = Utils.read_exec(s, from, to, 0, payment_method_id).each do |li|
       billable_units[li["hid"]] = p_a(li["billable_units"]).map {|h| p_h(h)}
     end
     [200, {
@@ -47,26 +47,20 @@ module ReportService
 
   def rev_report(from, to, credit=0)
     s = "SELECT rev_report($1, $2, $3)"
-    total = exec_sql(s, from, to, credit).pop["rev_report"].to_f
+    total = Utils.read_exec(s, from, to, credit).pop["rev_report"].to_f
     [200, {:time => Time.now, :total => total}]
   end
 
   def res_diff(lfrom, lto, rfrom, rto, delta_increase, lrev_zero, rrev_zero, limit=100)
     s = "SELECT * FROM res_diff($1, $2, $3, $4, $5, $6, $7) LIMIT $8"
-    resources = exec_sql(s, lfrom, lto, rfrom, rto, delta_increase, lrev_zero, rrev_zero, limit)
+    resources = Utils.read_exec(s, lfrom, lto, rfrom, rto, delta_increase, lrev_zero, rrev_zero, limit)
     [200, {:resources => resources}]
   end
 
   def res_diff_agg(lfrom, lto, rfrom, rto, delta_increase, lrev_zero, rrev_zero)
     s = "SELECT * FROM res_diff_agg($1, $2, $3, $4, $5, $6, $7)"
-    r = exec_sql(s, lfrom, lto, rfrom, rto, delta_increase, lrev_zero, rrev_zero).pop
+    r = Utils.read_exec(s, lfrom, lto, rfrom, rto, delta_increase, lrev_zero, rrev_zero).pop
     [200, {:diff => r['sdiff'], :ltotal => r['sltotal'], :rtotal => r['srtotal']}]
-  end
-
-  def exec_sql(sql, *args)
-    Shushu::DB.synchronize do |conn|
-      conn.exec(sql, args).to_a
-    end
   end
 
   def p_a(str)
