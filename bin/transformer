@@ -10,6 +10,11 @@ require "./lib/shushu"
 @working = true
 
 while(@working)
-  Utils.exec("SELECT transform($1)", @limit)
-  log(:transformer => :cycle)
+  begin
+    Utils.exec("SELECT transform($1)", @limit)
+  rescue => e
+    log(:level => :error, :exception => e.message)
+  ensure
+    log(:transformer => :cycle)
+  end
 end
