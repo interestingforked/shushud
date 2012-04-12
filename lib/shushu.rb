@@ -17,6 +17,8 @@ module Kernel
   end
 end
 
+Rack::Worker.cache = Dalli::Client.new(nil, {:expires_in => ENV['RACK_WORKER_CACHE_EXPIRY'].to_i})
+
 module Shushu
   Root = File.expand_path("..", File.dirname(__FILE__))
   ShushuError         = Class.new(Exception)
