@@ -70,7 +70,7 @@ DEPENDENCIES
   instruments (= 0.0.4)
   minitest
   pg (= 0.13.2)
-  queue_classic (~> 2.0.0rc11)
+  queue_classic (= 2.0.0rc12)
   rack (= 1.4.1)
   rack-test
   rack-worker (~> 0.0.1rc3)
