@@ -59,7 +59,8 @@ RETURNS TABLE(
 $$ LANGUAGE SQL STABLE
 ;
 
-CREATE OR REPLACE FUNCTION usage_report(int, timestamptz, timestamptz)
+CREATE OR REPLACE FUNCTION
+usage_report(int, timestamptz, timestamptz)
 RETURNS TABLE(
   account_id int,
   hid text,
@@ -116,7 +117,8 @@ $$ LANGUAGE SQL
 
 */
 
-CREATE OR REPLACE FUNCTION invoice(timestamptz, timestamptz, int)
+CREATE OR REPLACE FUNCTION
+invoice(timestamptz, timestamptz, int)
 RETURNS TABLE(
   payment_method_id int,
   hid text,
@@ -298,7 +300,15 @@ RETURNS TABLE(
 $$ LANGUAGE SQL STABLE;
 
 CREATE OR REPLACE FUNCTION
-res_diff_agg(timestamptz, timestamptz, timestamptz, timestamptz, boolean, boolean, boolean)
+res_diff_agg(
+  timestamptz,
+  timestamptz,
+  timestamptz,
+  timestamptz,
+  boolean,
+  boolean,
+  boolean
+)
 RETURNS TABLE(
   sdiff numeric,
   sltotal numeric,
