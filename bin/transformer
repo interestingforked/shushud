@@ -11,7 +11,5 @@ require "./lib/shushu"
 
 while(@working)
   Utils.exec("SELECT transform($1)", @limit)
-  close_events = Utils.exec("SELECT count(*) from close_events").pop["count"]
-  log(:action => "transformer", :close_events => close_events)
-  sleep(1)
+  log(:transformer => :cycle)
 end
