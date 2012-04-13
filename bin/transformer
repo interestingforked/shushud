@@ -6,13 +6,25 @@ trap("TERM") {@working = false}
 
 require "./lib/shushu"
 
-@working = true
-while(@working)
-  begin
-    Utils.exec("SELECT transform()")
-  rescue => e
-    log(:level => :error, :exception => e.message)
-  ensure
-    log(:transformer => :cycle)
+MAX_TRANSFORMERS = (ENV["MAX_TRANSFORMERS"] || 1).to_i
+
+(0..MAX_TRANSFORMERS).to_a.each do |i|
+  if lock = Shushu::DB["select pg_try_advisory_lock(?)", i].get
+    @transformer_id = i
+    break
   end
+end
+
+if @transformer_id
+  @working = true
+  while(@working)
+    begin
+      Shushu::DB["SELECT transform(?, ?)", MAX_TRANSFORMERS, @transformer_id].get
+      log(:at => :complete_transform, :transformer => @transformer_id)
+    rescue => e
+      log(:level => :error, :exception => e.message)
+    end
+  end
+else
+  log(:level => :error, :message => "unable to acquire a transformer lock")
 end
