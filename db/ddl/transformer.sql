@@ -1,5 +1,5 @@
 CREATE OR REPLACE FUNCTION
-transform(integer)
+transform()
 RETURNS void
 AS $$
   INSERT INTO close_events(
@@ -41,7 +41,7 @@ AS $$
     AND
     b.recorded_at IS NULL
   FOR UPDATE OF a, b NOWAIT
-  LIMIT $1;
+  LIMIT 100;
 
   UPDATE
     billable_events
@@ -53,4 +53,4 @@ AS $$
     close_events.entity_id = billable_events.entity_id_uuid
     AND
     billable_events.recorded_at IS NULL;
-$$ LANGUAGE SQL;
+$$ LANGUAGE SQL ;

@@ -6,12 +6,10 @@ trap("TERM") {@working = false}
 
 require "./lib/shushu"
 
-@limit = (ENV["TRANSFORM_LIMIT"] || 500).to_i
 @working = true
-
 while(@working)
   begin
-    Utils.exec("SELECT transform($1)", @limit)
+    Utils.exec("SELECT transform()")
   rescue => e
     log(:level => :error, :exception => e.message)
   ensure
