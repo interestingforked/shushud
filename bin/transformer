@@ -8,7 +8,8 @@ require "./lib/shushu"
 
 MAX_TRANSFORMERS = (ENV["MAX_TRANSFORMERS"] || 1).to_i
 
-(0..MAX_TRANSFORMERS).to_a.each do |i|
+# start at 0 and finish at MAX_TRANSFORMERS
+MAX_TRANSFORMERS.times do |i|
   if lock = Shushu::DB["select pg_try_advisory_lock(?)", i].get
     @transformer_id = i
     break
