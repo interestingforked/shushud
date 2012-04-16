@@ -38,7 +38,7 @@ AS $function$
         billable_events a
       INNER JOIN
         billable_events b
-        ON a.entity_id = b.entity_id
+        ON a.entity_id_uuid = b.entity_id_uuid
         AND a.state = 1 AND b.state = 0
       INNER JOIN
         rate_codes
@@ -50,7 +50,6 @@ AS $function$
         AND
       $insert$ || ' MOD(a.id,' ||  max_transformers || ') = ' || transformer_id
                || ' FOR UPDATE OF a, b NOWAIT '
-               || ' LIMIT 100 '
                || ' RETURNING entity_id'
     LOOP
       UPDATE
@@ -58,9 +57,7 @@ AS $function$
       SET
         recorded_at = now()
       WHERE
-        entity_id_uuid = event.entity_id
-        AND
-        billable_events.recorded_at IS NULL;
+        entity_id_uuid = event.entity_id;
     END LOOP;
   END;
 $function$ LANGUAGE plpgsql;
