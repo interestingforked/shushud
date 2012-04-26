@@ -63,7 +63,7 @@ module Scrolls
           if (v_str =~ /^[a-zA-z0-9\-\_\.]+$/)
             "#{k}=#{v_str}"
           else
-            "#{k}=\"#{v_str[0..50]}\""
+            "#{k}=\"#{v_str}\""
           end
         end
       end.compact.join(" ")
