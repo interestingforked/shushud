@@ -27,31 +27,18 @@ module BillableEventService
   end
 
   def create_record(state, args)
-    Utils.txn do
-      BillableEvent.create(
-        :provider_id      => args[:provider_id],
-        :entity_id_uuid   => Utils.validate_uuid(args[:entity_id_uuid]),
-        :rate_code_id     => args[:rate_code],
-        :entity_id        => args[:entity_id],
-        :hid              => args[:hid],
-        :qty              => args[:qty],
-        :product_name     => args[:product_name],
-        :description      => args[:description],
-        :time             => args[:time],
-        :state            => BillableEvent.enc_state(state)
-      ).tap do |ev|
-        EventTracker.track(
-          :entity_id      => ev[:entity_id_uuid],
-          :state          => ev[:state],
-          :provider_id    => ev[:provider_id],
-          :time           => ev[:time],
-          :rate           => ev.rate_code.rate,
-          :rate_period    => ev.rate_code.rate_period,
-          :product_group  => ev.rate_code.product_group,
-          :product_name   => ev.rate_code.product_name
-        )
-      end
-    end
+    BillableEvent.create(
+      :provider_id      => args[:provider_id],
+      :entity_id_uuid   => Utils.validate_uuid(args[:entity_id_uuid]),
+      :rate_code_id     => args[:rate_code],
+      :entity_id        => args[:entity_id],
+      :hid              => args[:hid],
+      :qty              => args[:qty],
+      :product_name     => args[:product_name],
+      :description      => args[:description],
+      :time             => args[:time],
+      :state            => BillableEvent.enc_state(state)
+    )
   end
 
   def check_args!(args)
