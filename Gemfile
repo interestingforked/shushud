@@ -9,10 +9,8 @@ gem "yajl-ruby", "1.1.0", :require => "yajl"
 gem "braintree", "2.14.0"
 gem "stalker", "0.9.0"
 gem "scrolls", "0.0.8"
-gem "instruments","0.0.4"
-gem "dalli"
-gem "queue_classic", "2.0.0rc12"
-gem 'rack-worker', '~> 0.0.1rc3'
+gem "instruments","0.0.9"
+gem "queue_classic", "2.0.0rc13"
 
 group :test do
   gem "minitest"

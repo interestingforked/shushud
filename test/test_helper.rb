@@ -9,9 +9,6 @@ Bundler.require :test
 require "shushu"
 require "shushu_helpers"
 
-#disable Rack::Worker caching for tests
-Rack::Worker.cache = false
-
 module TableCleaner
   def clean_tables
     Shushu::DB.transaction do
@@ -49,7 +46,7 @@ class ShushuTest < MiniTest::Unit::TestCase
   end
 
   def app
-    Api::Events
+    Api::Http
   end
 
   def jan
