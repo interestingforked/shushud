@@ -69,21 +69,6 @@ Sequel.migration do
     add_column :accounts, :created_at, "timestamptz"
     add_column :accounts, :slug,       "varchar(255)"
 
-    #AccountOwnershipRecord
-    create_table(:account_ownership_records) do
-      primary_key :id
-      foreign_key :payment_method_id, :payment_methods
-      foreign_key :account_id, :accounts
-      foreign_key :provider_id, :providers
-    end
-    add_column :account_ownership_records, :created_at, "timestamptz"
-    add_column :account_ownership_records, :entity_id,  "uuid"
-    add_column :account_ownership_records, :time,       "timestamptz"
-    add_column :account_ownership_records, :state,      "integer"
-    alter_table(:account_ownership_records) do
-      add_unique_constraint([:entity_id, :state])
-    end
-
     #ResourceOwnershipRecord
     create_table(:resource_ownership_records) do |t|
       primary_key :id

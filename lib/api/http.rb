@@ -120,22 +120,6 @@ module Api
     end
 
     #
-    # AccountOwnership
-    #
-    put "/payment_methods/:payment_method_id/account_ownerships/:entity_id" do
-      perform do
-        AccountOwnershipService.handle_in(
-          params[:state],
-          session[:provider_id],
-          params[:payment_method_id],
-          params[:account_id],
-          dec_time(params[:time]),
-          params[:entity_id]
-        )
-      end
-    end
-
-    #
     # ResourceOwnership
     #
     put "/accounts/:account_id/resource_ownerships/:entity_id" do

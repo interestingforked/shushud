@@ -35,16 +35,6 @@ module ShushuHelpers
     })
   end
 
-  def build_act_own(account_id, payment_method_id, entity_id, state, time)
-    AccountOwnershipRecord.create(
-      :account_id        => account_id,
-      :payment_method_id => payment_method_id,
-      :entity_id         => entity_id || SecureRandom.uuid,
-      :state             => state,
-      :time              => time
-    )
-  end
-
   def build_res_own(account_id, hid, entity_id, state, time)
     ResourceOwnershipRecord.create(
       :account_id => account_id,

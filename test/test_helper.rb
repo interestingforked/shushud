@@ -17,7 +17,6 @@ module TableCleaner
         DELETE FROM rate_codes CASCADE;
         DELETE FROM card_tokens CASCADE;
         DELETE FROM resource_ownership_records CASCADE;
-        DELETE FROM account_ownership_records CASCADE;
         DELETE FROM accounts CASCADE;
         DELETE FROM payment_attempt_records CASCADE;
         DELETE FROM receivables CASCADE;
