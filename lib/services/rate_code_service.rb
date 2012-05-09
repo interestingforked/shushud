@@ -17,7 +17,7 @@ module RateCodeService
 
   def create_record(args)
     if !PERIODS.include?(args[:period])
-      raise ArgumentError, "period must be one of #{PERIODS.join(',')}"
+      raise(ArgumentError, "period must be one of #{PERIODS.join(',')}")
     end
 
     RateCode.create(
