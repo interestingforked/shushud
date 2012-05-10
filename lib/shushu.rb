@@ -34,11 +34,11 @@ module Shushu
       ]
     when "test"
       [
-        Sequel.connect(ENV["TEST_DATABASE_URL"], :logger => Logger.new(File.new("./log/test.log","w"))),
-        Sequel.connect(ENV["TEST_DATABASE_URL"], :logger => Logger.new(File.new("./log/test.log","w")))
+        Sequel.connect(ENV["TEST_DATABASE_URL"]),
+        Sequel.connect(ENV["TEST_DATABASE_URL"])
       ]
     else
-      raise(ArgumentError, "RACK_ENV must be production or test. RACK_ENV=#{ENV["RACK_ENV"]}")
+      raise(ArgumentError, "RACK_ENV must be production or test.")
     end
   )
 
@@ -56,7 +56,6 @@ require "./lib/api/helpers"
 require "./lib/api/authentication"
 require "./lib/api/http"
 
-require "./lib/models/event_tracker"
 require "./lib/models/billable_event"
 require "./lib/models/provider"
 require "./lib/models/rate_code"
