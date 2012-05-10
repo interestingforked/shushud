@@ -16,9 +16,6 @@ GEM
       ruby_core_source (>= 0.1.4)
     minitest (2.11.4)
     pg (0.13.2)
-    queue_classic (2.0.0rc13)
-      pg (~> 0.13.2)
-      scrolls (~> 0.0.8)
     rack (1.4.1)
     rack-protection (1.2.0)
       rack
@@ -56,7 +53,6 @@ DEPENDENCIES
   instruments (= 0.0.9)
   minitest
   pg (= 0.13.2)
-  queue_classic (= 2.0.0rc13)
   rack (= 1.4.1)
   rack-test
   ruby-debug19

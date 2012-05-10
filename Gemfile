@@ -10,7 +10,6 @@ gem "sequel", :git => "git://github.com/jeremyevans/sequel.git"
 gem "yajl-ruby", "1.1.0", :require => "yajl"
 gem "scrolls", "0.0.8"
 gem "instruments","0.0.9"
-gem "queue_classic", "2.0.0rc13"
 
 group :test do
   gem "minitest"
