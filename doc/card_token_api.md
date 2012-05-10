@@ -1,3 +1,0 @@
-# Card Token API
-
-
