@@ -9,9 +9,7 @@ to usage & billing.
 
 * Track and store billable_events in an append-only log.
 * Manage rate codes for billable events.
-* Provide API for retrieving usage reports and invoices.
-* Track and store account ownerships and resource ownerships.
-* Interact with payment gateway to collect money for invoices.
+* Track and store resource ownerships.
 
 ## Links
 
