@@ -1,5 +1,7 @@
 source :rubygems
 
+ruby '1.9.2'
+
 gem "pg", "0.13.2"
 gem "unicorn", "4.2.1"
 gem "rack", "1.4.1"
