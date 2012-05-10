@@ -1,9 +1,11 @@
+require 'cgi'
+
 module Api
   module Helpers
 
     def dec_bool(string)
-      case string 
-      when /\A1|t|true\Z/i; true 
+      case string
+      when /\A1|t|true\Z/i; true
       when /\A0|f|false\Z/i; false
       else raise ArgumentError, "Boolean required"
       end
