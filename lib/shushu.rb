@@ -62,23 +62,10 @@ require "./lib/models/provider"
 require "./lib/models/rate_code"
 require "./lib/models/account"
 require "./lib/models/resource_ownership_record"
-require "./lib/models/payment_method"
-require "./lib/models/receivable"
-require "./lib/models/payment_attempt_record"
-require "./lib/models/card_token"
 
 require "./lib/services/billable_event_service"
 require "./lib/services/resource_ownership_service"
 require "./lib/services/rate_code_service"
-require "./lib/services/receivables_service"
-require "./lib/services/payment_service"
-require "./lib/services/authorizer"
-require "./lib/services/payment_method_service"
 
-require "./etc/payment_state_transitions"
-
-require "./lib/gateways/braintree"
-
-Shushu::Conf[:gateway] = BraintreeGateway
 Shushu::DB.execute("SET timezone TO 'UTC'")
 Sequel.default_timezone = :utc

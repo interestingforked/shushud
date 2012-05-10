@@ -10,57 +10,6 @@ Sequel.migration do
     add_column :providers, :name,         "varchar(255)"
     add_column :providers, :token,        "varchar(255)"
 
-    #PaymentMethod
-    create_table(:payment_methods) do
-      primary_key :id
-      foreign_key :provider_id, :providers
-    end
-    add_column :payment_methods, :created_at, "timestamptz"
-    add_column :payment_methods, :slug, "varchar(255)"
-    alter_table(:payment_methods) do
-      add_unique_constraint([:provider_id, :slug])
-    end
-
-    #CardToken
-    create_table(:card_tokens) do
-      primary_key :id
-      foreign_key :payment_method_id, :payment_methods
-      foreign_key :provider_id, :providers
-    end
-    add_column :card_tokens, :created_at, "timestamptz"
-    add_column :card_tokens, :token,      "varchar(255)"
-
-    #Receivable
-    create_table(:receivables) do
-      primary_key :id
-      foreign_key :init_payment_method_id, :payment_methods
-      foreign_key :provider_id, :providers
-    end
-    add_column :receivables, :amount,       "int"
-    add_column :receivables, :period_start, "timestamptz"
-    add_column :receivables, :period_end,   "timestamptz"
-    add_column :receivables, :created_at,   "timestamptz"
-
-    #PaymentAttemptRecord
-    create_table(:payment_attempt_records) do
-      primary_key :id
-      foreign_key :receivable_id, :receivables
-      foreign_key :payment_method_id, :payment_methods
-      foreign_key :provider_id, :providers
-    end
-    add_column :payment_attempt_records, :retry,        "boolean"
-    add_column :payment_attempt_records, :state,        "varchar(255)"
-    add_column :payment_attempt_records, :wait_until,   "timestamptz"
-    add_column :payment_attempt_records, :created_at,   "timestamptz"
-    add_column :payment_attempt_records, :desc,         "text"
-
-    # couldn't find a good way to do this in sequel.
-    execute(<<-EOD)
-      CREATE UNIQUE INDEX succeeded_receivable_attempt
-      ON payment_attempt_records (receivable_id)
-      WHERE state = 'success'
-    EOD
-
     #Account
     create_table(:accounts) do |t|
       primary_key :id

@@ -36,64 +36,6 @@ module Api
     end
 
     #
-    # Receivables
-    #
-    post "/receivables" do
-      perform do
-        ReceivablesService.create(
-          session[:provider_id],
-          enc_int(params[:init_payment_method_id]),
-          enc_int(params[:amount]),
-          enc_time(params[:from]),
-          enc_time(params[:to])
-        )
-      end
-    end
-
-    #
-    # PaymentMethod
-    #
-    post "/payment_methods" do
-      perform do
-        PaymentMethodService.handle_in(
-          :provider_id    => session[:provider_id],
-          :slug           => nil,
-          :card_token     => params[:card_token],
-          :card_num       => params[:card_num],
-          :card_exp_year  => params[:card_exp_year],
-          :card_exp_month => params[:card_exp_month]
-        )
-      end
-    end
-
-    put "/payment_methods/:slug" do
-      perform do
-        PaymentMethodService.handle_in(
-          :provider_id    => session[:provider_id],
-          :slug           => params[:slug],
-          :card_token     => params[:card_token],
-          :card_num       => params[:card_num],
-          :card_exp_year  => params[:card_exp_year],
-          :card_exp_month => params[:card_exp_month]
-        )
-      end
-    end
-
-    #
-    # PaymentAttempts
-    #
-    post "/receivables/:receivable_id/payment_attempts" do
-      perform do
-        PaymentService.attempt(
-          session[:provider_id],
-          enc_int(params[:receivable_id]),
-          enc_int(params[:payment_method_id]),
-          enc_time(params[:wait_until])
-        )
-      end
-    end
-
-    #
     # BillableEvents
     #
     get "/billable_events" do

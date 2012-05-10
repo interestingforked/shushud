@@ -4,13 +4,11 @@ Shushu is a heroku application. Components include:
 
 * Thin
 * PostgreSQL
-* Beanstalkd
 * Cron (heroku scheduler)
 
 ## Running Locally
 
 ```bash
-$ beanstalkd&
 $ export $(cat sample.env)
 $ bundle install
 $ bin/db
