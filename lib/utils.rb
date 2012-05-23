@@ -36,10 +36,6 @@ module Utils
     conn_exec(Shushu::DB, sql, *args)
   end
 
-  def read_exec(sql, *args)
-    conn_exec(Shushu::RSDB, sql, *args)
-  end
-
   def conn_exec(db, sql, *args)
     db.synchronize do |conn|
       conn.exec(sql, args).to_a
