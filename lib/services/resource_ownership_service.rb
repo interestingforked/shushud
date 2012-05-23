@@ -43,7 +43,6 @@ module ResourceOwnershipService
     ResourceOwnershipRecord.create({
       :provider_id  => provider_id,
       :owner        => account_id,
-      :account_id   => account_id,
       :hid          => resource_id,
       :state        => state,
       :time         => time,
