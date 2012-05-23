@@ -59,7 +59,6 @@ require "./lib/api/http"
 require "./lib/models/billable_event"
 require "./lib/models/provider"
 require "./lib/models/rate_code"
-require "./lib/models/account"
 require "./lib/models/resource_ownership_record"
 
 require "./lib/services/billable_event_service"
