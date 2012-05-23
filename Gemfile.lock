@@ -1,9 +1,3 @@
-GIT
-  remote: git://github.com/jeremyevans/sequel.git
-  revision: 2183965f9384cb0384f22075a849883ca4bb0d02
-  specs:
-    sequel (3.34.1)
-
 GEM
   remote: http://rubygems.org/
   specs:
@@ -33,6 +27,7 @@ GEM
     ruby_core_source (0.1.5)
       archive-tar-minitar (>= 0.5.2)
     scrolls (0.0.8)
+    sequel (3.35.0)
     sinatra (1.3.2)
       rack (~> 1.3, >= 1.3.6)
       rack-protection (~> 1.2)
@@ -57,7 +52,7 @@ DEPENDENCIES
   rack-test
   ruby-debug19
   scrolls (= 0.0.8)
-  sequel!
+  sequel (= 3.35.0)
   sinatra (= 1.3.2)
   turn
   unicorn (= 4.2.1)
