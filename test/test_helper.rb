@@ -16,7 +16,6 @@ module TableCleaner
         DELETE FROM billable_events CASCADE;
         DELETE FROM rate_codes CASCADE;
         DELETE FROM resource_ownership_records CASCADE;
-        DELETE FROM accounts CASCADE;
         DELETE FROM providers CASCADE;
       EOD
     end
@@ -57,36 +56,4 @@ class ShushuTest < MiniTest::Unit::TestCase
       Yajl::Parser.parse(json)
     end
   end
-
-  module TestAuthorizer
-    GOOD_NUM = "4111111111111111"
-    BAD_NUM = "999999999999999"
-    TOKEN= "abc123"
-    def run(num, year, month)
-      log(:level => :debug, :action => "authorize", :num => num)
-      if num == GOOD_NUM
-        [201, {:card_last4 => "1111", :card_type => "visa", :card_token => TOKEN}]
-      else
-        [422, {:error => "bad card"}]
-      end
-    end
-  end
-
-  module TestGateway
-    extend self
-    attr_accessor :force_success
-
-    def success
-      @force_success
-    end
-
-    def charge(token, amount, recid)
-      if success
-        [PaymentService::SUCCESS, "OK"]
-      else
-        [PaymentService::FAILED_NOACT, "OH SNAP!"]
-      end
-    end
-  end
-
 end

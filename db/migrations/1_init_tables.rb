@@ -10,18 +10,9 @@ Sequel.migration do
     add_column :providers, :name,         "varchar(255)"
     add_column :providers, :token,        "varchar(255)"
 
-    #Account
-    create_table(:accounts) do |t|
-      primary_key :id
-      foreign_key :provider_id, :providers
-    end
-    add_column :accounts, :created_at, "timestamptz"
-    add_column :accounts, :slug,       "varchar(255)"
-
     #ResourceOwnershipRecord
     create_table(:resource_ownership_records) do |t|
       primary_key :id
-      foreign_key :account_id, :accounts
       foreign_key :provider_id, :providers
     end
     add_column :resource_ownership_records, :owner,       "int"
