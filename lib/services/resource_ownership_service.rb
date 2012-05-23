@@ -42,6 +42,7 @@ module ResourceOwnershipService
   def create_record(provider_id, account_id, resource_id, state, time, entity_id)
     ResourceOwnershipRecord.create({
       :provider_id  => provider_id,
+      :owner        => account_id,
       :account_id   => account_id,
       :hid          => resource_id,
       :state        => state,

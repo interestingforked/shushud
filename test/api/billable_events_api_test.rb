@@ -191,17 +191,4 @@ class BillableEventsApiTest < ShushuTest
     assert_equal 200, last_response.status
   end
 
-  def test_get_events
-    setup_auth
-    put("resources/123/billable_events/456",{
-      "entity_id_uuid" => SecureRandom.uuid,
-      "qty"       => 1,
-      "rate_code" => @rate_code.slug,
-      "time"      => "2011-01-01 00:00:00",
-      "state"     => "open"
-    })
-    get("/billable_events")
-    assert_equal("456", JSON.parse(last_response.body).first["entity_id"])
-  end
-
 end

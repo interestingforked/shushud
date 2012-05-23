@@ -8,36 +8,18 @@ module Api
 
     before {authenticate_provider; content_type(:json)}
 
-    #
-    # Errors
-    #
     not_found do
       perform do
         [404, "Not Found"]
       end
     end
 
-    #
-    # Heartbeat
-    #
     get "/heartbeat" do
       perform do
         [200, {:alive => Time.now}]
       end
     end
 
-    #
-    # Accounts
-    #
-    post "/accounts" do
-      perform do
-        [201, Account.create(:provider_id => session[:provider_id]).to_h]
-      end
-    end
-
-    #
-    # BillableEvents
-    #
     put "/resources/:hid/billable_events/:entity_id" do
       perform do
         BillableEventService.handle_in(
@@ -55,9 +37,6 @@ module Api
       end
     end
 
-    #
-    # ResourceOwnership
-    #
     put "/accounts/:account_id/resource_ownerships/:entity_id" do
       perform do
         ResourceOwnershipService.handle_in(
@@ -71,9 +50,6 @@ module Api
       end
     end
 
-    #
-    # RateCode
-    #
     post "/rate_codes" do
       perform do
         RateCodeService.handle_in(

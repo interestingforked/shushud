@@ -24,6 +24,7 @@ Sequel.migration do
       foreign_key :account_id, :accounts
       foreign_key :provider_id, :providers
     end
+    add_column :resource_ownership_records, :owner,       "int"
     add_column :resource_ownership_records, :created_at,  "timestamptz"
     add_column :resource_ownership_records, :time,        "timestamptz"
     add_column :resource_ownership_records, :entity_id,   "uuid"

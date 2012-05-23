@@ -17,14 +17,6 @@ module ShushuHelpers
     }.merge(opts))
   end
 
-  def build_account(opts={})
-    Account.create(opts)
-  end
-
-  def build_payment_method(opts={})
-    PaymentMethod.create(opts)
-  end
-
   def build_resource_ownership_record(account_id, hid, entity_id, state, time)
     ResourceOwnershipRecord.create({
       :account_id => account_id,
@@ -54,26 +46,6 @@ module ShushuHelpers
       :state => state,
       :time => time,
       :rate_code_id => rate_code_slug || build_rate_code.slug
-    )
-  end
-
-  def build_receivable(pmid, amount, period_start, period_end)
-    Receivable.create(
-      :init_payment_method_id => pmid,
-      :amount                 => amount,
-      :period_start           => period_start,
-      :period_end             => period_end
-    )
-  end
-
-  def build_attempt(state, provider_id, recid, pmid, wait_until, rtry)
-    PaymentAttemptRecord.create(
-      :provider_id       => provider_id,
-      :payment_method_id => pmid,
-      :receivable_id     => recid,
-      :wait_until        => wait_until,
-      :retry             => rtry,
-      :state             => state
     )
   end
 

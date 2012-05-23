@@ -22,6 +22,7 @@ class ResourceOwnershipRecord < Sequel::Model
   def to_h
     {
       :account_id  => account.api_id,
+      :owner       => self[:owner],
       :resource_id => self[:hid],
       :from        => self[:from],
       :to          => self[:to]
