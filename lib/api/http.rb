@@ -38,12 +38,6 @@ module Api
     #
     # BillableEvents
     #
-    get "/billable_events" do
-      perform do
-        BillableEventService.find(enc_int(session[:provider_id]))
-      end
-    end
-
     put "/resources/:hid/billable_events/:entity_id" do
       perform do
         BillableEventService.handle_in(
