@@ -25,18 +25,12 @@ module Shushu
   AuthorizationError  = Class.new(ShushuError)
 
   Conf = {}
-  DB, RSDB = (
+  DB = (
     case ENV["RACK_ENV"].to_s
     when "production"
-      [
-        Sequel.connect(ENV["DATABASE_URL"]),
-        Sequel.connect(ENV["READ_SLAVE_DATABASE_URL"])
-      ]
+      Sequel.connect(ENV["DATABASE_URL"])
     when "test"
-      [
-        Sequel.connect(ENV["TEST_DATABASE_URL"]),
-        Sequel.connect(ENV["TEST_DATABASE_URL"])
-      ]
+      Sequel.connect(ENV["TEST_DATABASE_URL"])
     else
       raise(ArgumentError, "RACK_ENV must be production or test.")
     end
@@ -47,6 +41,9 @@ module Shushu
   end
 
 end
+
+Shushu::DB.execute("SET timezone TO 'UTC'")
+Sequel.default_timezone = :utc
 
 require "./lib/utils"
 require "./lib/plugins/created_at_setter"
@@ -64,6 +61,3 @@ require "./lib/models/resource_ownership_record"
 require "./lib/services/billable_event_service"
 require "./lib/services/resource_ownership_service"
 require "./lib/services/rate_code_service"
-
-Shushu::DB.execute("SET timezone TO 'UTC'")
-Sequel.default_timezone = :utc
