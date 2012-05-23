@@ -5,8 +5,8 @@ class ResourceOwnershipApiTest < ShushuTest
   def setup
     super
     @provider = build_provider(:token => "abc123")
-    @account_slug = "123"
-    @new_account_slug = "124"
+    @account_slug = 123
+    @new_account_slug = 124
     authorize(@provider.id, "abc123")
   end
 
@@ -27,7 +27,7 @@ class ResourceOwnershipApiTest < ShushuTest
     })
     assert_equal(200, last_response.status)
     updated_record = JSON.parse(last_response.body)
-    assert_equal(@new_account_slug, updated_record["account_id"])
+    assert_equal(@new_account_slug, updated_record["owner"])
   end
 
   def test_deactivate_record
@@ -44,7 +44,7 @@ class ResourceOwnershipApiTest < ShushuTest
     })
     assert_equal(200, last_response.status)
     updated_record = JSON.parse(last_response.body)
-    assert_equal(@account_slug, updated_record["account_id"])
+    assert_equal(@account_slug, updated_record["owner"])
   end
 
 end
