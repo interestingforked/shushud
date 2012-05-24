@@ -3,19 +3,21 @@ module Api
     include Helpers
 
     def authenticate_provider
-      unless authenticated?
-        if proper_request?
-          id, token = *auth.credentials
-          if Provider.auth?(id, token)
-            session[:provider_id] = params[:provider_id] = id
+      log(:fn => __method__) do
+        unless authenticated?
+          if proper_request?
+            id, token = *auth.credentials
+            if Provider.auth?(id, token)
+              log(:fn => __method__, :at => :authenticated, :provider_id => id)
+              session[:provider_id] = params[:provider_id] = id
+            else
+              log(:fn => __method__, :at => :unauthenticated, :id => id, :ip => ip, :agent => agent)
+              unauthenticated!
+            end
           else
+            log(:fn => __method__, :at => "bad-request", :ip => ip, :agent => agent)
             unauthenticated!
           end
-          log(:action => "authenticated", :provider => id)
-        else
-          ip, agent = request.env["REMOTE_ADDR"], request.env["HTTP_USER_AGENT"]
-          log(:action => "unauthenticated", :ip => ip, :agent => agent)
-          unauthenticated!
         end
       end
     end
@@ -39,6 +41,14 @@ module Api
     def unauthenticated!(realm="shushu.heroku.com")
       response['WWW-Authenticate'] = %(Basic realm="Restricted Area")
       throw(:halt, [401, enc_json("Not authorized")])
+    end
+
+    def ip
+      request.env["REMOTE_ADDR"]
+    end
+
+    def agent
+      request.env["HTTP_USER_AGENT"]
     end
 
   end

@@ -13,7 +13,11 @@ Instruments.defaults = {
 module Kernel
   def log(data)
     data[:level] ||= :info
-    Scrolls.log(data)
+    if block_given?
+      Scrolls.log({:app => :shushu}.merge(data))  {yield}
+    else
+      Scrolls.log({:app => :shushu}.merge(data))
+    end
   end
 end
 
