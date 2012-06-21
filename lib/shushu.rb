@@ -3,20 +3,21 @@ $stderr.sync = $stdout.sync = true
 require 'bundler'
 Bundler.require
 
+APP_NAME = ENV["APP_NAME"] || "shushu"
 Scrolls::Log.start
 Instruments.defaults = {
   :logger => Scrolls,
   :method => :log,
-  :default_data => {:app => "shushu", :level => :info}
+  :default_data => {app: APP_NAME, level: "info"}
 }
 
 module Kernel
   def log(data)
     data[:level] ||= :info
     if block_given?
-      Scrolls.log({:app => :shushu}.merge(data))  {yield}
+      Scrolls.log({app: APP_NAME}.merge(data))  {yield}
     else
-      Scrolls.log({:app => :shushu}.merge(data))
+      Scrolls.log({app: APP_NAME}.merge(data))
     end
   end
 end
