@@ -57,6 +57,7 @@ require "./lib/plugins/model"
 require "./lib/api/helpers"
 require "./lib/api/authentication"
 require "./lib/api/http"
+require "./lib/api/health/http"
 
 require "./lib/models/billable_event"
 require "./lib/models/provider"
