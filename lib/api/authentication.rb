@@ -4,6 +4,7 @@ module Api
 
     def authenticate_provider
       log(:fn => __method__) do
+        return if head_request?
         unless authenticated?
           if proper_request?
             id, token = *auth.credentials
@@ -20,6 +21,10 @@ module Api
           end
         end
       end
+    end
+
+    def head_request?
+      request.request_method == "HEAD"
     end
 
     def proper_request?
