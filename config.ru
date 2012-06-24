@@ -4,5 +4,4 @@ use Rack::CommonLogger
 
 map "/" do
   run Api::Http
-  run Api::Health::Http
 end

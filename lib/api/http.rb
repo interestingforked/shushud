@@ -14,6 +14,11 @@ module Api
       end
     end
 
+    head "/" do
+      status(200)
+      body(nil)
+    end
+
     get "/heartbeat" do
       perform do
         [200, {:alive => Time.now}]
