@@ -6,8 +6,8 @@ class ResourceOwnershipRecord < Sequel::Model
     {
       :owner       => self[:owner],
       :resource_id => self[:hid],
-      :from        => self[:from],
-      :to          => self[:to]
+      :time        => self[:time],
+      :state       => self[:state]
     }
   end
 
