@@ -25,7 +25,7 @@ module Api
       end
     end
 
-    get "/resources/:resource_id/resource-histories" do
+    get "/resources/:resource_id/billable_events" do
       perform do
         BillableEventService.fetch(params[:resource_id],
                                     dec_time(params[:from]),
