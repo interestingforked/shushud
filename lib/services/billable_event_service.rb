@@ -6,7 +6,7 @@ module BillableEventService
     [200, events.map(&:to_h)]
   end
 
-  def fetch(resource_id, from, to)
+  def fetch(resource_id)
     [200, BillableEvent.
       filter(provider_id: 5).
       filter(hid: resource_id.to_s).
