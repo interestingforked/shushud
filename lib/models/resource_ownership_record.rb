@@ -4,6 +4,7 @@ class ResourceOwnershipRecord < Sequel::Model
 
   def to_h
     {
+      :entity_id   => self[:entity_id],
       :owner       => self[:owner],
       :resource_id => self[:hid],
       :time        => self[:time],
