@@ -25,6 +25,14 @@ module Api
       end
     end
 
+    get "/resources/:resource_id/resource-histories" do
+      perform do
+        BillableEventService.fetch(params[:resource_id],
+                                    dec_time(params[:from]),
+                                    dec_time(params[:to]))
+      end
+    end
+
     put "/resources/:hid/billable_events/:entity_id" do
       perform do
         BillableEventService.handle_in(
@@ -38,6 +46,7 @@ module Api
           :qty            => params[:qty],
           :time           => dec_time(params[:time]),
           :state          => params[:state]
+
         )
       end
     end

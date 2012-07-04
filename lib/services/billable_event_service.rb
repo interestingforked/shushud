@@ -6,6 +6,13 @@ module BillableEventService
     [200, events.map(&:to_h)]
   end
 
+  def fetch(resource_id, from, to)
+    [200, BillableEvent.
+      filter(provider_id: provider_id).
+      filter(hid: resource_id).
+      filter("time between ? AND ?", from, to).map(&:to_h)]
+  end
+
   def handle_in(args)
     check_args!(args)
     if event = BillableEvent.prev_recorded(args[:state], args[:entity_id_uuid], args[:provider_id])
