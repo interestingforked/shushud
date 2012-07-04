@@ -26,11 +26,11 @@ module Api
     end
 
     get "/resources/:resource_id/billable_events" do
-      perform do
-        BillableEventService.fetch(params[:resource_id],
-                                    dec_time(params[:from]),
-                                    dec_time(params[:to]))
-      end
+      perform {BillableEventService.fetch(params[:resource_id])}
+    end
+
+    get "/owners/:owner_id/" do
+      perform {ResourceOnwershipService.fetch(params[:owner_id])}
     end
 
     put "/resources/:hid/billable_events/:entity_id" do

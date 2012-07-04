@@ -1,6 +1,11 @@
 module ResourceOwnershipService
   extend self
 
+  def fetch(owner_id)
+    [200,
+      ResourceOwnershipRecord.filter(owner: owner_id).map(&:to_h)]
+  end
+
   def handle_in(state, provider_id, account_id, resource_id, time, entity_id)
     case state
     when "active"
