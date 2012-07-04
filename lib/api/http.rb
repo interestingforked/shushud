@@ -29,7 +29,7 @@ module Api
       perform {BillableEventService.fetch(params[:resource_id])}
     end
 
-    get "/owners/:owner_id/" do
+    get "/owners/:owner_id/resource_ownerships" do
       perform {ResourceOnwershipService.fetch(params[:owner_id])}
     end
 
