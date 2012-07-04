@@ -8,7 +8,7 @@ module BillableEventService
 
   def fetch(resource_id, from, to)
     [200, BillableEvent.
-      filter(provider_id: provider_id).
+      filter(provider_id: 5).
       filter(hid: resource_id).
       filter("time between ? AND ?", from, to).map(&:to_h)]
   end
