@@ -10,7 +10,7 @@ module BillableEventService
     [200, BillableEvent.
       filter(provider_id: 5).
       filter(hid: resource_id.to_s).
-      filter("time between ? AND ?", from, to).map(&:to_h)]
+      map(&:to_h)]
   end
 
   def handle_in(args)
@@ -42,7 +42,7 @@ module BillableEventService
       :hid              => args[:hid],
       :qty              => args[:qty],
       :product_name     => args[:product_name],
-      :description      => args[:description],
+      :description      => args[:description][0..200],
       :time             => args[:time],
       :state            => BillableEvent.enc_state(state)
     )
