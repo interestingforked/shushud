@@ -30,7 +30,7 @@ module Api
     end
 
     get "/owners/:owner_id/resource_ownerships" do
-      perform {ResourceOnwershipService.fetch(params[:owner_id])}
+      perform {ResourceOwnershipService.fetch(params[:owner_id])}
     end
 
     put "/resources/:hid/billable_events/:entity_id" do
