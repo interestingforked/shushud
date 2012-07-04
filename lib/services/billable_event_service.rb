@@ -42,7 +42,7 @@ module BillableEventService
       :hid              => args[:hid],
       :qty              => args[:qty],
       :product_name     => args[:product_name],
-      :description      => args[:description][0..200],
+      :description      => (args[:description] && args[:description][0..200]),
       :time             => args[:time],
       :state            => BillableEvent.enc_state(state)
     )
