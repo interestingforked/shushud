@@ -25,6 +25,13 @@ module Api
       end
     end
 
+    get "/owner/:owner_id/resource-histories" do
+      perform do
+        ResourceHistory.fetch(params[:owner_id], dec_time(params[:from]),
+                               dec_time(params[:to]))
+      end
+    end
+
     get "/resources/:resource_id/billable_events" do
       perform {BillableEventService.fetch(params[:resource_id])}
     end
