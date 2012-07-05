@@ -33,7 +33,7 @@ module ResourceHistory
 
   def b_events(resid)
     BillableEvent.
-      filter(resource_id: resid).
+      filter(hid: resid.to_s).
       join(:rate_codes, :id => :rate_code_id).
       to_a.
       group_by {|b| b["entity_id_uuid"]}.
