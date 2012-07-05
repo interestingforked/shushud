@@ -17,8 +17,9 @@ module ResourceHistory
     b_events(resid).map do |bc|
       open = bc.find {|b| b[:state] == 1}
       closed = bc.find {|b| b[:state] == 0}
+      next if open.nil? # TODO remove events that are closed and not open
       f = [open[:time], from].max
-      t = [closed[:time], to].min
+      t = [((closed && closed[:time]) || Time.now), to].min
       {resource_id: open[:hid],
         from: f,
         to: t,
@@ -37,7 +38,7 @@ module ResourceHistory
       filter("billable_events.provider_id = 5").
       join(:rate_codes, :id => :rate_code_id).
       to_a.
-      group_by {|b| b["entity_id_uuid"]}.
+      group_by {|b| b[:entity_id_uuid]}.
       values
   end
 
@@ -45,10 +46,12 @@ module ResourceHistory
     res_records(owner).map do |rc|
       open = rc.find {|r| r[:state] == 1}
       closed = rc.find {|r| r[:state] == 0}
-      {resource_id: open[:resource_id],
+      f = [open[:time], from].max
+      t = [((closed && closed[:time]) || Time.now), to].min
+      {resource_id: open[:hid],
         owner: open[:owner],
-        from: [open[:time], from].max,
-        to: [closed[:time], to].min}
+        from: f,
+        to: t}
     end
   end
 
@@ -56,7 +59,7 @@ module ResourceHistory
     ResourceOwnershipRecord.
       filter(owner: owner).
       to_a.
-      group_by {|r| r["entity_id"]}.
+      group_by {|r| r[:entity_id]}.
       values
   end
 
