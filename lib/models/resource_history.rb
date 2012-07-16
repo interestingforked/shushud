@@ -33,13 +33,14 @@ module ResourceHistory
   end
 
   def b_events(resid)
-    BillableEvent.
-      filter(hid: resid.to_s).
-      filter("billable_events.provider_id = 5").
-      join(:rate_codes, :id => :rate_code_id).
-      to_a.
-      group_by {|b| b[:entity_id_uuid]}.
-      values
+    sql = <<EOD
+   select entity_id_uuid, hid, time, product_group, description, rate, rate_period, coalesce(billable_events.product_name, rate_codes.product_name) as product_name
+      from billable_events, rate_codes
+      where billable_events.rate_code_id = rate_codes.id
+      and billable_events.provider_id = 5
+      and hid = $1
+EOD
+    Utils.exec(sql, resid).group_by {|b| b[:entity_id_uuid]}
   end
 
   def fold_res_own(owner, from, to)
