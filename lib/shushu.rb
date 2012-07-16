@@ -58,12 +58,10 @@ require "./lib/api/helpers"
 require "./lib/api/authentication"
 require "./lib/api/http"
 
-require "./lib/models/billable_event"
 require "./lib/models/provider"
 require "./lib/models/rate_code"
 require "./lib/models/resource_ownership_record"
 require "./lib/models/resource_history"
 
-require "./lib/services/billable_event_service"
 require "./lib/services/resource_ownership_service"
 require "./lib/services/rate_code_service"
