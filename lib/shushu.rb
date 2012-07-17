@@ -59,6 +59,3 @@ require "./lib/api/authentication"
 require "./lib/api/http"
 
 require "./lib/models/provider"
-require "./lib/models/resource_ownership_record"
-
-require "./lib/services/resource_ownership_service"

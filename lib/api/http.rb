@@ -1,5 +1,6 @@
 require './lib/billable_event'
 require './lib/rate_code'
+require './lib/resource_ownership'
 
 module Api
   class Http < Sinatra::Base
@@ -47,7 +48,7 @@ module Api
 
     put "/accounts/:account_id/resource_ownerships/:entity_id" do
       perform do
-        ResourceOwnershipService.handle_in(
+        Shushu::ResourceOwnership.handle_in(
           params[:state],
           session[:provider_id],
           params[:account_id],
