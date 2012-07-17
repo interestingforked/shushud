@@ -13,19 +13,19 @@ module Shushu
 
       if args[:state] == "open"
         if prev_opened?(args[:entity_id_uuid])
-          [200, j(msg: "OK")]
-        elsif open_event(args)
-          [201, j(msg: "OK")]
+          [200, j(id: args[:entity_id_uuid])]
+        elsif e = open_event(args)
+          [201, j(id: e[:entity_id_uuid])]
         else
           [400, j(error: "unable to open event")]
         end
       elsif args[:state] == "close"
         Utils.txn do
           if prev_closed?(args[:entity_id_uuid])
-            [200, j(msg: "OK")]
+            [200, j(id: args[:entity_id_uuid])]
           elsif open = delete_event(args[:entity_id_uuid])
-            if close_event(open, args)
-              [201, j(msg: "OK")]
+            if e = close_event(open, args)
+              [201, j(id: e[:entity_id])]
             else
               [400, j(error: "unable to close event")]
             end
@@ -62,6 +62,7 @@ module Shushu
 
     def open_event(args)
       DB[:billable_events].
+        returning(:entity_id_uuid).
         insert(provider_id: args[:provider_id],
                 entity_id_uuid: Utils.validate_uuid(args[:entity_id_uuid]),
                 rate_code_id: resolve_rc(args[:rate_code]),
@@ -71,11 +72,12 @@ module Shushu
                 description: args[:description],
                 time: args[:time],
                 created_at: Time.now,
-                state: OPEN)
+                state: OPEN).pop
     end
 
     def close_event(open, args)
       DB[:closed_events].
+        returning(:entity_id).
         insert(provider_id: args[:provider_id],
                 entity_id: Utils.validate_uuid(args[:entity_id_uuid]),
                 rate_code_id: open[:rate_code_id],
@@ -85,7 +87,7 @@ module Shushu
                 description: open[:description],
                 from: open[:time],
                 to: args[:time],
-                created_at: Time.now)
+                created_at: Time.now).pop
     end
 
     def resolve_rc(slug)
