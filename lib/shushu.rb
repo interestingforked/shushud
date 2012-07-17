@@ -51,8 +51,6 @@ Shushu::DB.execute("SET timezone TO 'UTC'")
 Sequel.default_timezone = :utc
 
 require "./lib/utils"
-require "./lib/plugins/created_at_setter"
-require "./lib/plugins/model"
 
 require "./lib/api/helpers"
 require "./lib/api/authentication"
