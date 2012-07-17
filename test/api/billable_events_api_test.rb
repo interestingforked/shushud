@@ -17,7 +17,7 @@ class BillableEventsApiTest < ShushuTest
     put("/resources/123/billable_events/1", {
       :entity_id_uuid => SecureRandom.uuid,
       :qty         => 1,
-      :rate_code   => @rate_code.slug,
+      :rate_code   => @rate_code[:slug],
       :time        => "2011-01-01 00:00:00",
       :description => "perhaps a command name?",
       :state       => "open"
@@ -42,7 +42,7 @@ class BillableEventsApiTest < ShushuTest
     authorize("something that is not a provider id", "not a provider token")
     body = {
       :qty        => 1,
-      :rate_code  => @rate_code.slug,
+      :rate_code  => @rate_code[:slug],
       :time       => "2011-01-01 00:00:00",
       :state      => "open"
     }
@@ -57,7 +57,7 @@ class BillableEventsApiTest < ShushuTest
     put("/resources/app123@heroku.com/billable_events/1", {
       :entity_id_uuid => eid,
       :qty        => 1,
-      :rate_code  => @rate_code.slug,
+      :rate_code  => @rate_code[:slug],
       :time       => "2011-01-01 00:00:00 +0000",
       :state      => "open"
     })
@@ -66,7 +66,7 @@ class BillableEventsApiTest < ShushuTest
     put("/resources/app123@heroku.com/billable_events/1", {
       :entity_id_uuid => eid,
       :qty        => 1,
-      :rate_code  => @rate_code.slug,
+      :rate_code  => @rate_code[:slug],
       :time       => "2011-01-01 00:00:00 +0000",
       :state      => "open"
     })
@@ -79,7 +79,7 @@ class BillableEventsApiTest < ShushuTest
     body = {
       :entity_id_uuid => SecureRandom.uuid,
       :qty        => 1,
-      :rate_code  => @rate_code.slug,
+      :rate_code  => @rate_code[:slug],
       :time       => "2011-01-01 00:00:00 +0000",
       :state      => "open"
     }
@@ -96,7 +96,7 @@ class BillableEventsApiTest < ShushuTest
     body = {
       :entity_id_uuid => SecureRandom.uuid,
       :qty        => 1,
-      :rate_code  => @rate_code.slug,
+      :rate_code  => @rate_code[:slug],
       :time       => "2011-01-01 00:00:00 +0000",
       :state      => "open"
     }

@@ -9,12 +9,12 @@ module ShushuHelpers
   end
 
   def build_rate_code(opts={})
-    RateCode.create({
+    Shushu::DB[:rate_codes].returning.insert({
       :slug => SecureRandom.uuid,
       :rate => 5,
       :rate_period => "hour",
       :provider_id => provider.id,
-    }.merge(opts))
+    }.merge(opts)).pop
   end
 
   def build_resource_ownership_record(account_id, hid, entity_id, state, time)

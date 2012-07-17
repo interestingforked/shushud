@@ -1,4 +1,5 @@
 require './lib/billable_event'
+require './lib/rate_code'
 
 module Api
   class Http < Sinatra::Base
@@ -59,7 +60,7 @@ module Api
 
     post "/rate_codes" do
       perform do
-        RateCodeService.handle_in(
+        Shushu::RateCode.handle_in(
           :provider_id   => session[:provider_id],
           :rate          => params[:rate],
           :period        => params[:period],
@@ -71,7 +72,7 @@ module Api
 
     put "/rate_codes/:slug" do
       perform do
-        RateCodeService.handle_in(
+        Shushu::RateCode.handle_in(
           :provider_id   => session[:provider_id],
           :slug          => params[:slug],
           :rate          => params[:rate],
