@@ -4,6 +4,8 @@ module Shushu
     PERIODS = %w{month hour}
 
     def handle_in(args)
+      return [400, "invalid args"] unless args_valid?(args)
+
       if s = args[:slug]
         if r = DB[:rate_codes].filter(slug: s).first
           [200, r]
@@ -18,10 +20,11 @@ module Shushu
 
     private
 
+    def args_valid?(args)
+      PERIODS.include?(args[:period])
+    end
+
     def create_record(args)
-      if !PERIODS.include?(args[:period])
-        raise(ArgumentError, "period must be one of #{PERIODS.join(',')}")
-      end
       DB[:rate_codes].
         returning.
         insert(provider_id: args[:provider_id],

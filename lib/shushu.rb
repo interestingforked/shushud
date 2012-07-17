@@ -23,11 +23,6 @@ module Kernel
 end
 
 module Shushu
-  Root = File.expand_path("..", File.dirname(__FILE__))
-  ShushuError         = Class.new(Exception)
-  NotFound            = Class.new(ShushuError)
-  AuthorizationError  = Class.new(ShushuError)
-
   DB = (
     case ENV["RACK_ENV"].to_s
     when "production"
@@ -38,11 +33,6 @@ module Shushu
       raise(ArgumentError, "RACK_ENV must be production or test.")
     end
   )
-
-  def self.test?
-    ENV["RACK_ENV"] == "test"
-  end
-
 end
 
 Shushu::DB.execute("SET timezone TO 'UTC'")

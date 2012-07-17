@@ -89,23 +89,10 @@ module Api
         s, b = yield
         status(s)
         body(enc_json(b))
-      rescue RuntimeError, ArgumentError => e
-        log({:level => :error, :exception => e.message, :backtrace => e.backtrace}.merge(params))
-        status(400)
-        body(enc_json(e.message))
-      rescue Shushu::AuthorizationError => e
-        log({:level => :error, :exception => e.message, :backtrace => e.backtrace}.merge(params))
-        status(403)
-        body(enc_json(e.message))
-      rescue Shushu::NotFound => e
-        log({:level => :error, :exception => e.message, :backtrace => e.backtrace}.merge(params))
-        status(404)
-        body(enc_json(e.message))
       rescue Exception => e
-        log({:level => :error, :exception => e.message, :backtrace => e.backtrace}.merge(params))
+        log({level: "error", exception: e.message}.merge(params))
         status(500)
         body(enc_json(e.message))
-        raise if Shushu.test?
       end
     end
   end
