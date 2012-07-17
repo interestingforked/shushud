@@ -101,10 +101,6 @@ module Api
         log({:level => :error, :exception => e.message, :backtrace => e.backtrace}.merge(params))
         status(404)
         body(enc_json(e.message))
-      rescue Shushu::DataConflict => e
-        log({:level => :error, :exception => e.message, :backtrace => e.backtrace}.merge(params))
-        status(409)
-        body(enc_json(e.message))
       rescue Exception => e
         log({:level => :error, :exception => e.message, :backtrace => e.backtrace}.merge(params))
         status(500)
