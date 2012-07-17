@@ -14,6 +14,7 @@ module TableCleaner
     Shushu::DB.transaction do
       Shushu::DB.run(<<-EOD)
         DELETE FROM billable_events CASCADE;
+        DELETE FROM closed_events CASCADE;
         DELETE FROM rate_codes CASCADE;
         DELETE FROM resource_ownership_records CASCADE;
         DELETE FROM providers CASCADE;

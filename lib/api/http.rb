@@ -1,3 +1,5 @@
+require './lib/billable_event'
+
 module Api
   class Http < Sinatra::Base
     include Authentication
@@ -42,7 +44,7 @@ module Api
 
     put "/resources/:hid/billable_events/:entity_id" do
       perform do
-        BillableEventService.handle_in(
+        Shushu::BillableEvent.handle_in(
           :provider_id    => session[:provider_id],
           :rate_code      => params[:rate_code],
           :product_name   => params[:product_name],
@@ -53,7 +55,6 @@ module Api
           :qty            => params[:qty],
           :time           => dec_time(params[:time]),
           :state          => params[:state]
-
         )
       end
     end

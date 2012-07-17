@@ -23,24 +23,6 @@ class BillableEventsApiTest < ShushuTest
       :state       => "open"
     })
     assert_equal(201, last_response.status)
-    assert_equal("2011-01-01 00:00:00 UTC", JSON.parse(last_response.body)["time"])
-    assert_equal("open", JSON.parse(last_response.body)["state"])
-  end
-
-  def test_open_event_with_valid_entity_id_uuid
-    uuid = SecureRandom.uuid
-    setup_auth
-    body = {
-      :entity_id_uuid => uuid,
-      :qty            => 1,
-      :rate_code      => @rate_code.slug,
-      :time           => "2011-01-01 00:00:00",
-      :description    => "perhaps a command name?",
-      :state          => "open"
-    }
-    put("/resources/123/billable_events/1", body)
-    assert_equal(201, last_response.status)
-    assert_equal(uuid, JSON.parse(last_response.body)["entity_id_uuid"])
   end
 
 
@@ -55,6 +37,7 @@ class BillableEventsApiTest < ShushuTest
     assert_equal(400, last_response.status)
   end
 
+
   def test_open_event_with_incorrect_auth
     authorize("something that is not a provider id", "not a provider token")
     body = {
@@ -67,38 +50,8 @@ class BillableEventsApiTest < ShushuTest
     assert_equal(401, last_response.status)
   end
 
-  def test_open_event_with_entity_id_uuid
-    setup_auth
-    entity_id_uuid = SecureRandom.uuid
-    put("/resources/123/billable_events/1", {
-      :qty => 1,
-      :rate_code => @rate_code.slug,
-      :time => "2012-01-01 00:00:00",
-      :state => "open",
-      :entity_id_uuid => entity_id_uuid
-    })
-    assert_equal(entity_id_uuid, JSON.parse(last_response.body)["entity_id_uuid"])
-  end
 
-  def test_open_event_with_used_entity_id_but_diff_provider
-    setup_auth
-    body = {
-      :entity_id_uuid => SecureRandom.uuid,
-      :qty        => 1,
-      :rate_code  => @rate_code.slug,
-      :time       => "2011-01-01 00:00:00",
-      :state      => "open"
-    }
-    put("/resources/123/billable_events/1", body)
-    assert_equal(201, last_response.status)
-    delete("/sessions")
-    another_provider = build_provider(:token => "another_pasword")
-    authorize(another_provider.id, "another_pasword")
-    put("/resources/123/billable_events/1", body)
-    assert_equal(201, last_response.status)
-  end
-
-  def test_open_event_on_second_call_returns_same_billable_entity_id
+  def test_open_event_idempotency
     setup_auth
     eid = SecureRandom.uuid
     put("/resources/app123@heroku.com/billable_events/1", {
@@ -109,8 +62,6 @@ class BillableEventsApiTest < ShushuTest
       :state      => "open"
     })
     assert_equal(201, last_response.status)
-    billable_entity_id = JSON.parse(last_response.body)["id"]
-    assert(!billable_entity_id.nil?, "Did not receive id")
 
     put("/resources/app123@heroku.com/billable_events/1", {
       :entity_id_uuid => eid,
@@ -120,44 +71,8 @@ class BillableEventsApiTest < ShushuTest
       :state      => "open"
     })
     assert_equal(200, last_response.status)
-    assert_equal billable_entity_id, JSON.parse(last_response.body)["id"]
   end
 
-  def test_open_event_on_third_call
-    setup_auth
-    put_body = {
-      :entity_id_uuid => SecureRandom.uuid,
-      :qty        => 1,
-      :rate_code  => @rate_code.slug,
-      :time       => "2011-01-01 00:00:00 +0000",
-      :state      => "open"
-    }
-    put "/resources/app123/billable_events/1", put_body
-    assert_equal 201, last_response.status
-    put "/resources/app123/billable_events/1", put_body
-    put "/resources/app123/billable_events/1", put_body
-    assert_equal 200, last_response.status
-  end
-
-  def test_open_event_on_second_call_and_ignores_change
-    setup_auth
-    put_body = {
-      :entity_id_uuid => SecureRandom.uuid,
-      :qty        => 1,
-      :rate_code  => @rate_code.slug,
-      :time       => "2011-01-01 00:00:00 +0000",
-      :state      => "open"
-    }
-
-    put "/resources/app123@heroku.com/billable_events/1", put_body
-    assert_equal(201, last_response.status)
-    qty = JSON.parse(last_response.body)["qty"]
-    time = JSON.parse(last_response.body)["time"]
-    put "/resources/app123@heroku.com/billable_events/1", put_body.merge(:qty => 2, :time => "2011-01-01 00:00:00 +0000")
-    assert_equal(200, last_response.status)
-    assert_equal qty, JSON.parse(last_response.body)["qty"]
-    assert_equal time, JSON.parse(last_response.body)["time"]
-  end
 
   def test_close_event
     setup_auth
@@ -168,10 +83,12 @@ class BillableEventsApiTest < ShushuTest
       :time       => "2011-01-01 00:00:00 +0000",
       :state      => "open"
     }
-    put "/resources/123/billable_events/1", body
-    assert_equal 201, last_response.status
-    put "/resources/123/billable_events/1", body.merge({:state => "close", :time => "2011-01-01 00:00:01 +0000"})
-    assert_equal 201, last_response.status
+    put("/resources/123/billable_events/1", body)
+    assert_equal(201, last_response.status)
+
+    put("/resources/123/billable_events/1",
+         body.merge({:state => "close", :time => "2011-01-01 00:00:01 +0000"}))
+    assert_equal(201, last_response.status)
   end
 
   def test_close_event_a_second_time
@@ -183,12 +100,16 @@ class BillableEventsApiTest < ShushuTest
       :time       => "2011-01-01 00:00:00 +0000",
       :state      => "open"
     }
-    put "/resources/123/billable_events/1", body
-    assert_equal 201, last_response.status
-    put "/resources/123/billable_events/1", body.merge({:state => "close", :time => "2011-01-01 00:00:01 +0000"})
-    assert_equal 201, last_response.status
-    put "/resources/123/billable_events/1", body.merge({:state => "close", :time => "2011-01-01 00:00:01 +0000"})
-    assert_equal 200, last_response.status
+    put("/resources/123/billable_events/1", body)
+    assert_equal(201, last_response.status)
+
+    put("/resources/123/billable_events/1",
+         body.merge({:state => "close", :time => "2011-01-01 00:00:01 +0000"}))
+    assert_equal(201, last_response.status)
+
+    put("/resources/123/billable_events/1",
+         body.merge({:state => "close", :time => "2011-01-01 00:00:01 +0000"}))
+    assert_equal(200, last_response.status)
   end
 
 end

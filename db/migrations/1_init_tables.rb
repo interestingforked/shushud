@@ -52,10 +52,22 @@ Sequel.migration do
     add_column :billable_events, :description,        "varchar(255)"
     add_column :billable_events, :time,               "timestamptz"
     add_column :billable_events, :state,              "int"
-    add_column :billable_events, :recorded_at,        "timestamptz"
     alter_table(:billable_events) do
       add_unique_constraint([:provider_id, :entity_id_uuid, :state])
     end
+
+    create_table(:closed_events) do
+      primary_key :entity_id, :uuid
+      foreign_key :provider_id, :providers
+      foreign_key :rate_code_id, :rate_codes
+    end
+    add_column :closed_events, :created_at,         "timestamptz"
+    add_column :closed_events, :resource_id,        "int"
+    add_column :closed_events, :qty,                "int"
+    add_column :closed_events, :product_name,       "varchar(255)"
+    add_column :closed_events, :description,        "varchar(255)"
+    add_column :closed_events, :from,               "timestamptz"
+    add_column :closed_events, :to,                 "timestamptz"
 
   end
 end
