@@ -29,7 +29,6 @@ module Shushu
   DataConflict        = Class.new(ShushuError)
   AuthorizationError  = Class.new(ShushuError)
 
-  Conf = {}
   DB = (
     case ENV["RACK_ENV"].to_s
     when "production"
