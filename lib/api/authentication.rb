@@ -49,7 +49,7 @@ module Api
 
     def unauthenticated!(realm="shushu.heroku.com")
       response['WWW-Authenticate'] = %(Basic realm="Restricted Area")
-      throw(:halt, [401, enc_json("Not authorized")])
+      throw(:halt, [401, {msg: "Not authorized"}])
     end
 
     def ip

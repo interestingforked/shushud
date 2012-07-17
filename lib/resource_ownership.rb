@@ -5,24 +5,24 @@ module Shushu
     ACTIVE = 1
     INACTIVE = 0
 
-    def handle_in(state, provider_id, account_id, resource_id, time, entity_id)
+    def handle_in(state, provider_id, account_id, resid, time, eid)
       case state
       when "active"
-        activate(provider_id, account_id, resource_id, time, entity_id)
+        if create_record(provider_id, account_id, resid, ACTIVE, time, eid)
+          [200, j(msg: "OK")]
+        else
+          [400, j(error: "invalid args")]
+        end
       when "inactive"
-        deactivate(provider_id, account_id, resource_id, time, entity_id)
+        if create_record(provider_id, account_id, resid, INACTIVE, time, eid)
+          [200, j(msg: "OK")]
+        else
+          [400, j(error: "invalid args")]
+        end
       end
     end
 
-    def activate(provider_id, account_id, resid, time, eid)
-      [200,
-        create_record(provider_id, account_id, resid, ACTIVE, time, eid)]
-    end
-
-    def deactivate(provider_id, account_id, resid, time, eid)
-      [200,
-        create_record(provider_id, account_id, resid, INACTIVE, time, eid)]
-    end
+    private
 
     def create_record(provider_id, account_id, resid, state, time, eid)
       DB[:resource_ownership_records].
@@ -35,5 +35,10 @@ module Shushu
                 entity_id: eid,
                 created_at: Time.now).pop
     end
+
+    def j(hash)
+      Yajl::Encoder.encode(hash)
+    end
+
   end
 end

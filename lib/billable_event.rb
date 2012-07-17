@@ -9,31 +9,31 @@ module Shushu
     CLOSED = 0
 
     def handle_in(args)
-      return [400, "invalid args"] unless valid_args?(args)
+      return [400, j(msg: "invalid args")] unless valid_args?(args)
       if args[:state] == "open"
         if prev_opened?(args[:entity_id_uuid])
-          [200, "OK"]
+          [200, j(msg: "OK")]
         elsif open_event(args)
-          [201, "OK"]
+          [201, j(msg: "OK")]
         else
-          [400, {error: "unable to open event"}]
+          [400, j(error: "unable to open event")]
         end
       elsif args[:state] == "close"
         Utils.txn do
           if prev_closed?(args[:entity_id_uuid])
-            [200, "OK"]
+            [200, j(msg: "OK")]
           elsif open = delete_event(args[:entity_id_uuid])
             if close_event(open, args)
-              [201, "OK"]
+              [201, j(msg: "OK")]
             else
-              [400, {error: "unable to open event"}]
+              [400, j(error: "unable to open event")]
             end
           else
-            [400, {error: "must open an event before closing it"}]
+            [400, j(error: "must open an event before closing it")]
           end
         end
       else
-        [400, {error: "state must be 'open' or 'closed'"}]
+        [400, j(error: "state must be 'open' or 'closed'")]
       end
     end
 
@@ -106,6 +106,10 @@ module Shushu
       when "close"
         [:provider_id, :entity_id_uuid, :state, :time]
       end
+    end
+
+    def j(hash)
+      Yajl::Encoder.encode(hash)
     end
 
   end
