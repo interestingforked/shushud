@@ -91,7 +91,7 @@ class BillableEventsApiTest < ShushuTest
     assert_equal(201, last_response.status)
   end
 
-  def test_close_event_a_second_time
+  def test_idempotent_close
     setup_auth
     body = {
       :entity_id_uuid => SecureRandom.uuid,
