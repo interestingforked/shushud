@@ -10,6 +10,7 @@ module Shushu
 
     def handle_in(args)
       return [400, j(msg: "invalid args")] unless valid_args?(args)
+
       if args[:state] == "open"
         if prev_opened?(args[:entity_id_uuid])
           [200, j(msg: "OK")]
@@ -26,7 +27,7 @@ module Shushu
             if close_event(open, args)
               [201, j(msg: "OK")]
             else
-              [400, j(error: "unable to open event")]
+              [400, j(error: "unable to close event")]
             end
           else
             [400, j(error: "must open an event before closing it")]
@@ -41,7 +42,7 @@ module Shushu
 
     def prev_opened?(uuid)
       ! DB[:billable_events].
-        filter(entity_id_uuid: uuid, state: 1).
+        filter(entity_id_uuid: uuid, state: OPEN).
         count.
         zero?
     end
