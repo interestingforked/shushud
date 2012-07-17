@@ -57,5 +57,3 @@ require "./lib/plugins/model"
 require "./lib/api/helpers"
 require "./lib/api/authentication"
 require "./lib/api/http"
-
-require "./lib/models/provider"

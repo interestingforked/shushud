@@ -1,3 +1,5 @@
+require './lib/provider'
+
 module Api
   module Authentication
     include Helpers
@@ -8,15 +10,17 @@ module Api
         unless authenticated?
           if proper_request?
             id, token = *auth.credentials
-            if Provider.auth?(id, token)
+            if Shushu::Provider.auth?(id, token)
               log(:fn => __method__, :at => :authenticated, :provider_id => id)
               session[:provider_id] = params[:provider_id] = id
             else
-              log(:fn => __method__, :at => :unauthenticated, :id => id, :ip => ip, :agent => agent)
+              log(:fn => __method__, :at => :unauthenticated,
+                   :id => id, :ip => ip, :agent => agent)
               unauthenticated!
             end
           else
-            log(:fn => __method__, :at => "bad-request", :ip => ip, :agent => agent)
+            log(:fn => __method__, :at => "bad-request",
+                 :ip => ip, :agent => agent)
             unauthenticated!
           end
         end

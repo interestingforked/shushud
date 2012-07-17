@@ -1,3 +1,5 @@
+require './lib/provider'
+
 module ShushuHelpers
 
   def build_provider(opts={})
@@ -5,7 +7,8 @@ module ShushuHelpers
       :name  => "sendgrid",
       :token => "password"
     }.merge(opts)
-    Provider.create(params).tap {|p| p.reset_token!(params[:token])}.reload
+    Shushu::Provider.
+      create(params).tap {|p| p.reset_token!(params[:token])}.reload
   end
 
   def build_rate_code(opts={})
