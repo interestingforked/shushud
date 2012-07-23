@@ -69,7 +69,7 @@ module Shushu
                 hid: args[:hid],
                 qty: args[:qty],
                 product_name: args[:product_name],
-                description: args[:description],
+                description: trim_desc(args[:description]),
                 time: args[:time],
                 created_at: Time.now,
                 state: OPEN).pop
@@ -113,6 +113,15 @@ module Shushu
 
     def j(hash)
       Yajl::Encoder.encode(hash)
+    end
+
+    # TODO database shouldn't care about length of description
+    def trim_desc(s)
+      if s && s.length > 0
+        s[0..254]
+      else
+        s
+      end
     end
 
   end
