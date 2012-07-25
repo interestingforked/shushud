@@ -4,21 +4,21 @@ module Shushu
     PERIODS = %w{month hour}
 
     def handle_in(args)
-      return [400, j(error: "invalid args")] unless args_valid?(args)
+      return [400, Utils.enc_j(error: "invalid args")] unless args_valid?(args)
 
       if s = args[:slug]
         if r = DB[:rate_codes].filter(slug: s).first
-          [200, j(msg: "OK")]
+          [200, Utils.enc_j(msg: "OK")]
         else
           if create_record(args)
-            [201, j(msg: "OK")]
+            [201, Utils.enc_j(msg: "OK")]
           else
-            [400, j(error: "invalid args")]
+            [400, Utils.enc_j(error: "invalid args")]
           end
         end
       else
         args[:slug] = SecureRandom.uuid
-        [201, j(create_record(args))]
+        [201, Utils.enc_j(create_record(args))]
       end
     end
 
@@ -37,10 +37,6 @@ module Shushu
                 slug: args[:slug],
                 product_group: args[:product_group],
                 product_name: args[:product_name]).pop
-    end
-
-    def j(hash)
-      Yajl::Encoder.encode(hash)
     end
 
   end

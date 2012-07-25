@@ -52,9 +52,4 @@ class ShushuTest < MiniTest::Unit::TestCase
     Time.mktime(2011,2)
   end
 
-  module JSON
-    def self.parse(json)
-      Yajl::Parser.parse(json)
-    end
-  end
 end

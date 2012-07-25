@@ -9,15 +9,15 @@ module Shushu
       case state
       when "active"
         if create_record(provider_id, account_id, resid, ACTIVE, time, eid)
-          [200, j(msg: "OK")]
+          [200, Utils.enc_j(msg: "OK")]
         else
-          [400, j(error: "invalid args")]
+          [400, Utils.enc_j(error: "invalid args")]
         end
       when "inactive"
         if create_record(provider_id, account_id, resid, INACTIVE, time, eid)
-          [200, j(msg: "OK")]
+          [200, Utils.enc_j(msg: "OK")]
         else
-          [400, j(error: "invalid args")]
+          [400, Utils.enc_j(error: "invalid args")]
         end
       end
     end
@@ -34,10 +34,6 @@ module Shushu
                 time: time,
                 entity_id: eid,
                 created_at: Time.now).pop
-    end
-
-    def j(hash)
-      Yajl::Encoder.encode(hash)
     end
 
   end

@@ -42,6 +42,10 @@ module Utils
     end
   end
 
+  def enc_j(data)
+    Yajl::Encoder.encode(data)
+  end
+
 end
 
 module Scrolls

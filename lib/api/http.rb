@@ -18,11 +18,11 @@ module Api
     error do
       e = env['sinatra.error']
       log({level: "error", exception: e.message}.merge(params))
-      [500, j(msg: "un-handled error")]
+      [500, Utils.enc_j(msg: "un-handled error")]
     end
 
     not_found do
-      [404, j(msg: "endpoint not found")]
+      [404, Utils.enc_j(msg: "endpoint not found")]
     end
 
     head "/" do
@@ -30,7 +30,7 @@ module Api
     end
 
     get "/heartbeat" do
-      [200, j(alive: Time.now)]
+      [200, Utils.enc_j(alive: Time.now)]
     end
 
     put "/resources/:hid/billable_events/:entity_id" do

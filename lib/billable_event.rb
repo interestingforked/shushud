@@ -9,32 +9,32 @@ module Shushu
     CLOSED = 0
 
     def handle_in(args)
-      return [400, j(msg: "invalid args")] unless valid_args?(args)
+      return [400, Utils.enc_j(msg: "invalid args")] unless valid_args?(args)
 
       if args[:state] == "open"
         if prev_opened?(args[:entity_id_uuid])
-          [200, j(id: args[:entity_id_uuid])]
+          [200, Utils.enc_j(id: args[:entity_id_uuid])]
         elsif e = open_event(args)
-          [201, j(id: e[:entity_id_uuid])]
+          [201, Utils.enc_j(id: e[:entity_id_uuid])]
         else
-          [400, j(error: "unable to open event")]
+          [400, Utils.enc_j(error: "unable to open event")]
         end
       elsif args[:state] == "close"
         Utils.txn do
           if prev_closed?(args[:entity_id_uuid])
-            [200, j(id: args[:entity_id_uuid])]
+            [200, Utils.enc_j(id: args[:entity_id_uuid])]
           elsif open = delete_event(args[:entity_id_uuid])
             if e = close_event(open, args)
-              [201, j(id: e[:entity_id])]
+              [201, Utils.enc_j(id: e[:entity_id])]
             else
-              [400, j(error: "unable to close event")]
+              [400, Utils.enc_j(error: "unable to close event")]
             end
           else
-            [400, j(error: "must open an event before closing it")]
+            [400, Utils.enc_j(error: "must open an event before closing it")]
           end
         end
       else
-        [400, j(error: "state must be 'open' or 'closed'")]
+        [400, Utils.enc_j(error: "state must be 'open' or 'closed'")]
       end
     end
 
@@ -109,10 +109,6 @@ module Shushu
       when "close"
         [:provider_id, :entity_id_uuid, :state, :time]
       end
-    end
-
-    def j(hash)
-      Yajl::Encoder.encode(hash)
     end
 
     # TODO database shouldn't care about length of description

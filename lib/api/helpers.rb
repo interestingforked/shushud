@@ -11,14 +11,6 @@ module Api
       end
     end
 
-    def j(data)
-      enc_json(data)
-    end
-
-    def enc_json(hash)
-      Yajl::Encoder.encode(hash)
-    end
-
     def dec_time(t)
       Time.parse(CGI.unescape(t.to_s))
     end
