@@ -1,6 +1,7 @@
 require './lib/billable_event'
 require './lib/rate_code'
 require './lib/resource_ownership'
+require './lib/resource_history'
 
 module Api
   class Http < Sinatra::Base
