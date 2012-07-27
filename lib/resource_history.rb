@@ -5,7 +5,7 @@ module Shushu
     extend self
 
     def fetch(owner, from, to)
-      [200, Utils.enc_json(resource_histories(owner, from, to))]
+      [200, Utils.enc_j(resource_histories(owner, from, to))]
     end
 
     def resource_histories(owner, from, to)
