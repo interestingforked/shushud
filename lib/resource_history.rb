@@ -50,8 +50,8 @@ module Shushu
       log(ns: "resource-histories", fn: "fetch-rh", resid: resid) do
         s = "select * from resource_history(?, ?, ?)"
         Shushu::DB[s, resid, from, to].map do |event|
-          f = [from, event[:from]].max
-          t = [to, event[:to]].min
+          f = [from.to_i, event[:from]].max
+          t = [to.to_i, event[:to]].min
           event.merge(from: f, to: t, qty: ((t - f) / 3600))
         end
       end
