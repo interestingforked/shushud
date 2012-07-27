@@ -20,16 +20,23 @@ module Shushu
       end
     end
 
+    def overlaps?(a, b, c, d)
+      (a >= c && a <= d) || (d >= a)
+    end
 
     def ownerships(owner, from, to)
       ownership_records(owner).map do |eid, col|
         open = col.find {|c| c[:state] == 1}
         closed = col.find {|c| c[:state] == 0} || {time: Time.now}
-        {entity_id: eid,
-          resource_id: open[:hid],
-          from: [from, open[:time]].max,
-          to: [to, closed[:time]].min}
-      end
+        if overlaps?(from, to, open[:time], closed[:time])
+          {entity_id: eid,
+            resource_id: open[:hid],
+            from: [from, open[:time]].max,
+            to: [to, closed[:time]].min}
+        else
+          nil
+        end
+      end.compact
     end
 
     def ownership_records(owner)
