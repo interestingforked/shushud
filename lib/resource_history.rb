@@ -15,7 +15,7 @@ module Shushu
         qty =  events.map {|e| e[:qty]}.reduce(:+) || 0
         {resource_id: ownership[:resource_id],
           dyno_hours: qty,
-          adjusted_dyno_hours: [750, qty].min,
+          adjusted_dyno_hours: (qty - [750, qty].min),
           events: events}
       end
     end
@@ -45,7 +45,7 @@ module Shushu
         Shushu::DB[s, resid, from, to].map do |event|
           event.merge(from: [from, event[:from]].max,
                        to: [to, event[:to]].min,
-                       qty: (event[:to] - event[:from]))
+                       qty: ((event[:to] - event[:from]) / 3600))
         end
       end
     end
