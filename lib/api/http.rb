@@ -33,6 +33,12 @@ module Api
       [200, Utils.enc_j(alive: Time.now)]
     end
 
+    get "/owners/:owner_id/resource_histories" do
+      Shushu::ResourceHistory.fetch(params[:owner_id],
+                                     dec_time(params[:from]),
+                                     dec_time(params[:to]))
+    end
+
     put "/resources/:hid/billable_events/:entity_id" do
       Shushu::BillableEvent.
         handle_in(provider_id: session[:provider_id],

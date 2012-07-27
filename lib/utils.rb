@@ -1,3 +1,5 @@
+require './lib/shushu'
+
 module Utils
   extend self
 
@@ -35,6 +37,7 @@ module Utils
   def exec(sql, *args)
     conn_exec(Shushu::DB, sql, *args)
   end
+  alias :read_exec :exec #TODO: use db follower
 
   def conn_exec(db, sql, *args)
     db.synchronize do |conn|
