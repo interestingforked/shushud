@@ -15,7 +15,7 @@ module Shushu
       log(fn: __method__, at: "build")
       Unicorn::Configurator::RACKUP[:port] = Config.port
       Unicorn::Configurator::RACKUP[:set_listener] = true
-      @server = Unicorn::HttpServer.new(Http.new).start.join
+      @server = Unicorn::HttpServer.new(Web.new)
       log(fn: __method__, at: "install_trap")
       ["TERM", "INT"].each do |s|
         Signal.trap(s) do
@@ -26,7 +26,7 @@ module Shushu
         end
       end
       log(fn: __method__, at: "run", port: Config.port)
-      @server.run.join
+      @server.start.join
     end
 
     include Authentication

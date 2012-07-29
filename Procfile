@@ -1,2 +1,2 @@
-web: bundle exec unicorn -p $PORT -c ./unicorn.rb
+web: bin/web
 console: bundle exec bin/console

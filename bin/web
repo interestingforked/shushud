@@ -1,4 +1,4 @@
 #!/usr/bin/env ruby
 $:.unshift(File.expand_path(File.join(File.dirname($0), "../lib")))
-require "lib/web"
+require "web"
 Shushu::Web.start
