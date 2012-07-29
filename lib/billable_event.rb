@@ -2,12 +2,22 @@ require './lib/shushu'
 require './lib/utils'
 
 module Shushu
+  # @author Ryan Smith
   module BillableEvent
     extend self
 
+    # The API will accept 'open' althought we store it in the DB as 1
     OPEN = 1
+    # The API will accept 'close' althought we store it in the DB as 0
     CLOSED = 0
 
+    # Entry point for incomming billable_events.
+    #
+    # If an entity is closed before it is opened, a 422 will be returned.
+    # The client should keep trying the closed until it succeeds.
+    #
+    # @param [Hash] state key must be equal to 'open' or 'close'
+    # @return [Array] First element is HTTP status code. Last element is JSON.
     def handle_in(args)
       return [400, Utils.enc_j(msg: "invalid args")] unless valid_args?(args)
 
@@ -30,7 +40,7 @@ module Shushu
               [400, Utils.enc_j(error: "unable to close event")]
             end
           else
-            [400, Utils.enc_j(error: "must open an event before closing it")]
+            [422, Utils.enc_j(error: "must open an event before closing it")]
           end
         end
       else
@@ -111,7 +121,7 @@ module Shushu
       end
     end
 
-    # TODO database shouldn't care about length of description
+    #TODO: database shouldn't care about length of description
     def trim_desc(s)
       if s && s.length > 0
         s[0..254]
