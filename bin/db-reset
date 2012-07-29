@@ -1,5 +1,4 @@
 #sh
-
 if [ "$1" = "test" ]; then
   echo reset shushu_test
   dropdb shushu_test
@@ -11,6 +10,3 @@ else
   createdb shushu
   bundle exec sequel -m db/migrations/ $DATABASE_URL
 fi
-
-
-

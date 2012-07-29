@@ -1,13 +1,9 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-
-$: << File.expand_path('lib')
-
-require 'shushu'
-
+$:.unshift(File.expand_path(File.join(File.dirname($0), "../lib")))
+require "web"
 puts "\n"
 puts "\t 収集welcome"
 puts "\n"
-
 require 'irb'
 IRB.start

@@ -1,3 +1,4 @@
+require 'shushu'
 require 'digest'
 require 'securerandom'
 

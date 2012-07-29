@@ -1,16 +1,11 @@
 #!/usr/bin/env ruby
 # encoding: utf-8
-
-trap('INT')  {exit}
-trap('TERM') {exit}
-
-$: << File.expand_path("lib")
-require 'shushu'
-require './lib/provider'
+$:.unshift(File.expand_path(File.join(File.dirname($0), "../lib")))
+require 'provider'
 
 usage = "heroku run bundle exec bin/provider name@heroku.com [new_token]"
 email = ARGV.shift or abort usage
-new_token = ARGV.shift || SecureRandom.hex(128)
+new_token = ARGV.shift || SecureRandom.hex(32)
 
 if provider = Shushu::Provider.filter(:name => email).first
   provider.reset_token!(new_token)
