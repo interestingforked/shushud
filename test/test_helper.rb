@@ -1,10 +1,10 @@
 $:.unshift("lib")
 $:.unshift("test")
 
-ENV["RACK_ENV"] = "test"
-
 require 'bundler'
 Bundler.require :test
+
+ENV["DATABASE_URL"] = ENV["TEST_DATABASE_URL"]
 
 require "shushu"
 require "shushu_helpers"
@@ -22,6 +22,9 @@ module TableCleaner
     end
   end
 end
+
+require "./lib/provider"
+require "./lib/web"
 
 class ShushuTest < MiniTest::Unit::TestCase
   include Rack::Test::Methods
@@ -41,15 +44,7 @@ class ShushuTest < MiniTest::Unit::TestCase
   end
 
   def app
-    Api::Http
-  end
-
-  def jan
-    Time.mktime(2011,1)
-  end
-
-  def feb
-    Time.mktime(2011,2)
+    Shushu::Web
   end
 
 end

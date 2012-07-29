@@ -1,3 +1,6 @@
+require 'digest'
+require 'securerandom'
+
 module Shushu
   class Provider < Sequel::Model
 

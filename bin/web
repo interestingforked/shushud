@@ -1,2 +1,4 @@
-#sh
-bundle exec unicorn -p $PORT -c ./unicorn.rb
+#!/usr/bin/env ruby
+$:.unshift(File.expand_path(File.join(File.dirname($0), "../lib")))
+require "lib/web"
+Shushu::Web.start

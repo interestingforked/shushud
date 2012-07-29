@@ -1,26 +1,26 @@
+require './lib/utils'
 require './lib/provider'
 
-module Api
+module Shushu
   module Authentication
-    include Helpers
 
     def authenticate_provider
-      log(:fn => __method__) do
+      log(fn: __method__) do
+        # Allow unauthenticated access for things like
+        # pingdom and healthchecks.
         return if head_request?
         unless authenticated?
           if proper_request?
             id, token = *auth.credentials
-            if Shushu::Provider.auth?(id, token)
-              log(:fn => __method__, :at => :authenticated, :provider_id => id)
+            if Provider.auth?(id, token)
+              log(fn: __method__, at: "authenticated", provider_id: id)
               session[:provider_id] = params[:provider_id] = id
             else
-              log(:fn => __method__, :at => :unauthenticated,
-                   :id => id, :ip => ip, :agent => agent)
+              log(fn: __method__, at: "unauthenticated", id: id, ip: ip)
               unauthenticated!
             end
           else
-            log(:fn => __method__, :at => "bad-request",
-                 :ip => ip, :agent => agent)
+            log(fn: __method__, at: "bad-request", ip: ip)
             unauthenticated!
           end
         end
@@ -44,7 +44,7 @@ module Api
     end
 
     def bad_request!
-      throw(:halt, [400, enc_json("Bad Request")])
+      throw(:halt, [400, Utils.enc_j("Bad Request")])
     end
 
     def unauthenticated!(realm="shushu.heroku.com")
@@ -54,10 +54,6 @@ module Api
 
     def ip
       request.env["REMOTE_ADDR"]
-    end
-
-    def agent
-      request.env["HTTP_USER_AGENT"]
     end
 
   end

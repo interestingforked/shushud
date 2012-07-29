@@ -1,45 +1,24 @@
-$stderr.sync = $stdout.sync = true
-
-require 'bundler'
+require 'bundler/setup'
 Bundler.require
 
-APP_NAME = ENV["APP_NAME"] || "shushu"
-Scrolls::Log.start
+require './lib/config'
+
+APP_NAME = Shushu::Config.app_name || "shushud"
 Instruments.defaults = {
-  :logger => Scrolls,
-  :method => :log,
-  :default_data => {app: APP_NAME, level: "info"}
+  logger: Scrolls,
+  method: "log",
+  default_data: {app: APP_NAME, level: "info"}
 }
 
 module Kernel
   def log(data)
     data[:level] ||= :info
-    if block_given?
-      Scrolls.log({app: APP_NAME}.merge(data))  {yield}
-    else
-      Scrolls.log({app: APP_NAME}.merge(data))
-    end
+    block_given? ? Scrolls.log(data) {yield} : Scrolls.log(data)
   end
 end
 
 module Shushu
-  DB = (
-    case ENV["RACK_ENV"].to_s
-    when "production"
-      Sequel.connect(ENV["DATABASE_URL"])
-    when "test"
-      Sequel.connect(ENV["TEST_DATABASE_URL"])
-    else
-      raise(ArgumentError, "RACK_ENV must be production or test.")
-    end
-  )
+  DB = Sequel.connect(Config.database_url)
+  Shushu::DB.execute("SET timezone TO 'UTC'")
+  Sequel.default_timezone = :utc
 end
-
-Shushu::DB.execute("SET timezone TO 'UTC'")
-Sequel.default_timezone = :utc
-
-require "./lib/utils"
-
-require "./lib/api/helpers"
-require "./lib/api/authentication"
-require "./lib/api/http"

@@ -1,3 +1,4 @@
+require 'cgi'
 require './lib/shushu'
 
 module Utils
@@ -43,6 +44,10 @@ module Utils
     db.synchronize do |conn|
       conn.exec(sql, args).to_a
     end
+  end
+
+  def dec_time(t)
+    Time.parse(CGI.unescape(t.to_s))
   end
 
   def enc_j(data)

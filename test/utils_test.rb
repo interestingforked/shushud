@@ -1,4 +1,5 @@
 require File.expand_path('../test_helper', __FILE__)
+require './lib/utils'
 
 class UtilsTest < ShushuTest
   def test_uuid_valid
