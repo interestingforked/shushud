@@ -8,11 +8,24 @@ to usage & billing.
 ## Purpose
 
 * Track and store billable_events in an append-only log.
-* Manage rate codes for billable events.
 * Track and store resource ownerships.
+* Manage rate codes for billable events.
 
-## Links
+## Setup
 
-* [API Documentation](https://github.com/heroku/shushud/tree/master/doc)
-* [Setup](https://github.com/heroku/shushu/blob/master/setup.md)
-* [The Vault](https://github.com/heroku/vault_docs)
+```bash
+$ export $(cat sample.env)
+$ bundle install
+$ bin/db-reset
+$ bin/web
+$ curl -i -X HEAD https://localhost:$PORT/
+```
+
+## Running Tests
+
+```bash
+$ export $(cat sample.env)
+$ bundle install
+$ bin/db-reset test
+$ bundle exec turn/test
+```
