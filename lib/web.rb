@@ -9,8 +9,6 @@ require './lib/resource_history'
 module Shushu
   class Web < Sinatra::Base
 
-    # Start a Unicorn http server and serve Shushu's API via HTTP
-    #
     def self.start
       log(fn: __method__, at: "build")
       Unicorn::Configurator::RACKUP[:port] = Config.port
