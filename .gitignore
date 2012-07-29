@@ -1,5 +1,0 @@
-log/*.log
-*.dump
-.env
-bin/seed
-db/seed.rb
