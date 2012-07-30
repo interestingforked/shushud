@@ -1,3 +1,6 @@
+require 'shushu'
+require 'utils'
+
 module Shushu
   module ResourceOwnership
     extend self

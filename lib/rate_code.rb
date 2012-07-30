@@ -1,3 +1,7 @@
+require 'securerandom'
+require 'shushu'
+require 'utils'
+
 module Shushu
   module RateCode
     extend self

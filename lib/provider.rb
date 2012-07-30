@@ -1,8 +1,9 @@
-require 'shushu'
 require 'digest'
 require 'securerandom'
+require 'shushu'
 
 module Shushu
+  # @author Ryan Smith
   class Provider < Sequel::Model
 
     def self.auth?(id, token)
@@ -18,10 +19,11 @@ module Shushu
     end
 
     def reset_token!(token=nil)
-      token ||= SecureRandom.hex(128)
-      enc_token = self.class.enc(token)
-      update(:token => enc_token)
-      log(:action => "reset_token", :provider_id => self[:id])
+      log(fn: __method__, provider_id: self[:id]) do
+        token ||= SecureRandom.hex(128)
+        enc_token = self.class.enc(token)
+        update(:token => enc_token)
+      end
     end
 
     def disabled?
@@ -29,17 +31,23 @@ module Shushu
     end
 
     def disable!
-      update(:disabled => true)
-      log(:action => "disable_provider", :provider_id => self[:id])
+      log(fn: __method__, provider_id: self[:id]) do
+        update(:disabled => true)
+      end
     end
 
     def enable
-      update(:disabled => false)
-      log(:action => "enable_provider", :provider_id => self[:id])
+      log(fn: __method__, provider_id: self[:id]) do
+        update(:disabled => false)
+      end
     end
 
     def root?
       self[:root] == true
+    end
+
+    def log(data, &blk)
+      Scrolls.log({ns: "provider"}.merge(data), &blk)
     end
 
   end

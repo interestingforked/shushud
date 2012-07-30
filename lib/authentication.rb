@@ -1,7 +1,9 @@
-require './lib/utils'
-require './lib/provider'
+require 'utils'
+require 'provider'
 
 module Shushu
+  # @author Ryan Smith
+  # Intended to be included into Sinatra::Base
   module Authentication
 
     def authenticate_provider
@@ -54,6 +56,10 @@ module Shushu
 
     def ip
       request.env["REMOTE_ADDR"]
+    end
+
+    def log(data, &blk)
+      Scrolls.log({ns: "authentication"}.merge(data), &blk)
     end
 
   end

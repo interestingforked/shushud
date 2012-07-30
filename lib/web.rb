@@ -1,10 +1,10 @@
-require './lib/shushu'
-require './lib/config'
-require './lib/authentication'
-require './lib/billable_event'
-require './lib/rate_code'
-require './lib/resource_ownership'
-require './lib/resource_history'
+require 'shushu'
+require 'config'
+require 'authentication'
+require 'billable_event'
+require 'rate_code'
+require 'resource_ownership'
+require 'resource_history'
 
 module Shushu
   class Web < Sinatra::Base
@@ -101,6 +101,10 @@ module Shushu
                    period: params[:period],
                    product_group: params[:group],
                    product_name: params[:name])
+    end
+
+    def self.log(data, &blk)
+      Scrolls.log({ns: "web"}.merge(data), &blk)
     end
 
   end

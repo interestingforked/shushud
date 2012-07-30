@@ -1,5 +1,5 @@
-require './lib/shushu'
-require './lib/utils'
+require 'shushu'
+require 'utils'
 
 module Shushu
   # @author Ryan Smith
@@ -128,6 +128,10 @@ module Shushu
       else
         s
       end
+    end
+
+    def log(data, &blk)
+      Scrolls.log({ns: "billable_event"}.merge(data), &blk)
     end
 
   end
