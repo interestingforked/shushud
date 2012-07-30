@@ -45,7 +45,7 @@ module Shushu
     end
 
     def ownership_records(owner)
-      DB[:resource_ownership_records].
+      FollowerDB[:resource_ownership_records].
         filter("owner = ?", owner).
         to_a.
         group_by {|r| r[:entity_id]}
@@ -54,7 +54,7 @@ module Shushu
     def events(resid, from, to)
       log(fn: __method__, resid: resid, from: from, to: to) do
         s = "select * from resource_history(?, ?, ?)"
-        DB[s, resid, from, to].map do |event|
+        FollowerDB[s, resid, from, to].map do |event|
           f = [from.to_i, event[:from]].max
           t = [to.to_i, event[:to]].min
           event.merge(from: f, to: t, qty: ((t - f) / 3600))
