@@ -72,6 +72,9 @@ module Utils
   def enc_j(data)
     Yajl::Encoder.encode(data)
   end
+  def self.log(data, &blk)
+    Scrolls.log({ns: "utils"}.merge(data), &blk)
+  end
 
 end
 
