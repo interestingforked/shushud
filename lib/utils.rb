@@ -34,19 +34,6 @@ module Utils
     end
   end
 
-  def start_month(time)
-    Time.mktime(time.year, time.month)
-  end
-
-  def end_month(time)
-    y,m = if time.month == 12
-            [(time.year + 1), 1]
-          else
-            [time.year, (time.month + 1)]
-          end
-    Time.mktime(y, m)
-  end
-
   def txn
     Shushu::DB.transaction {yield}
   end
