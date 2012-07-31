@@ -14,8 +14,7 @@ class BillableEventsApiTest < ShushuTest
 
   def test_open_event
     setup_auth
-    put("/resources/123/billable_events/1", {
-      :entity_id_uuid => SecureRandom.uuid,
+    put("/resources/123/billable_events/#{SecureRandom.uuid}", {
       :qty         => 1,
       :rate_code   => @rate_code[:slug],
       :time        => "2011-01-01 00:00:00",
@@ -33,7 +32,7 @@ class BillableEventsApiTest < ShushuTest
       :time       => "2011-01-01 00:00:00",
       :state      => "open"
     }
-    put("/resources/123/billable_events/1", body)
+    put("/resources/123/billable_events/#{SecureRandom.uuid}", body)
     assert_equal(400, last_response.status)
   end
 
@@ -46,7 +45,7 @@ class BillableEventsApiTest < ShushuTest
       :time       => "2011-01-01 00:00:00",
       :state      => "open"
     }
-    put("/resources/123/billable_events/1", body)
+    put("/resources/123/billable_events/#{SecureRandom.uuid}", body)
     assert_equal(401, last_response.status)
   end
 
@@ -54,8 +53,7 @@ class BillableEventsApiTest < ShushuTest
   def test_open_event_idempotency
     setup_auth
     eid = SecureRandom.uuid
-    put("/resources/app123@heroku.com/billable_events/1", {
-      :entity_id_uuid => eid,
+    put("/resources/app123@heroku.com/billable_events/#{eid}", {
       :qty        => 1,
       :rate_code  => @rate_code[:slug],
       :time       => "2011-01-01 00:00:00 +0000",
@@ -63,8 +61,7 @@ class BillableEventsApiTest < ShushuTest
     })
     assert_equal(201, last_response.status)
 
-    put("/resources/app123@heroku.com/billable_events/1", {
-      :entity_id_uuid => eid,
+    put("/resources/app123@heroku.com/billable_events/#{eid}", {
       :qty        => 1,
       :rate_code  => @rate_code[:slug],
       :time       => "2011-01-01 00:00:00 +0000",
@@ -76,38 +73,38 @@ class BillableEventsApiTest < ShushuTest
 
   def test_close_event
     setup_auth
+    eid = SecureRandom.uuid
     body = {
-      :entity_id_uuid => SecureRandom.uuid,
       :qty        => 1,
       :rate_code  => @rate_code[:slug],
       :time       => "2011-01-01 00:00:00 +0000",
       :state      => "open"
     }
-    put("/resources/123/billable_events/1", body)
+    put("/resources/123/billable_events/#{eid}", body)
     assert_equal(201, last_response.status)
 
-    put("/resources/123/billable_events/1",
+    put("/resources/123/billable_events/#{eid}",
          body.merge({:state => "close", :time => "2011-01-01 00:00:01 +0000"}))
     assert_equal(201, last_response.status)
   end
 
   def test_idempotent_close
     setup_auth
+    eid = SecureRandom.uuid
     body = {
-      :entity_id_uuid => SecureRandom.uuid,
       :qty        => 1,
       :rate_code  => @rate_code[:slug],
       :time       => "2011-01-01 00:00:00 +0000",
       :state      => "open"
     }
-    put("/resources/123/billable_events/1", body)
+    put("/resources/123/billable_events/#{eid}", body)
     assert_equal(201, last_response.status)
 
-    put("/resources/123/billable_events/1",
+    put("/resources/123/billable_events/#{eid}",
          body.merge({:state => "close", :time => "2011-01-01 00:00:01 +0000"}))
     assert_equal(201, last_response.status)
 
-    put("/resources/123/billable_events/1",
+    put("/resources/123/billable_events/#{eid}",
          body.merge({:state => "close", :time => "2011-01-01 00:00:01 +0000"}))
     assert_equal(200, last_response.status)
   end
