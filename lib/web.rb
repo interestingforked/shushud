@@ -36,6 +36,10 @@ module Shushu
       content_type(:json)
     end
 
+    after do
+      Utils.heartbeat
+    end
+
     error do
       e = env['sinatra.error']
       log({level: "error", exception: e.message}.merge(params))

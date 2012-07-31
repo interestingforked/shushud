@@ -1,5 +1,5 @@
 require 'cgi'
-require './lib/shushu'
+require 'shushu'
 
 module Utils
   extend self
@@ -18,16 +18,32 @@ module Utils
     end
   end
 
+  def heartbeat
+    if @heartbeat
+      @heartbeat.update {|n| n + 1}
+    else
+      @heartbeat = Atomic.new(0)
+      Thread.new do
+        loop do
+          n = @heartbeat.swap(0)
+          log(fn: "heartbeat", at: "emit", received: n)
+          sleep(1)
+        end
+      end
+      @heartbeat.update {|n| n + 1}
+    end
+  end
+
   def start_month(time)
     Time.mktime(time.year, time.month)
   end
 
   def end_month(time)
     y,m = if time.month == 12
-      [(time.year + 1), 1]
-    else
-      [time.year, (time.month + 1)]
-    end
+            [(time.year + 1), 1]
+          else
+            [time.year, (time.month + 1)]
+          end
     Time.mktime(y, m)
   end
 
