@@ -92,7 +92,7 @@ module Shushu
         f = day.to_time
         t = f + (60*60*24)
         summaries(resid, f, t).map do |s|
-          s.merge(avg: s[:qty] / 24.0)
+          s.merge(avg: {day.to_s => s[:qty] / 24.0})
         end
       end.flatten.group_by {|s| s[:product_name]}.map do |name, sums|
         {resource_id: sums.sample[:resource_id],
