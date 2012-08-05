@@ -98,7 +98,7 @@ module Shushu
         {resource_id: sums.sample[:resource_id],
           product_group: sums.sample[:product_group],
           product_name: name,
-          qty: sums.map {|s| s[:qty]}.reduce(:+),
+          qty: sums.map {|s| s[:qty]}.reduce(:+).to_f,
           daily_avgs: sums.map {|s| s[:avg]}}
       end
     end
