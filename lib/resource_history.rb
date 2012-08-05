@@ -8,7 +8,8 @@ module Shushu
   # Shushud's reporting function. Combines ownerships and billable events.
   module ResourceHistory
     extend self
-    DAY = [60, 60, 24].reduce(:*)
+    HOURS_DAY = 60*24
+    SECONDS_DAY = 60*HOURS_DAY
 
     def fetch(owner, from, to)
       [200, Utils.enc_j(resource_histories(owner, from, to))]
@@ -91,9 +92,9 @@ module Shushu
     def summaries_w_avg(resid, from, to)
       from.to_date.upto(to.to_date).map do |day|
         f = day.to_time
-        t = f + DAY
+        t = f + SECONDS_DAY
         summaries(resid, f, t).map do |s|
-          s.merge(avg_qty: s[:qty] / DAY)
+          s.merge(avg_qty: s[:qty] / HOURS_DAY)
         end
       end
     end
