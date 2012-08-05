@@ -92,8 +92,14 @@ module Shushu
         f = day.to_time
         t = f + (60*60*24)
         summaries(resid, f, t).map do |s|
-          s.merge(avg_qty: s[:qty] / 24.0)
+          s.merge(avg: s[:qty] / 24.0)
         end
+      end.group_by {|s| s[:product_name]}.map do |name, sums|
+        {resource_id: sums.sample[:resource_id],
+          product_group: sums.sample[:product_group],
+          product_name: name,
+          qty: sums.map {|s| s[:qty]}.reduce(:+),
+          daily_avgs: sums.map {|s| s[:avg]}}
       end
     end
 
