@@ -94,7 +94,7 @@ module Shushu
         summaries(resid, f, t).map do |s|
           s.merge(avg: s[:qty] / 24.0)
         end
-      end.flattent.group_by {|s| s[:product_name]}.map do |name, sums|
+      end.flatten.group_by {|s| s[:product_name]}.map do |name, sums|
         {resource_id: sums.sample[:resource_id],
           product_group: sums.sample[:product_group],
           product_name: name,
