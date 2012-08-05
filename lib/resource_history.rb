@@ -1,18 +1,21 @@
 require 'shushu'
 require 'utils'
+require 'date'
+require 'time'
 
 module Shushu
   # @author Ryan Smith
   # Shushud's reporting function. Combines ownerships and billable events.
   module ResourceHistory
     extend self
+    DAY = [60, 60, 24].reduce(:*)
 
     def fetch(owner, from, to)
       [200, Utils.enc_j(resource_histories(owner, from, to))]
     end
 
-    def summary(owner, from, to)
-      [200, Utils.enc_j(resource_summaries(owner, from, to))]
+    def summary(owner, from, to, w_avg=false)
+        [200, Utils.enc_j(resource_summaries(owner, from, to, w_avg))]
     end
 
     private
@@ -33,9 +36,15 @@ module Shushu
       end
     end
 
-    def resource_summaries(owner, from, to)
+    def resource_summaries(owner, from, to, w_avg)
       ownerships(owner, from, to).map do |ownership|
-        summaries(ownership[:resource_id], ownership[:from], ownership[:to])
+        if w_avg
+          summaries_w_avg(ownership[:resource_id],
+                              ownership[:from], ownership[:to])
+        else
+          summaries(ownership[:resource_id],
+                     ownership[:from], ownership[:to])
+        end
       end
     end
 
@@ -76,6 +85,16 @@ module Shushu
       log(fn: __method__, resid: resid, from: from, to: to) do
         s = "select * from resource_summary(?, ?, ?)"
         FollowerDB[s, resid, from, to].to_a
+      end
+    end
+
+    def summaries_w_avg(resid, from, to)
+      from.to_date.upto(to.to_date).map do |day|
+        f = day.to_time
+        t = f + DAY
+        summaries(resid, f, t).map do |s|
+          s.merge(avg_qty: s[:qty] / DAY)
+        end
       end
     end
 
