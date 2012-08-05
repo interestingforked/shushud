@@ -11,6 +11,10 @@ module Shushu
       [200, Utils.enc_j(resource_histories(owner, from, to))]
     end
 
+    def summary(owner, from, to)
+      [200, Utils.enc_j(resource_summaries(owner, from, to)]
+    end
+
     private
 
     def overlaps?(a, b, c, d)
@@ -26,6 +30,12 @@ module Shushu
           dyno_hours: qty,
           adjusted_dyno_hours: (qty - [750, qty].min),
           events: events}
+      end
+    end
+
+    def resource_summaries(owner, from, to)
+      ownerships(owner, from, to).map do |ownership|
+        summaries(ownership[:resource_id], ownership[:from], ownership[:to])
       end
     end
 
@@ -59,6 +69,13 @@ module Shushu
           t = [to.to_i, event[:to]].min
           event.merge(from: f, to: t, qty: ((t - f) / 3600))
         end
+      end
+    end
+
+    def summaries(resid, from, to)
+      log(fn: __method__, resid: resid, from: from, to: to) do
+        s = "select * from resource_summary(?, ?, ?)"
+        FollowerDB[s, resid, from, to]
       end
     end
 
