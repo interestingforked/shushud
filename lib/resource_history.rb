@@ -94,10 +94,15 @@ module Shushu
         summaries(resid, f, t).map do |s|
           s.merge(avg: {day.to_s => s[:qty] / 24.0})
         end
-      end.flatten.group_by {|s| s[:product_name]}.map do |name, sums|
+      end.flatten.group_by do |s|
+        [:product_group, :product_name, :description].map do |t|
+          s[t]
+        end.join("-")
+      end.map do |name, sums|
         {resource_id: sums.sample[:resource_id],
           product_group: sums.sample[:product_group],
-          product_name: name,
+          product_name: sums.sample[:product_name],
+          description: sums.sample[:description],
           qty: sums.map {|s| s[:qty]}.reduce(:+).to_f,
           daily_avgs: sums.map {|s| s[:avg]}}
       end
