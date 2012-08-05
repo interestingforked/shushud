@@ -64,6 +64,12 @@ module Shushu
                              Utils.dec_time(params[:to]))
     end
 
+    get "/owners/:owner_id/resource_summaries" do
+      ResourceHistory.summary(params[:owner_id],
+                               Utils.dec_time(params[:from]),
+                               Utils.dec_time(params[:to]))
+    end
+
     put "/resources/:hid/billable_events/:eid" do
       BillableEvent.
         handle_in(provider_id: session[:provider_id],
