@@ -12,7 +12,7 @@ module Shushu
     end
 
     def summary(owner, from, to)
-      [200, Utils.enc_j(resource_summaries(owner, from, to)]
+      [200, Utils.enc_j(resource_summaries(owner, from, to))]
     end
 
     private
