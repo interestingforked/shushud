@@ -75,7 +75,7 @@ module Shushu
     def summaries(resid, from, to)
       log(fn: __method__, resid: resid, from: from, to: to) do
         s = "select * from resource_summary(?, ?, ?)"
-        FollowerDB[s, resid, from, to]
+        FollowerDB[s, resid, from, to].to_a
       end
     end
 
