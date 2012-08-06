@@ -92,9 +92,7 @@ module Shushu
         f = day.to_time
         # if to is today, we don't want to compute into the future.
         t = [(f + (60*60*24)), Time.now].min
-        summaries(resid, f, t).map do |s|
-          s.merge(avg: {day.to_s => s[:qty] / 24.0})
-        end
+        summaries(resid, f, t)
       end.flatten.group_by do |s|
         if s[:product_name] == "run"
           [:product_group, :product_name, :description].map do |t|
@@ -110,7 +108,7 @@ module Shushu
           product_name: sums.sample[:product_name],
           description: sums.sample[:description],
           qty: sums.map {|s| s[:qty]}.reduce(:+).to_f,
-          daily_avgs: sums.map {|s| s[:avg]}}
+          daily_avgs: sums.map {|s| s[:qty] / 24.0}}
       end.reduce({}) do |ret, col|
         ret[resid] ||= []
         ret[resid] << col
