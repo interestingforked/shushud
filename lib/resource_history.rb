@@ -50,7 +50,7 @@ module Shushu
     def ownerships(owner, from, to)
       ownership_records(owner).map do |eid, col|
         open = col.find {|c| c[:state] == 1}
-        closed = col.find {|c| c[:state] == 0} || {time: Time.now}
+        closed = col.find {|c| c[:state] == 0} || {time: to}
         if overlaps?(from, to, open[:time], closed[:time])
           {entity_id: eid,
             resource_id: open[:hid],
