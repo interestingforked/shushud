@@ -106,7 +106,8 @@ module Shushu
           qty: sums.map {|s| s[:qty]}.reduce(:+).to_f,
           daily_avgs: sums.map {|s| s[:avg]}}
       end.reduce({}) do |ret, col|
-        ret[resid] = col
+        ret[resid] ||= []
+        ret[resid] << col
         ret
       end
     end
