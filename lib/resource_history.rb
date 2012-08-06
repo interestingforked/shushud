@@ -107,6 +107,7 @@ module Shushu
           daily_avgs: sums.map {|s| s[:avg]}}
       end.reduce({}) do |ret, col|
         ret[resid] = col
+        ret
       end
     end
 
