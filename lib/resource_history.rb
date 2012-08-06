@@ -90,7 +90,7 @@ module Shushu
     def summaries_w_avg(resid, from, to)
       from.to_date.upto(to.to_date).map do |day|
         f = day.to_time
-        t = f + (60*60*24)
+        t = [(f + (60*60*24)), Time.now].min
         summaries(resid, f, t).map do |s|
           s.merge(avg: {day.to_s => s[:qty] / 24.0})
         end
