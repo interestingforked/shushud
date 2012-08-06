@@ -13,8 +13,8 @@ module Shushu
       [200, Utils.enc_j(resource_histories(owner, from, to))]
     end
 
-    def summary(owner, from, to, w_avg=false)
-        [200, Utils.enc_j(resource_summaries(owner, from, to, w_avg))]
+    def summary(owner, from, to, w_avg=true)
+      [200, Utils.enc_j(resource_summaries(owner, from, to, w_avg))]
     end
 
     private
