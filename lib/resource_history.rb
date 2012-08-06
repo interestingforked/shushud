@@ -96,9 +96,15 @@ module Shushu
           s.merge(avg: {day.to_s => s[:qty] / 24.0})
         end
       end.flatten.group_by do |s|
-        [:product_group, :product_name, :description].map do |t|
-          s[t]
-        end.join("-")
+        if s[:product_name] == "run"
+          [:product_group, :product_name, :description].map do |t|
+            s[t]
+          end.join("-")
+        else
+          [:product_group, :product_name].map do |t|
+            s[t]
+          end.join("-")
+        end
       end.map do |name, sums|
         {product_group: sums.sample[:product_group],
           product_name: sums.sample[:product_name],
