@@ -1,6 +1,9 @@
 require 'cgi'
 require 'shushu'
 
+require 'metriks'
+require 'metriks/reporter/librato_metrics'
+
 module Utils
   extend self
 
@@ -15,6 +18,19 @@ module Utils
       str
     else
       raise(ArgumentError, "expected #{str} to be UUIDv4")
+    end
+  end
+
+  def start_metriks
+    if @reporter.nil?
+      email = Config.librato_email
+      token = Config.librato_token
+      opts = {prefix: APP_NAME,
+        interval: 30, source: "#{APP_NAME}.herokuapp.com"}
+      if email && token
+        @reporter = Metriks::Reporter::LibratoMetrics.new(email, token, opts)
+        @reporter.start
+      end
     end
   end
 

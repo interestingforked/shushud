@@ -6,8 +6,11 @@ require 'rate_code'
 require 'resource_ownership'
 require 'resource_history'
 
+require 'metriks'
+
 module Shushu
   class Web < Sinatra::Base
+    include Authentication
 
     def self.start
       log(fn: __method__, at: "build")
@@ -23,21 +26,28 @@ module Shushu
           Kernel.exit!(0)
         end
       end
+      Utils.start_metriks
       log(fn: __method__, at: "run", port: Config.port)
       @server.start.join
     end
 
-    include Authentication
-    register Sinatra::Instrumentation
-    instrument_routes
+    def self.route(verb, action, *)
+      condition {@instrument_action = action}
+      super
+    end
 
     before do
+      @start_request = Time.now
       authenticate_provider
       content_type(:json)
     end
 
     after do
       Utils.heartbeat
+      if a = @instrument_action
+        r = a.gsub(":","").gsub(/[^A-Za-z0-9]/, '-')[1..-1]
+        Metriks.timer(r).update(Time.now - @start_request)
+      end
     end
 
     error do

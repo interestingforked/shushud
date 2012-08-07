@@ -8,9 +8,10 @@ gem "rack", "1.4.1"
 gem "sinatra", "1.3.2"
 gem "sequel", "3.35.0"
 gem "yajl-ruby", "1.1.0", :require => "yajl"
-gem "scrolls", "0.2.1"
-gem "instruments","0.0.9"
+gem "metriks"
+gem "scrolls", git: "https://github.com/asenchi/scrolls.git"
 gem "atomic", "1.0.1"
+
 
 group :test do
   gem "minitest"

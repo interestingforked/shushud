@@ -1,22 +1,33 @@
+GIT
+  remote: https://github.com/asenchi/scrolls.git
+  revision: 741a206b8cee6c4ea98d32f9855e3f9deab2e25a
+  specs:
+    scrolls (0.2.1)
+
 GEM
   remote: http://rubygems.org/
   specs:
-    ansi (1.4.2)
+    ansi (1.4.3)
     archive-tar-minitar (0.5.2)
     atomic (1.0.1)
+    avl_tree (1.1.3)
     columnize (0.3.6)
-    instruments (0.0.9)
+    hitimes (1.1.1)
     kgio (2.7.4)
     linecache19 (0.5.12)
       ruby_core_source (>= 0.1.4)
-    minitest (2.11.4)
+    metriks (0.9.9.1)
+      atomic (~> 1.0)
+      avl_tree (~> 1.1.2)
+      hitimes (~> 1.1)
+    minitest (3.3.0)
     pg (0.13.2)
     rack (1.4.1)
     rack-protection (1.2.0)
       rack
     rack-test (0.6.1)
       rack (>= 1.0)
-    raindrops (0.8.0)
+    raindrops (0.10.0)
     ruby-debug-base19 (0.11.25)
       columnize (>= 0.3.1)
       linecache19 (>= 0.5.11)
@@ -27,14 +38,13 @@ GEM
       ruby-debug-base19 (>= 0.11.19)
     ruby_core_source (0.1.5)
       archive-tar-minitar (>= 0.5.2)
-    scrolls (0.2.1)
     sequel (3.35.0)
     sinatra (1.3.2)
       rack (~> 1.3, >= 1.3.6)
       rack-protection (~> 1.2)
       tilt (~> 1.3, >= 1.3.3)
     tilt (1.3.3)
-    turn (0.9.4)
+    turn (0.9.6)
       ansi
     unicorn (4.2.1)
       kgio (~> 2.6)
@@ -47,13 +57,13 @@ PLATFORMS
 
 DEPENDENCIES
   atomic (= 1.0.1)
-  instruments (= 0.0.9)
+  metriks
   minitest
   pg (= 0.13.2)
   rack (= 1.4.1)
   rack-test
   ruby-debug19
-  scrolls (= 0.2.1)
+  scrolls!
   sequel (= 3.35.0)
   sinatra (= 1.3.2)
   turn
