@@ -1,4 +1,5 @@
 require 'cgi'
+require 'config'
 require 'shushu'
 
 require 'metriks'
@@ -23,8 +24,8 @@ module Utils
 
   def start_metriks
     if @reporter.nil?
-      email = Config.librato_email
-      token = Config.librato_token
+      email = Shushu::Config.librato_email
+      token = Shushu::Config.librato_token
       opts = {prefix: APP_NAME,
         interval: 30, source: "#{APP_NAME}.herokuapp.com"}
       if email && token
