@@ -26,7 +26,6 @@ module Shushu
           Kernel.exit!(0)
         end
       end
-      Utils.start_metriks
       log(fn: __method__, at: "run", port: Config.port)
       @server.start.join
     end
@@ -44,10 +43,7 @@ module Shushu
 
     after do
       Utils.heartbeat
-      if a = @instrument_action
-        r = a.gsub(":","").gsub(/[^A-Za-z0-9]/, '-')[1..-1]
-        Metriks.timer(r).update(Time.now - @start_request)
-      end
+      Utils.time(@instrument_action, Time.now - @start_request)
     end
 
     error do

@@ -22,16 +22,20 @@ module Utils
     end
   end
 
-  def start_metriks
-    if @reporter.nil?
-      email = Shushu::Config.librato_email
-      token = Shushu::Config.librato_token
-      opts = {prefix: Shushu::APP_NAME,
-        interval: 30, source: "#{Shushu::APP_NAME}.herokuapp.com"}
-      if email && token
-        @reporter = Metriks::Reporter::LibratoMetrics.new(email, token, opts)
-        @reporter.start
+  def time(name, t)
+    if name
+      name = name.gsub(":","").gsub(/[^A-Za-z0-9]/, '-')[1..-1]
+      if @reporter.nil?
+        email = Shushu::Config.librato_email
+        token = Shushu::Config.librato_token
+        opts = {prefix: Shushu::APP_NAME,
+          interval: 30, source: "#{Shushu::APP_NAME}.herokuapp.com"}
+        if email && token
+          @reporter = Metriks::Reporter::LibratoMetrics.new(email, token, opts)
+          @reporter.start
+        end
       end
+      Metriks.timer(name).update(t)
     end
   end
 
