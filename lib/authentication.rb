@@ -7,24 +7,21 @@ module Shushu
   module Authentication
 
     def authenticate_provider
-      log(fn: __method__) do
-        # Allow unauthenticated access for things like
-        # pingdom and healthchecks.
-        return if head_request?
-        unless authenticated?
-          if proper_request?
-            id, token = *auth.credentials
-            if Provider.auth?(id, token)
-              log(fn: __method__, at: "authenticated", provider_id: id)
-              session[:provider_id] = params[:provider_id] = id
-            else
-              log(fn: __method__, at: "unauthenticated", id: id, ip: ip)
-              unauthenticated!
-            end
+      # Allow unauthenticated access for things like
+      # pingdom and healthchecks.
+      return if head_request?
+      unless authenticated?
+        if proper_request?
+          id, token = *auth.credentials
+          if Provider.auth?(id, token)
+            session[:provider_id] = params[:provider_id] = id
           else
-            log(fn: __method__, at: "bad-request", ip: ip)
+            log(fn: __method__, at: "unauthenticated", id: id, ip: ip)
             unauthenticated!
           end
+        else
+          log(fn: __method__, at: "bad-request", ip: ip)
+          unauthenticated!
         end
       end
     end
