@@ -26,8 +26,8 @@ module Utils
     if @reporter.nil?
       email = Shushu::Config.librato_email
       token = Shushu::Config.librato_token
-      opts = {prefix: APP_NAME,
-        interval: 30, source: "#{APP_NAME}.herokuapp.com"}
+      opts = {prefix: Shushu::APP_NAME,
+        interval: 30, source: "#{Shushu::APP_NAME}.herokuapp.com"}
       if email && token
         @reporter = Metriks::Reporter::LibratoMetrics.new(email, token, opts)
         @reporter.start
