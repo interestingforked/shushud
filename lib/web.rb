@@ -64,7 +64,9 @@ module Shushu
     end
 
     get "/heartbeat" do
-      [200, Utils.enc_j(alive: Time.now)]
+      log(measure: true, fn: "heartbeat") do
+        [200, Utils.enc_j(alive: Time.now)]
+      end
     end
 
     get "/owners/:owner_id/resource_histories" do
