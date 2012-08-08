@@ -6,8 +6,6 @@ require 'rate_code'
 require 'resource_ownership'
 require 'resource_history'
 
-require 'metriks'
-
 module Shushu
   class Web < Sinatra::Base
     include Authentication
@@ -64,9 +62,7 @@ module Shushu
     end
 
     get "/heartbeat" do
-      log(measure: true, fn: "heartbeat") do
-        [200, Utils.enc_j(alive: Time.now)]
-      end
+      [200, Utils.enc_j(alive: Time.now)]
     end
 
     get "/owners/:owner_id/resource_histories" do

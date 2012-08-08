@@ -2,9 +2,6 @@ require 'cgi'
 require 'config'
 require 'shushu'
 
-require 'metriks'
-require 'metriks/reporter/librato_metrics'
-
 module Utils
   extend self
 
@@ -23,26 +20,13 @@ module Utils
   end
 
   def count(name)
-    start_reporter unless @reporter
-    Metriks.meter(name).mark
+    log(measure: true, at: name)
   end
 
   def time(name, t)
-    start_reporter unless @reporter
     if name
       name = name.gsub(":","").gsub(/[^A-Za-z0-9]/, '-')[1..-1]
-      Metriks.timer(name).update(t)
-    end
-  end
-
-  def start_reporter
-    email = Shushu::Config.librato_email
-    token = Shushu::Config.librato_token
-    opts = {prefix: Shushu::APP_NAME,
-      interval: 60, source: "#{Shushu::APP_NAME}.herokuapp.com"}
-    if email && token
-      @reporter = Metriks::Reporter::LibratoMetrics.new(email, token, opts)
-      @reporter.start
+      log(measure: true, fn: name, elapsed: t)
     end
   end
 
