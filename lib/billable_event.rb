@@ -71,33 +71,37 @@ module Shushu
     end
 
     def open_event(args)
-      DB[:billable_events].
-        returning(:entity_id_uuid).
-        insert(provider_id: args[:provider_id],
-                entity_id_uuid: Utils.validate_uuid(args[:entity_id_uuid]),
-                rate_code_id: resolve_rc(args[:rate_code]),
-                hid: args[:hid],
-                qty: args[:qty],
-                product_name: args[:product_name],
-                description: trim_desc(args[:description]),
-                time: args[:time],
-                created_at: Time.now,
-                state: OPEN).pop
+      log(measure: true, fn: [args[:provider_id], __method__].join("-")) do
+        DB[:billable_events].
+          returning(:entity_id_uuid).
+          insert(provider_id: args[:provider_id],
+                  entity_id_uuid: Utils.validate_uuid(args[:entity_id_uuid]),
+                  rate_code_id: resolve_rc(args[:rate_code]),
+                  hid: args[:hid],
+                  qty: args[:qty],
+                  product_name: args[:product_name],
+                  description: trim_desc(args[:description]),
+                  time: args[:time],
+                  created_at: Time.now,
+                  state: OPEN).pop
+      end
     end
 
     def close_event(open, args)
-      DB[:closed_events].
-        returning(:entity_id).
-        insert(provider_id: args[:provider_id],
-                entity_id: Utils.validate_uuid(args[:entity_id_uuid]),
-                rate_code_id: open[:rate_code_id],
-                resource_id: open[:hid],
-                qty: open[:qty],
-                product_name: open[:product_name],
-                description: open[:description],
-                from: open[:time],
-                to: args[:time],
-                created_at: Time.now).pop
+      log(measure: true, fn: [args[:provider_id], __method__].join("-")) do
+        DB[:closed_events].
+          returning(:entity_id).
+          insert(provider_id: args[:provider_id],
+                  entity_id: Utils.validate_uuid(args[:entity_id_uuid]),
+                  rate_code_id: open[:rate_code_id],
+                  resource_id: open[:hid],
+                  qty: open[:qty],
+                  product_name: open[:product_name],
+                  description: open[:description],
+                  from: open[:time],
+                  to: args[:time],
+                  created_at: Time.now).pop
+      end
     end
 
     def resolve_rc(slug)
