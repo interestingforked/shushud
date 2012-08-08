@@ -49,10 +49,12 @@ module Shushu
     error do
       e = env['sinatra.error']
       log({level: "error", exception: e.message}.merge(params))
+      Utils.count("web-error")
       [500, Utils.enc_j(msg: "un-handled error")]
     end
 
     not_found do
+      Utils.count("web-not-found")
       [404, Utils.enc_j(msg: "endpoint not found")]
     end
 
