@@ -28,15 +28,21 @@ module Shushu
     private
 
     def create_record(provider_id, account_id, resid, state, time, eid)
-      DB[:resource_ownership_records].
-        returning.
-        insert(provider_id: provider_id,
-                owner: account_id,
-                hid: resid,
-                state: state,
-                time: time,
-                entity_id: eid,
-                created_at: Time.now).pop
+      log(measure: true, fn: [provider_id, __method__].join("-")) do
+        DB[:resource_ownership_records].
+          returning.
+          insert(provider_id: provider_id,
+                  owner: account_id,
+                  hid: resid,
+                  state: state,
+                  time: time,
+                  entity_id: eid,
+                  created_at: Time.now).pop
+      end
+    end
+
+    def log(data, &blk)
+      Scrolls.log({ns: "resource_ownership"}.merge(data), &blk)
     end
 
   end
