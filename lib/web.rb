@@ -42,6 +42,7 @@ module Shushu
     end
 
     after do
+      Utils.count("web-success")
       Utils.heartbeat
       Utils.time(@instrument_action, Time.now - @start_request)
     end
