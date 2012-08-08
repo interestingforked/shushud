@@ -25,7 +25,11 @@ module Utils
 
   def time(name, t)
     if name
-      name = name.gsub(":","").gsub(/[^A-Za-z0-9]/, '-')[1..-1]
+      name.
+        gsub!(/\/:\w+/,'').        #remove param names from path
+        gsub!("/","-").            #remove slash from path
+        gsub!(/[^A-Za-z0-9]/, ''). #only keep subset of chars
+        slice(-1, 1)               #remove the - at the front of the str
       log(measure: true, fn: name, elapsed: t)
     end
   end
