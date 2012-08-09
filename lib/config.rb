@@ -14,8 +14,5 @@ module Shushu
     def database_url; env!("DATABASE_URL"); end
     def follower_database_url; env!("FOLLOWER_DATABASE_URL"); end
     def port; env!("PORT").to_i; end
-    def librato_email; env("LIBRATO_EMAIL"); end
-    def librato_token; env("LIBRATO_TOKEN"); end
-
   end
 end
