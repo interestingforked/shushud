@@ -29,24 +29,8 @@ module Utils
         gsub!(/\/:\w+/,'').        #remove param names from path
         gsub!("/","-").            #remove slash from path
         gsub!(/[^A-Za-z0-9]/, ''). #only keep subset of chars
-        slice(-1, 1)               #remove the - at the front of the str
+        slice!(-1, 1)              #remove the - at the front of the str
       log(measure: true, fn: name, elapsed: t)
-    end
-  end
-
-  def heartbeat
-    if @heartbeat
-      @heartbeat.update {|n| n + 1}
-    else
-      @heartbeat = Atomic.new(0)
-      Thread.new do
-        loop do
-          n = @heartbeat.swap(0)
-          log(fn: "heartbeat", at: "emit", received: n)
-          sleep(1)
-        end
-      end
-      @heartbeat.update {|n| n + 1}
     end
   end
 
