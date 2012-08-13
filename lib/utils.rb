@@ -32,7 +32,7 @@ module Utils
   def time(name, t)
     if name
       name.
-        gsub(/\/:\w+/,'').        #remove param names from path
+        gsub(/\/:\w+/,'-').        #remove param names from path
         gsub("/","-").            #remove slash from path
         gsub(/[^A-Za-z0-9]/, ''). #only keep subset of chars
         tap {|res| log(measure: true, fn: res, elapsed: t)}
