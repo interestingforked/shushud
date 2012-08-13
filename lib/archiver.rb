@@ -21,7 +21,7 @@ module Shushu
     def cp_events(time, schema)
       log(fn: __method__, schema: schema) do
         sql = "select * into #{schema}.closed_events from closed_events "
-        sql << "where \"to\" < '#{time}'::timestamptz - '1 month'::interval"
+        sql << "where \"to\" < '#{time}'::timestamptz"
         Utils.exec(sql)
       end
     end
@@ -29,7 +29,7 @@ module Shushu
     def rm_events!(time)
       log(fn: __method__) do
         sql = "delete from public.closed_events "
-        sql << "where \"to\" < '#{time}'::timestamptz - '1 month'::interval"
+        sql << "where \"to\" < '#{time}'::timestamptz"
         Utils.exec(sql)
       end
     end

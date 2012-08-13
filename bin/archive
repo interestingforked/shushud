@@ -9,6 +9,7 @@ if month and year
   t = Time.mktime(year, month)
 else
   t = Time.now.to_date.prev_month
+  t = Time.mktime(t.year, t.month)
 end
 
 Shushu::Archiver.archive_events!(t)
