@@ -23,14 +23,19 @@ module Utils
     log(measure: true, at: name)
   end
 
+  def count_status(status)
+    if prefix = status.to_s.match(/\d\d/)[0]
+      log(measure: true, at: "web-#{prefix}")
+    end
+  end
+
   def time(name, t)
     if name
       name.
-        gsub!(/\/:\w+/,'').        #remove param names from path
-        gsub!("/","-").            #remove slash from path
-        gsub!(/[^A-Za-z0-9]/, ''). #only keep subset of chars
-        slice!(-1, 1)              #remove the - at the front of the str
-      log(measure: true, fn: name, elapsed: t)
+        gsub(/\/:\w+/,'').        #remove param names from path
+        gsub("/","-").            #remove slash from path
+        gsub(/[^A-Za-z0-9]/, ''). #only keep subset of chars
+        tap {|res| log(measure: true, fn: res, elapsed: t)}
     end
   end
 

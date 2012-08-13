@@ -40,7 +40,7 @@ module Shushu
     end
 
     after do
-      Utils.count("web-success")
+      Utils.count_status(response.status)
       Utils.time(@instrument_action, Time.now - @start_request)
     end
 
