@@ -34,7 +34,7 @@ module Utils
       name.
         gsub(/\/:\w+/,'-').        #remove param names from path
         gsub("/","-").            #remove slash from path
-        gsub(/[^A-Za-z0-9]/, ''). #only keep subset of chars
+        gsub(/[^A-Za-z0-9\-\_]/, ''). #only keep subset of chars
         tap {|res| log(measure: true, fn: res, elapsed: t)}
     end
   end
