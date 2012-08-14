@@ -11,13 +11,13 @@ module Shushu
     def handle_in(state, provider_id, account_id, resid, time, eid)
       case state
       when "active"
-        if create_record(provider_id, account_id, resid, ACTIVE, time, eid)
+        if create_ownership(provider_id, account_id, resid, ACTIVE, time, eid)
           [200, Utils.enc_j(msg: "OK")]
         else
           [400, Utils.enc_j(error: "invalid args")]
         end
       when "inactive"
-        if create_record(provider_id, account_id, resid, INACTIVE, time, eid)
+        if create_ownership(provider_id, account_id, resid, INACTIVE, time, eid)
           [200, Utils.enc_j(msg: "OK")]
         else
           [400, Utils.enc_j(error: "invalid args")]
@@ -27,7 +27,7 @@ module Shushu
 
     private
 
-    def create_record(provider_id, account_id, resid, state, time, eid)
+    def create_ownership(provider_id, account_id, resid, state, time, eid)
       log(measure: true, fn: [provider_id, __method__].join("-")) do
         DB[:resource_ownership_records].
           returning.
