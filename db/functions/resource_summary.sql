@@ -38,7 +38,7 @@ select
   COALESCE(closed_events.product_name, rate_codes.product_name) as product_name,
   (CASE WHEN closed_events.product_name = 'run' THEN closed_events.description ELSE '' END) as description,
   sum(
-    extract(epoch from "to")
+    extract(epoch from least("to", $3))
     -
     extract(epoch from greatest("from", $2)))::numeric / 3600 as qty,
   count(*)
