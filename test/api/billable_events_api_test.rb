@@ -30,7 +30,8 @@ class BillableEventsApiTest < ShushuTest
     body = {
       :qty        => 1,
       :time       => "2011-01-01 00:00:00",
-      :state      => "open"
+      :state      => "open",
+      :rate_code  => ""
     }
     put("/resources/123/billable_events/#{SecureRandom.uuid}", body)
     assert_equal(400, last_response.status)

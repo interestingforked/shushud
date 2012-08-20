@@ -113,7 +113,8 @@ module Shushu
     end
 
     def missing_args(args)
-      required_args(args[:state]) - args.reject {|k,v| v.nil?}.keys
+      required_args(args[:state]) -
+        args.reject {|k,v| v.nil? || v.to_s.length.zero?}.keys
     end
 
     def required_args(state)
