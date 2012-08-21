@@ -21,7 +21,7 @@ module Shushu
           end
         else
           log(fn: __method__, at: "bad-request", ip: ip)
-          unauthenticated!
+          bad_request!
         end
       end
     end
@@ -43,12 +43,12 @@ module Shushu
     end
 
     def bad_request!
-      throw(:halt, [400, Utils.enc_j("Bad Request")])
+      throw(:halt, [400, Utils.enc_j({msg: "Bad Request"})])
     end
 
     def unauthenticated!(realm="shushu.heroku.com")
       response['WWW-Authenticate'] = %(Basic realm="Restricted Area")
-      throw(:halt, [401, {msg: "Not authorized"}])
+      throw(:halt, [401, Utils.enc_j({msg: "Provider Disabled"})])
     end
 
     def ip
