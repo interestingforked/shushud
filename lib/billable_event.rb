@@ -77,7 +77,7 @@ module Shushu
           insert(provider_id: args[:provider_id],
                   entity_id_uuid: Utils.validate_uuid(args[:entity_id_uuid]),
                   rate_code_id: resolve_rc(args[:rate_code]),
-                  hid: args[:hid],
+                  resource_id: args[:resource_id],
                   qty: args[:qty],
                   product_name: args[:product_name],
                   description: trim_desc(args[:description]),
@@ -94,7 +94,7 @@ module Shushu
           insert(provider_id: args[:provider_id],
                   entity_id: Utils.validate_uuid(args[:entity_id_uuid]),
                   rate_code_id: open[:rate_code_id],
-                  resource_id: open[:hid],
+                  resource_id: open[:resource_id],
                   qty: open[:qty],
                   product_name: open[:product_name],
                   description: open[:description],
@@ -120,7 +120,7 @@ module Shushu
     def required_args(state)
       case state.to_s
       when "open"
-        [:provider_id, :rate_code, :entity_id_uuid, :hid, :qty, :time, :state]
+        [:provider_id,:rate_code,:entity_id_uuid,:resource_id,:qty,:time,:state]
       when "close"
         [:provider_id, :entity_id_uuid, :state, :time]
       end

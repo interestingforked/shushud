@@ -44,9 +44,8 @@ Sequel.migration do
       foreign_key :rate_code_id, :rate_codes
     end
     add_column :billable_events, :created_at,         "timestamptz"
-    add_column :billable_events, :entity_id,          "varchar(255)"
     add_column :billable_events, :entity_id_uuid,     "uuid"
-    add_column :billable_events, :hid,                "varchar(255)"
+    add_column :billable_events, :resource_id,        "varchar(255)"
     add_column :billable_events, :qty,                "int"
     add_column :billable_events, :product_name,       "varchar(255)"
     add_column :billable_events, :description,        "varchar(255)"

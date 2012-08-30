@@ -10,7 +10,7 @@ returns TABLE(
 )
 as $$
 select
-  hid::int as resource_id,
+  resource_id::int,
   rate,
   product_group,
   COALESCE(billable_events.product_name, rate_codes.product_name) as product_name,
@@ -25,7 +25,7 @@ from
 where
   billable_events.provider_id = 5
   and rate_codes.id = rate_code_id
-  and hid = $1::text
+  and resource_id = $1::text
   and time <= $3
   and billable_events.product_name != 'cron'
 group by

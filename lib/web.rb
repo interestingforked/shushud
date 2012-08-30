@@ -76,13 +76,13 @@ module Shushu
                                Utils.dec_time(params[:to]))
     end
 
-    put "/resources/:hid/billable_events/:eid" do
+    put "/resources/:resource_id/billable_events/:eid" do
       BillableEvent.
         handle_in(provider_id: session[:provider_id],
                    rate_code: params[:rate_code],
                    product_name: params[:product_name],
                    description: params[:description],
-                   hid: params[:hid],
+                   resource_id: params[:resource_id],
                    entity_id_uuid: params[:eid],
                    qty: params[:qty],
                    time: Utils.dec_time(params[:time]),
