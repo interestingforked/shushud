@@ -6,9 +6,10 @@ returns TABLE(
   product_name text,
   description text,
   qty numeric,
-  count bigint
+  count numeric
 )
 as $$
+with grouped_events as (
 select
   resource_id::int,
   rate,
@@ -52,4 +53,18 @@ where
   and closed_events.product_name != 'cron'
 group by
   1,2,3,4,5
+)
+
+select
+  resource_id,
+  rate,
+  product_group,
+  product_name,
+  description,
+  sum(qty) as qty,
+  sum(count) as count
+from
+  grouped_events
+group by
+  1,2,3,4,5;
 $$ language sql immutable;
