@@ -16,7 +16,7 @@ class ResourceOwnershipApiTest < ShushuTest
       :resource_id => "123",
       :time => Time.now.utc.to_s
     })
-    assert_equal(200, last_response.status)
+    assert_equal(201, last_response.status)
   end
 
   def test_activate_record_with_new_account_id
@@ -26,7 +26,7 @@ class ResourceOwnershipApiTest < ShushuTest
       :resource_id => "123",
       :time => Time.now.utc.to_s
     })
-    assert_equal(200, last_response.status)
+    assert_equal(201, last_response.status)
   end
 
   def test_deactivate_record
@@ -41,7 +41,7 @@ class ResourceOwnershipApiTest < ShushuTest
       :resource_id => "123",
       :time => Time.now.utc.to_s
     })
-    assert_equal(200, last_response.status)
+    assert_equal(201, last_response.status)
   end
 
 end

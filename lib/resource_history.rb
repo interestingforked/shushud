@@ -53,7 +53,7 @@ module Shushu
         closed = col.find {|c| c[:state] == 0} || {time: to}
         if overlaps?(from, to, open[:time], closed[:time])
           {entity_id: eid,
-            resource_id: open[:hid],
+            resource_id: open[:resource_id],
             from: [from, open[:time]].max,
             to: [to, closed[:time]].min}
         else

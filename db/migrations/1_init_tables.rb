@@ -19,7 +19,7 @@ Sequel.migration do
     add_column :resource_ownership_records, :created_at,  "timestamptz"
     add_column :resource_ownership_records, :time,        "timestamptz"
     add_column :resource_ownership_records, :entity_id,   "uuid"
-    add_column :resource_ownership_records, :hid,         "varchar(255)"
+    add_column :resource_ownership_records, :resource_id, "varchar(255)"
     add_column :resource_ownership_records, :state,       "integer"
     alter_table(:resource_ownership_records) do
       add_unique_constraint([:entity_id, :state])
