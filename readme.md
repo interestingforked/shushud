@@ -1,9 +1,9 @@
 # 収集
 
-* purpose
-* name
-* setup
-* api
+* [purpose](#purpose)
+* [name](#name)
+* [setup](#setup)
+* [api](#api)
 
 ## Purpose
 
@@ -37,7 +37,7 @@ $ bundle exec turn/test
 
 * [Provider](#provider)
 * [RateCode](#ratecode)
-* [BillableEvent](#billablevent)
+* [BillableEvent](#billableevent)
 * [ResourceOwnership](#resourceownership)
 * [ResourceHistory](#resourcehistory)
 

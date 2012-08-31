@@ -1,3 +1,4 @@
+drop function if exists resource_summary(int, timestamptz, timestamptz);
 create function resource_summary(int, timestamptz, timestamptz)
 returns TABLE(
   resource_id int,
@@ -24,7 +25,7 @@ select
 from
   billable_events, rate_codes
 where
-  billable_events.provider_id = 5
+  billable_events.provider_id = 1
   and rate_codes.id = rate_code_id
   and resource_id = $1::text
   and time <= $3
@@ -46,7 +47,7 @@ select
 from
   closed_events, rate_codes
 where
-  closed_events.provider_id = 5
+  closed_events.provider_id = 1
   and rate_codes.id = rate_code_id
   and resource_id = $1
   and ("from", "to") overlaps ($2, $3)
