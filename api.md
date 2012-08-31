@@ -73,7 +73,7 @@ $ curl -X PUT https://$id:$token@shushud.herokuapp.com/rate_codes/myslug \
 Once you have created a Provider and a RateCode, you can star creating BillableEvents. You must open an event before it can be closed. If your open/close messages are in a buffer, there is no harm in repeted attempts to close an event before it has been opened.
 
 ```bash
-curl -X PUT "https://$id:$token@shushud.herokuapp.com/resources/123/billable_events/722adf59-940a-49d2-bd54-6a52ef12da23" \
+$ curl -X PUT "https://$id:$token@shushud.herokuapp.com/resources/123/billable_events/722adf59-940a-49d2-bd54-6a52ef12da23" \
 	-d "rate_code=myslug" \
 	-d "product_name=database" \
 	-d "description=pg-9.2" \
@@ -81,4 +81,32 @@ curl -X PUT "https://$id:$token@shushud.herokuapp.com/resources/123/billable_eve
 	-d "time=2012-08-31 04:34:39" \
 	-d "state=open"
 {"id":"722adf59-940a-49d2-bd54-6a52ef12da23"}
+```
+
+## ResourceOwnership
+
+Owners are not tracked in shushu. You invioce system will probably have the ID for the owner. This system can be one that you have built or something like Stripe. Nevertheless, you will want to associate owners with resources. This is how you will connect invoices and usage data.
+
+```bash
+$ curl -X PUT "https://$id:$token@shushud.herokuapp.com/accounts/owner-id/resource_ownerships/entity-id" \
+	-d "resource_id=123" \
+	-d "state=active" \
+	-d "time=2012-08-31 04:34:39"
+{"id":"722adf59-940a-49d2-bd54-6a52ef12da23"}
+```
+
+## ResourceHistory
+
+This endpoint will return a summary report for an owner.
+
+```bash
+$ curl -X GET "https://$id:$token@shushud.herokuapp.com/owners/owner-id/resource_summaries" \
+	-d "from=2012-08-01" \
+	-d "to=2012-09-01"
+[{"123":[{
+	"product_group":"addon",
+	"product_name":"database",
+	"description":"",
+	"qty":41.0,
+	"daily_avgs":[0.7083333333333334,1.0]}]}]
 ```
