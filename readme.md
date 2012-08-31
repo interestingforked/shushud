@@ -11,6 +11,8 @@ to usage & billing.
 * Track and store resource ownerships.
 * Manage rate codes for billable events.
 
+## [API Documentation](https://github.com/2shu/shushud/blob/master/api.md)
+
 ## Setup
 
 ```bash
