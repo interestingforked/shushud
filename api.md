@@ -67,3 +67,18 @@ $ curl -X PUT https://$id:$token@shushud.herokuapp.com/rate_codes/myslug \
 * slug - String. Your identification for the RateCode.
 * product_group - String. Top level product taxonomy.
 * product_name - String. Bottom level product taxonomy.
+
+## BillableEvent
+
+Once you have created a Provider and a RateCode, you can star creating BillableEvents. You must open an event before it can be closed. If your open/close messages are in a buffer, there is no harm in repeted attempts to close an event before it has been opened.
+
+```bash
+curl -X PUT "https://$id:$token@shushud.herokuapp.com/resources/123/billable_events/722adf59-940a-49d2-bd54-6a52ef12da23" \
+	-d "rate_code=myslug" \
+	-d "product_name=database" \
+	-d "description=pg-9.2" \
+	-d "qty=1" \
+	-d "time=2012-08-31 04:34:39" \
+	-d "state=open"
+{"id":"722adf59-940a-49d2-bd54-6a52ef12da23"}
+```

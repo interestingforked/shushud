@@ -103,7 +103,7 @@ module Shushu
       RateCode.
         handle_in(provider_id: session[:provider_id],
                    rate: params[:rate],
-                   period: params[:period],
+                   rate_period: params[:period],
                    product_group: params[:group],
                    product_name: params[:name])
     end
@@ -113,7 +113,7 @@ module Shushu
         handle_in(provider_id: session[:provider_id],
                    slug: params[:slug],
                    rate: params[:rate],
-                   period: params[:period],
+                   rate_period: params[:period],
                    product_group: params[:group],
                    product_name: params[:name])
     end

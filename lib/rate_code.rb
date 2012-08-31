@@ -12,10 +12,10 @@ module Shushu
 
       if s = args[:slug]
         if r = DB[:rate_codes].filter(slug: s).first
-          [200, Utils.enc_j(msg: "OK")]
+          [200, Utils.enc_j(r)]
         else
-          if create_record(args)
-            [201, Utils.enc_j(msg: "OK")]
+          if r = create_record(args)
+            [201, Utils.enc_j(r)]
           else
             [400, Utils.enc_j(error: "invalid args")]
           end
@@ -29,7 +29,7 @@ module Shushu
     private
 
     def args_valid?(args)
-      PERIODS.include?(args[:period])
+      PERIODS.include?(args[:rate_period])
     end
 
     def create_record(args)
@@ -40,7 +40,8 @@ module Shushu
                 rate_period: args[:rate_period],
                 slug: args[:slug],
                 product_group: args[:product_group],
-                product_name: args[:product_name]).pop
+                product_name: args[:product_name],
+                created_at: Time.now).pop
     end
 
   end
