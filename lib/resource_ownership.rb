@@ -12,17 +12,17 @@ module Shushu
       case state
       when "active"
         if prev_activated?(eid)
-          [200, Utils.enc_j(msg: "OK")]
-        elsif create_ownership(provider_id,account_id,resid,ACTIVE,time,eid)
-          [201, Utils.enc_j(msg: "OK")]
+          [200, Utils.enc_j(id: eid)]
+        elsif o = create_ownership(provider_id,account_id,resid,ACTIVE,time,eid)
+          [201, Utils.enc_j(o)]
         else
           [400, Utils.enc_j(error: "invalid args")]
         end
       when "inactive"
         if prev_deactivated?(eid)
-          [200, Utils.enc_j(msg: "OK")]
-        elsif create_ownership(provider_id,account_id,resid,INACTIVE,time,eid)
-          [201, Utils.enc_j(msg: "OK")]
+          [200, Utils.enc_j(id: eid)]
+        elsif o = create_ownership(provider_id,account_id,resid,INACTIVE,time,eid)
+          [201, Utils.enc_j(o)]
         else
           [400, Utils.enc_j(error: "invalid args")]
         end
@@ -50,7 +50,7 @@ module Shushu
     def create_ownership(provider_id, account_id, resid, state, time, eid)
       log(measure: true, fn: [provider_id, __method__].join("-")) do
         DB[:resource_ownership_records].
-          returning.
+          returning(:entity_id).
           insert(provider_id: provider_id,
                   owner: account_id,
                   resource_id: resid,
